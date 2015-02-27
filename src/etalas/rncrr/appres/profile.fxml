@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="etalas.rncrr.view.View">
+   <top>
+       <VBox prefHeight="50" prefWidth="600.0">
+           <children>
+               <MenuBar fx:id="menuBar">
+                   <menus>
+                       <Menu text="File">
+                           <items>
+                               <MenuItem onAction="#openFileData" text="Open..." />
+                               <MenuItem onAction="#closeApplication" text="Exit" />
+                           </items>
+                       </Menu>
+                       <Menu text="Tools">
+                           <items>
+                               <MenuItem text="FFT" />
+                               <MenuItem text="IFT" />
+                           </items>
+                       </Menu>
+                       <Menu text="Help">
+                           <items>
+                               <MenuItem text="Help" />
+                               <MenuItem text="About" />
+                           </items>
+                       </Menu>
+                   </menus>
+               </MenuBar>
+               <ToolBar>
+                   <items>
+                       <Button mnemonicParsing="false" onAction="#openFileData" style="-fx-graphic: url('file:resources/img/toolBarButOpen.png');" text="" />
+                       <Button mnemonicParsing="false" style="-fx-graphic: url('file:resources/img/toolBarButFFT.png');" text="" />
+                   </items>
+               </ToolBar>
+           </children>
+       </VBox>
+   </top>
+   <left>
+      <VBox prefHeight="400.0" prefWidth="210.0" BorderPane.alignment="TOP_LEFT">
+         <children>
+             <TableView fx:id="seriesTableView" onMouseClicked="#detailRow" prefHeight="320.0" prefWidth="210.0">
+                <columns>
+                    <TableColumn fx:id="scanIdColumn" prefWidth="50.0" text="Scan ID" />
+                    <TableColumn fx:id="machineNameColumn" prefWidth="90.0" text="Machine" />
+                    <TableColumn fx:id="energyColumn" prefWidth="60.0" text="Energy" />
+                </columns>
+             </TableView>
+             <GridPane>
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="105.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="105.0" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                </rowConstraints>
+               <children>
+                   <Label text="Scan ID" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                   <Label text="Machine name" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                   <Label text="Beam type" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                   <Label text="Beam energy" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                   <Label text="Ssd" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                   <Label text="Field size" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                   <Label text="Axis" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                   <Label text="Depth" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                   <Label text="Step" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                   <Label text="Date" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                   <Label fx:id="scanIdLabel" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                   <Label fx:id="machineNameLabel" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                   <Label fx:id="beamTypeLabel" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                   <Label fx:id="beamEnergyLabel" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                   <Label fx:id="ssdLabel" text="" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                   <Label fx:id="fieldSizeLabel" text="" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                   <Label fx:id="axisLabel" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                   <Label fx:id="depthLabel" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                   <Label fx:id="stepLabel" text="" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                   <Label fx:id="dateLabel" text="" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+               </children>
+               <padding>
+                  <Insets left="7.0" />
+               </padding>
+             </GridPane>
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <LineChart fx:id="profileChart" BorderPane.alignment="CENTER">
+        <xAxis>
+          <NumberAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </LineChart>
+   </center>
+   <bottom>
+      <GridPane BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+      </GridPane>
+   </bottom>
+</BorderPane>
