@@ -1,22 +1,23 @@
 package etalas.rncrr.model.process;
 
+import etalas.rncrr.appres.ESeries;
 import etalas.rncrr.model.bean.Points;
 import etalas.rncrr.model.bean.Series;
 import etalas.rncrr.model.process.api.AbstractSeries;
-import etalas.rncrr.model.process.api.IFillSeries;
+import etalas.rncrr.model.process.api.IAscFillSeries;
 
 
 /**
  * Created by Sidh on 20.02.2015.
  */
-public class FillSeries extends AbstractSeries implements IFillSeries {
+public class AscFillSeries extends AbstractSeries implements IAscFillSeries {
 
-    public FillSeries() {}
+    public AscFillSeries() {}
 
     @Override
     public void fillSeries(Series series, String line) {
-        for(ESeries value : ESeries.values()){
-            if(line.contains(value.getName())){
+        for(ESeries value : ESeries.values()) {
+            if(line.contains(value.getName())) {
                 switch (value){
                     case SCAN_ID :
                         series.setScanId(line.substring(line.indexOf(":") + 1).trim());

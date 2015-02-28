@@ -20,34 +20,4 @@ public abstract class AbstractSeries {
         return line.substring(line.indexOf(key) + key.length()).trim();
     }
 
-    public enum ESeries {
-
-        BLOCK_START("$STOM"),
-        BLOCK_END("$ENOM"),
-        FILE_END("$ENOF"),
-        SCAN_ID("Scan ID"),
-        BEAM_ENERGY_MV("MV"),
-        BEAM_ENERGY_MEV("MeV"),
-        BLOCK_DATE("%DATE"),
-        BLOCK_BMTY("%BMTY"),
-        BLOCK_STEP("%STEP"),
-        BLOCK_SSD("%SSD"),
-        BLOCK_FLSZ("%FLSZ"),
-        BLOCK_DPTH("%DPTH"),
-        BLOCK_AXIS("%AXIS"),
-        POINT_START("<"),
-        POINT_END(">");
-
-        private String name;
-
-        private ESeries(String name){
-            this.name = name;
-        }
-
-        public String getName(){
-            return this.name;
-        }
-
-    }
-
 }

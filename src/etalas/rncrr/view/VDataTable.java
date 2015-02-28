@@ -1,8 +1,9 @@
 package etalas.rncrr.view;
 
 import etalas.rncrr.model.bean.Series;
-import etalas.rncrr.model.service.FileReader;
+import etalas.rncrr.model.service.AscFileReader;
 import etalas.rncrr.view.api.IDataTable;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -18,8 +19,17 @@ public class VDataTable implements IDataTable{
 
     private ObservableList<Series> seriesList;
 
+    public VDataTable() {
+        this.seriesList = FXCollections.observableArrayList();
+    }
+
     @Override
-    public void veiwDataTable(TableView<Series> seriesTableView,
+    public ObservableList<Series> getSeriesList() {
+        return seriesList;
+    }
+
+    @Override
+    public void viewDataTable(TableView<Series> seriesTableView,
                               TableColumn<Series, String> scanIdColumn,
                               TableColumn<Series, String> machineNameColumn,
                               TableColumn<Series, String> energyColumn)
@@ -28,7 +38,7 @@ public class VDataTable implements IDataTable{
         File file = fileChooser.showOpenDialog(null);
         if(file != null) {
             try {
-                seriesList = new FileReader().read(file.getPath());
+                readFile(file);
                 scanIdColumn.setCellValueFactory(new PropertyValueFactory<>("scanId"));
                 machineNameColumn.setCellValueFactory(new PropertyValueFactory<>("machineName"));
                 energyColumn.setCellValueFactory(new PropertyValueFactory<>("beamEnergy"));
@@ -37,5 +47,11 @@ public class VDataTable implements IDataTable{
                 e.printStackTrace();
             }
         }
+    }
+
+    private ObservableList<Series> readFile(File file){
+        AscFileReader fr = new AscFileReader();
+        fr.setSeriesList(seriesList);
+        return fr.read(file.getPath());
     }
 }

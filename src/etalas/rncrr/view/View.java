@@ -1,16 +1,12 @@
 package etalas.rncrr.view;
 
-import etalas.rncrr.model.bean.Points;
 import etalas.rncrr.model.bean.Series;
 import etalas.rncrr.view.api.IDataChart;
 import etalas.rncrr.view.api.IDataTable;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 
 
@@ -57,7 +53,7 @@ public class View {
     }
 
     public void openFileData(ActionEvent actionEvent) {
-        dataTable.veiwDataTable(seriesTableView, scanIdColumn, machineNameColumn, energyColumn);
+        dataTable.viewDataTable(seriesTableView, scanIdColumn, machineNameColumn, energyColumn);
     }
 
     public void detailRow(Event event) {

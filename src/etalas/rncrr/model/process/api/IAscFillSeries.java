@@ -5,7 +5,7 @@ import etalas.rncrr.model.bean.Series;
 /**
  * Created by Sidh on 20.02.2015.
  */
-public interface IFillSeries {
+public interface IAscFillSeries {
 
     public void fillSeries(Series series, String line);
 
