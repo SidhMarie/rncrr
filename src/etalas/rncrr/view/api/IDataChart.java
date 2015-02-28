@@ -11,4 +11,8 @@ public interface IDataChart {
 
     public void buildingChart(TableView<Series> seriesTableView, LineChart<Double, Double> profileChart);
 
+    public void clearChart(LineChart<Double, Double> profileChart);
+
+    public void initChart(LineChart<Double, Double> profileChart);
+
 }

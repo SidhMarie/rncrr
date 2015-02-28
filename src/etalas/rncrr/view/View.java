@@ -3,6 +3,7 @@ package etalas.rncrr.view;
 import etalas.rncrr.model.bean.Series;
 import etalas.rncrr.view.api.IDataChart;
 import etalas.rncrr.view.api.IDataTable;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -53,11 +54,12 @@ public class View {
     }
 
     public void openFileData(ActionEvent actionEvent) {
+        seriesTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         dataTable.viewDataTable(seriesTableView, scanIdColumn, machineNameColumn, energyColumn);
+        dataChart.initChart(profileChart);
     }
 
-    public void detailRow(Event event) {
-        seriesTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    public void detailRows(Event event) {
         if(!seriesTableView.getItems().isEmpty()) {
             Series series = seriesTableView.getSelectionModel().getSelectedItem();
             scanIdLabel.setText(series.getScanId());
@@ -75,8 +77,17 @@ public class View {
         }
     }
 
+    public void deleteRows(ActionEvent actionEvent) {
+        if(!seriesTableView.getItems().isEmpty()){
+            ObservableList<Series> selectedSeriesList = seriesTableView.getSelectionModel().getSelectedItems();
+            for(Series series : selectedSeriesList) {
+                dataTable.deleteRows(series);
+                dataChart.clearChart(profileChart);
+            }
+        }
+    }
+
     public void closeApplication(ActionEvent actionEvent) {
         System.exit(0);
     }
-
 }

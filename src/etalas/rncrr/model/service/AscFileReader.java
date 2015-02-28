@@ -3,7 +3,6 @@ package etalas.rncrr.model.service;
 import etalas.rncrr.appres.ESeries;
 import etalas.rncrr.model.bean.Series;
 import etalas.rncrr.model.process.AscFillSeries;
-import etalas.rncrr.model.process.api.AbstractSeries;
 import etalas.rncrr.model.process.api.IAscFillSeries;
 import etalas.rncrr.model.service.api.AbstractFileReader;
 

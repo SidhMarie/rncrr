@@ -1,6 +1,6 @@
 package etalas.rncrr.view;
 
-import etalas.rncrr.Profile;
+
 import etalas.rncrr.model.bean.Points;
 import etalas.rncrr.model.bean.Series;
 import etalas.rncrr.view.api.IDataChart;
@@ -15,19 +15,30 @@ import javafx.scene.control.TableView;
  */
 public class VDataChart implements IDataChart {
 
+    private ObservableList<XYChart.Series<Double, Double>> lineChart;
+    private LineChart.Series<Double, Double> seriesChart;
 
+    @Override
+    public void initChart(LineChart<Double, Double> profileChart){
+        profileChart.setTitle("Profile Dose");
+        lineChart = FXCollections.observableArrayList();
+        seriesChart = new LineChart.Series<>();
+        seriesChart.getData().add(new XYChart.Data<>(0.0, 0.0));
+        seriesChart.setName("Series");
+        lineChart.add(seriesChart);
+        profileChart.setData(lineChart);
+    }
+
+    @Override
     public void buildingChart(TableView<Series> seriesTableView, LineChart<Double, Double> profileChart){
-        LineChart.Series<Double, Double> seriesChart;
-        ObservableList<XYChart.Series<Double, Double>> lineChart = FXCollections.observableArrayList();
+        lineChart = FXCollections.observableArrayList();
         ObservableList<Series> selectedSeriesList = seriesTableView.getSelectionModel().getSelectedItems();
-//        profileChart.setTitle("Profile Dose");
-
         for(Series s : selectedSeriesList) {
             seriesChart = new LineChart.Series<>();
             for (Points points : s.getPoints()) {
                 seriesChart.getData().add(new XYChart.Data<>(points.getX(), points.getY()));
             }
-            seriesChart.setName("Series_" + s.getScanId());
+            seriesChart.setName("Series-" + s.getScanId());
             lineChart.add(seriesChart);
         }
         profileChart.setData(lineChart);
@@ -51,6 +62,11 @@ public class VDataChart implements IDataChart {
 ////                });
 //            }
 //        }
+    }
+
+    @Override
+    public void clearChart(LineChart<Double, Double> profileChart){
+        profileChart.setData(FXCollections.observableArrayList());
     }
 
 }

@@ -1,7 +1,6 @@
 package etalas.rncrr.model.service.api;
 
 import etalas.rncrr.model.bean.Series;
-import etalas.rncrr.model.service.AscFileReader;
 import javafx.collections.ObservableList;
 
 import java.io.FileInputStream;

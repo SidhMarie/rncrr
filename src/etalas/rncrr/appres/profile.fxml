@@ -17,6 +17,12 @@
                                <MenuItem onAction="#closeApplication" text="Exit" />
                            </items>
                        </Menu>
+                       <Menu text="View">
+                           <items>
+                               <MenuItem text="Show general chart" />
+                               <MenuItem text="Show sub chart" />
+                           </items>
+                       </Menu>
                        <Menu text="Tools">
                            <items>
                                <MenuItem text="FFT" />
@@ -34,6 +40,8 @@
                <ToolBar>
                    <items>
                        <Button mnemonicParsing="false" onAction="#openFileData" style="-fx-graphic: url('file:resources/img/toolBarButOpen.png');" text="" />
+                       <Button mnemonicParsing="false" onAction="#deleteRows" style="-fx-graphic: url('file:resources/img/toolBarButDelRow.png');" text=""/>
+                       <Separator/>
                        <Button mnemonicParsing="false" style="-fx-graphic: url('file:resources/img/toolBarButFFT.png');" text="" />
                    </items>
                </ToolBar>
@@ -43,7 +51,7 @@
    <left>
       <VBox prefHeight="400.0" prefWidth="210.0" BorderPane.alignment="TOP_LEFT">
          <children>
-             <TableView fx:id="seriesTableView" onMouseClicked="#detailRow" prefHeight="320.0" prefWidth="210.0">
+             <TableView fx:id="seriesTableView" onMouseClicked="#detailRows" prefHeight="320.0" prefWidth="210.0">
                 <columns>
                     <TableColumn fx:id="scanIdColumn" prefWidth="50.0" text="Scan ID" />
                     <TableColumn fx:id="machineNameColumn" prefWidth="90.0" text="Machine" />

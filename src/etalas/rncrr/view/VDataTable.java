@@ -24,11 +24,6 @@ public class VDataTable implements IDataTable{
     }
 
     @Override
-    public ObservableList<Series> getSeriesList() {
-        return seriesList;
-    }
-
-    @Override
     public void viewDataTable(TableView<Series> seriesTableView,
                               TableColumn<Series, String> scanIdColumn,
                               TableColumn<Series, String> machineNameColumn,
@@ -47,6 +42,11 @@ public class VDataTable implements IDataTable{
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void deleteRows(Series series) {
+        seriesList.remove(series);
     }
 
     private ObservableList<Series> readFile(File file){
