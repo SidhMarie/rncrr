@@ -23,7 +23,7 @@ public class AbstractFileReader {
         if (!path.trim().isEmpty()) {
             try {
                 InputStream stream = new FileInputStream(path);
-                return new AscFileReader().parse(stream);
+                parse(stream);
             } catch (Exception e) {
                 e.printStackTrace();
             }
