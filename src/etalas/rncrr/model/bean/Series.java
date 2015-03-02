@@ -9,12 +9,17 @@ public class Series {
     private int step;
     private int ssd;
     private int depth;
+    private int pnts;
     private String machineName;
     private String beamEnergy;
     private String beamType;
     private String fieldSize;
     private String axis;
     private String date;
+    private String dety;
+    private String type;
+    private double cDepth;
+    private double cFactor;
     private List<Points> points;
     private List<SubSeries> subSeries;
 
@@ -101,6 +106,46 @@ public class Series {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getDety() {
+        return dety;
+    }
+
+    public void setDety(String dety) {
+        this.dety = dety;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getPnts() {
+        return pnts;
+    }
+
+    public void setPnts(int pnts) {
+        this.pnts = pnts;
+    }
+
+    public double getcDepth() {
+        return cDepth;
+    }
+
+    public void setcDepth(double cDepth) {
+        this.cDepth = cDepth;
+    }
+
+    public double getcFactor() {
+        return cFactor;
+    }
+
+    public void setcFactor(double cFactor) {
+        this.cFactor = cFactor;
     }
 
     public List<Points> getPoints() {

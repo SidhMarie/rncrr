@@ -29,25 +29,34 @@ public class AscFillSeries extends AbstractSeries implements IAscFillSeries {
                     case BEAM_ENERGY_MEV :
                         series.setBeamEnergy(line.substring(line.indexOf("-") + 1).trim());
                         break;
-                    case BLOCK_DATE :
+                    case DATE:
                         series.setDate(getValue(line, value.getName()));
                         break;
-                    case BLOCK_BMTY :
+                    case DETY:
+                        series.setDety(getValue(line, value.getName()));
+                        break;
+                    case PNTS:
+                        series.setPnts(Integer.parseInt(getValue(line, value.getName())));
+                        break;
+                    case TYPE:
+                        series.setType(getValue(line, value.getName()));
+                        break;
+                    case BMTY:
                         series.setBeamType(getValue(line, value.getName()));
                         break;
-                    case BLOCK_STEP :
+                    case STEP:
                         series.setStep(Integer.parseInt(getValue(line, value.getName())));
                         break;
-                    case BLOCK_SSD :
+                    case SSD:
                         series.setSsd(Integer.parseInt(getValue(line, value.getName())));
                         break;
-                    case BLOCK_FLSZ :
+                    case FLSZ:
                         series.setFieldSize(getValue(line, value.getName()));
                         break;
-                    case BLOCK_DPTH :
+                    case DPTH:
                         series.setDepth(Integer.parseInt(getValue(line, value.getName())));
                         break;
-                    case BLOCK_AXIS :
+                    case AXIS:
                         series.setAxis(getValue(line, value.getName()));
                         break;
                     case POINT_START :
