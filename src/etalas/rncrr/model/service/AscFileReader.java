@@ -1,6 +1,6 @@
 package etalas.rncrr.model.service;
 
-import etalas.rncrr.appres.ESeries;
+import etalas.rncrr.appres.EAsc;
 import etalas.rncrr.model.bean.Series;
 import etalas.rncrr.model.process.AscFillSeries;
 import etalas.rncrr.model.process.api.IAscFillSeries;
@@ -25,11 +25,11 @@ public class AscFileReader extends AbstractFileReader {
     @Override
     protected void readLine(String line) {
         if(!line.trim().isEmpty()){
-            if(line.equals(ESeries.BLOCK_START.getName())){
+            if(line.equals(EAsc.BLOCK_START.getName())){
                 flag = 1;
-            } else if(line.equals(ESeries.BLOCK_END.getName())){
+            } else if(line.equals(EAsc.BLOCK_END.getName())){
                 flag = 2;
-            } else if(line.equals(ESeries.FILE_END.getName())){
+            } else if(line.equals(EAsc.FILE_END.getName())){
                 flag = 0;
             }
         }

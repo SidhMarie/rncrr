@@ -3,7 +3,7 @@ package etalas.rncrr.appres;
 /**
  * Created by Sidh on 28.02.2015.
  */
-public enum ESeries {
+public enum EAsc {
 
     BLOCK_START("$STOM"),
     BLOCK_END("$ENOM"),
@@ -23,7 +23,7 @@ public enum ESeries {
 
     private String name;
 
-    private ESeries(String name){
+    private EAsc(String name){
         this.name = name;
     }
 

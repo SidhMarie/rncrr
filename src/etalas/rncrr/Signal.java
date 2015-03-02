@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 
-public class Profile extends Application {
+public class Signal extends Application {
 
     private void initApplication() {
         try {

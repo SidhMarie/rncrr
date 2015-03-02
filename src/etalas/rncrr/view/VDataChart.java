@@ -3,6 +3,7 @@ package etalas.rncrr.view;
 
 import etalas.rncrr.model.bean.Points;
 import etalas.rncrr.model.bean.Series;
+import etalas.rncrr.model.process.Config;
 import etalas.rncrr.view.api.IDataChart;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,7 +21,7 @@ public class VDataChart implements IDataChart {
 
     @Override
     public void initChart(LineChart<Double, Double> profileChart){
-        profileChart.setTitle("Profile Dose");
+        profileChart.setTitle(Config.getStringProperty("line.chart.name"));
         lineChart = FXCollections.observableArrayList();
         seriesChart = new LineChart.Series<>();
         seriesChart.getData().add(new XYChart.Data<>(0.0, 0.0));

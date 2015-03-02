@@ -1,6 +1,6 @@
 package etalas.rncrr.model.process;
 
-import etalas.rncrr.appres.ESeries;
+import etalas.rncrr.appres.EAsc;
 import etalas.rncrr.model.bean.Points;
 import etalas.rncrr.model.bean.Series;
 import etalas.rncrr.model.process.api.AbstractSeries;
@@ -16,7 +16,7 @@ public class AscFillSeries extends AbstractSeries implements IAscFillSeries {
 
     @Override
     public void fillSeries(Series series, String line) {
-        for(ESeries value : ESeries.values()) {
+        for(EAsc value : EAsc.values()) {
             if(line.contains(value.getName())) {
                 switch (value){
                     case SCAN_ID :
@@ -59,8 +59,8 @@ public class AscFillSeries extends AbstractSeries implements IAscFillSeries {
     }
 
     private void addPointsData(Series series, String line) {
-        bIndex = line.indexOf(ESeries.POINT_START.getName()) + 1;
-        eIndex = line.indexOf(ESeries.POINT_END.getName());
+        bIndex = line.indexOf(EAsc.POINT_START.getName()) + 1;
+        eIndex = line.indexOf(EAsc.POINT_END.getName());
         str = line.substring(bIndex, eIndex);
         if(series.getAxis().equalsIgnoreCase("X")){
             x = Double.parseDouble(str.substring(0,6));

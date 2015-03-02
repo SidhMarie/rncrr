@@ -25,18 +25,18 @@ public class VDataTable implements IDataTable{
 
     @Override
     public void viewDataTable(TableView<Series> seriesTableView,
-                              TableColumn<Series, String> scanIdColumn,
-                              TableColumn<Series, String> machineNameColumn,
-                              TableColumn<Series, String> energyColumn)
+                              TableColumn<Series, String> columnLabel_1,
+                              TableColumn<Series, String> columnLabel_2,
+                              TableColumn<Series, String> columnLabel_3)
     {
         FileChooser fileChooser = new FileChooser();
         File file = fileChooser.showOpenDialog(null);
         if(file != null) {
             try {
                 readFile(file);
-                scanIdColumn.setCellValueFactory(new PropertyValueFactory<>("scanId"));
-                machineNameColumn.setCellValueFactory(new PropertyValueFactory<>("machineName"));
-                energyColumn.setCellValueFactory(new PropertyValueFactory<>("beamEnergy"));
+                columnLabel_1.setCellValueFactory(new PropertyValueFactory<>("scanId"));
+                columnLabel_2.setCellValueFactory(new PropertyValueFactory<>("machineName"));
+                columnLabel_3.setCellValueFactory(new PropertyValueFactory<>("beamEnergy"));
                 seriesTableView.setItems(seriesList);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -45,8 +45,8 @@ public class VDataTable implements IDataTable{
     }
 
     @Override
-    public void deleteRows(Series series) {
-        seriesList.remove(series);
+    public void deleteRows(ObservableList<Series> selectedList) {
+        this.seriesList.removeAll(selectedList);
     }
 
     private ObservableList<Series> readFile(File file){
