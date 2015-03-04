@@ -9,7 +9,6 @@ import etalas.rncrr.model.bean.Series;
 public abstract class AbstractSeries {
 
     protected Points points;
-    protected double x, y;
     protected String str;
     protected int bIndex;
     protected int eIndex;
@@ -19,5 +18,11 @@ public abstract class AbstractSeries {
     protected String getValue(String line, String key){
         return line.substring(line.indexOf(key) + key.length()).trim();
     }
+
+//    protected String getMeasureType(String type){
+//        for(){
+//
+//        }
+//    }
 
 }

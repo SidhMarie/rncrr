@@ -54,7 +54,7 @@
           <children>
               <TableView fx:id="seriesTableView" onMouseClicked="#detailRows" prefHeight="320.0" prefWidth="210.0">
                   <columns>
-                      <TableColumn fx:id="columnLabel_1" prefWidth="50.0" text="Scan ID" />
+                      <TableColumn fx:id="columnLabel_1" prefWidth="50.0" text="Type" />
                       <TableColumn fx:id="columnLabel_2" prefWidth="90.0" text="Machine" />
                       <TableColumn fx:id="columnLabel_3" prefWidth="60.0" text="Energy" />
                   </columns>
@@ -118,24 +118,4 @@
         </yAxis>
       </LineChart>
    </center>
-   <right>
-      <VBox prefHeight="200.0" prefWidth="170.0" BorderPane.alignment="CENTER">
-         <children>
-            <ToolBar prefHeight="40.0" prefWidth="170.0">
-              <items>
-                <Button mnemonicParsing="false" text="Button" />
-              </items>
-            </ToolBar>
-            <TableView prefHeight="1000.0" prefWidth="170.0">
-              <columns>
-                <TableColumn prefWidth="70.0" text="Sub Series" />
-                <TableColumn prefWidth="100.0" text="Date" />
-              </columns>
-            </TableView>
-         </children>
-         <padding>
-            <Insets bottom="37.0" />
-         </padding>
-      </VBox>
-   </right>
 </BorderPane>

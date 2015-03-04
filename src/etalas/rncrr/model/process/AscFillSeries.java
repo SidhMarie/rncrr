@@ -1,18 +1,19 @@
 package etalas.rncrr.model.process;
 
 import etalas.rncrr.appres.EAsc;
+import etalas.rncrr.appres.EMeasureType;
 import etalas.rncrr.model.bean.Points;
 import etalas.rncrr.model.bean.Series;
 import etalas.rncrr.model.process.api.AbstractSeries;
 import etalas.rncrr.model.process.api.IAscFillSeries;
+
+import java.util.Objects;
 
 
 /**
  * Created by Sidh on 20.02.2015.
  */
 public class AscFillSeries extends AbstractSeries implements IAscFillSeries {
-
-    public AscFillSeries() {}
 
     @Override
     public void fillSeries(Series series, String line) {
@@ -59,6 +60,12 @@ public class AscFillSeries extends AbstractSeries implements IAscFillSeries {
                     case AXIS:
                         series.setAxis(getValue(line, value.getName()));
                         break;
+                    case CDEPTH:
+                        series.setcDepth(Double.parseDouble(getValue(line, value.getName())));
+                        break;
+                    case CFACTOR:
+                        series.setcFactor(Double.parseDouble(getValue(line, value.getName())));
+                        break;
                     case POINT_START :
                         addPointsData(series, line);
                         break;
@@ -71,16 +78,20 @@ public class AscFillSeries extends AbstractSeries implements IAscFillSeries {
         bIndex = line.indexOf(EAsc.POINT_START.getName()) + 1;
         eIndex = line.indexOf(EAsc.POINT_END.getName());
         str = line.substring(bIndex, eIndex);
-        if(series.getAxis().equalsIgnoreCase("X")){
-            x = Double.parseDouble(str.substring(0,6));
-            y = Double.parseDouble(str.substring(22));
-        } else if(series.getAxis().equalsIgnoreCase("Y")) {
-
-        } else if(series.getAxis().equalsIgnoreCase("Z")){
-            x = Double.parseDouble(str.substring(15,21));
-            y = Double.parseDouble(str.substring(22));
+        if(Objects.equals(series.getType(), EMeasureType.MeasuredDepthDosesForOpenBeam.name())
+                || Objects.equals(series.getType(), EMeasureType.MeasuredDepthDosesForApplicator.name())
+                || Objects.equals(series.getType(), EMeasureType.OPD.name()) )
+        {
+            fillPoint(series,
+                    Double.parseDouble(str.substring(15,21)),
+                    Double.parseDouble(str.substring(22)));
+        } else if(Objects.equals(series.getType(), EMeasureType.MeasuredProfileForOpenBeam.name())
+                || Objects.equals(series.getType(), EMeasureType.OPP.name()) )
+        {
+            fillPoint(series,
+                    Double.parseDouble(str.substring(0,6)),
+                    Double.parseDouble(str.substring(22)));
         }
-        fillPoint(series, x, y);
     }
 
     private void fillPoint(Series series, double x, double y){

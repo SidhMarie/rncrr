@@ -22,7 +22,7 @@ public class View {
     }
 
     public void openFileData(ActionEvent actionEvent) {
-        seriesTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+//        seriesTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         dataTable.viewDataTable(seriesTableView, columnLabel_1, columnLabel_2, columnLabel_3);
         dataChart.initChart(profileChart);
     }
@@ -49,6 +49,34 @@ public class View {
     }
 
     private void setAscDataGridValue(Series series){
+
+    }
+
+    private void setAsc4PPDataGridValue(Series series){
+        rowLabel_0.setText(Config.getStringProperty("tg.row.label.scanId", "Scan ID"));
+        rowLabel_1.setText(Config.getStringProperty("tg.row.label.machine", "Machine name"));
+        rowLabel_2.setText(Config.getStringProperty("tg.row.label.beamType", "Beam type"));
+        rowLabel_3.setText(Config.getStringProperty("tg.row.label.beamEnergy", "Beam energy"));
+        rowLabel_4.setText(Config.getStringProperty("tg.row.label.ssd", "Ssd"));
+        rowLabel_5.setText(Config.getStringProperty("tg.row.label.fieldSize", "Field size"));
+        rowLabel_6.setText(Config.getStringProperty("tg.row.label.axis", "Axis"));
+        rowLabel_7.setText(Config.getStringProperty("tg.row.label.depth", "Depth"));
+        rowLabel_8.setText(Config.getStringProperty("tg.row.label.step", "Step"));
+        rowLabel_9.setText(Config.getStringProperty("tg.row.label.date", "Date"));
+
+        rowValue_0.setText(series.getScanId());
+        rowValue_1.setText(series.getMachineName());
+        rowValue_2.setText(series.getBeamType());
+        rowValue_3.setText(series.getBeamEnergy());
+        rowValue_4.setText(Integer.toString(series.getSsd()) + " mm");
+        rowValue_5.setText(series.getFieldSize());
+        rowValue_6.setText(series.getAxis());
+        rowValue_7.setText(Integer.toString(series.getDepth()) + " mm");
+        rowValue_8.setText(Integer.toString(series.getStep()) + " mm");
+        rowValue_9.setText(series.getDate());
+    }
+
+    private void setAsc4EPDataGridValue(Series series){
         rowLabel_0.setText(Config.getStringProperty("tg.row.label.scanId", "Scan ID"));
         rowLabel_1.setText(Config.getStringProperty("tg.row.label.machine", "Machine name"));
         rowLabel_2.setText(Config.getStringProperty("tg.row.label.beamType", "Beam type"));

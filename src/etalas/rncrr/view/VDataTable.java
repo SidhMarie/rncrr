@@ -34,7 +34,7 @@ public class VDataTable implements IDataTable{
         if(file != null) {
             try {
                 readFile(file);
-                columnLabel_1.setCellValueFactory(new PropertyValueFactory<>("scanId"));
+                columnLabel_1.setCellValueFactory(new PropertyValueFactory<>("type"));
                 columnLabel_2.setCellValueFactory(new PropertyValueFactory<>("machineName"));
                 columnLabel_3.setCellValueFactory(new PropertyValueFactory<>("beamEnergy"));
                 seriesTableView.setItems(seriesList);
