@@ -18,6 +18,7 @@ public class Series {
     private String date;
     private String dety;
     private String type;
+    private double spd;
     private double cDepth;
     private double cFactor;
     private List<Points> points;
@@ -130,6 +131,14 @@ public class Series {
 
     public void setPnts(int pnts) {
         this.pnts = pnts;
+    }
+
+    public double getSpd() {
+        return spd;
+    }
+
+    public void setSpd(double spd) {
+        this.spd = spd;
     }
 
     public double getcDepth() {

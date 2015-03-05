@@ -29,6 +29,7 @@ public class AscFillSeries extends AbstractSeries implements IAscFillSeries {
                         break;
                     case BEAM_ENERGY_MEV :
                         series.setBeamEnergy(line.substring(line.indexOf("-") + 1).trim());
+                        series.setMachineName(line.substring(line.indexOf("#") + 1, line.indexOf("-")).trim());
                         break;
                     case DATE:
                         series.setDate(getValue(line, value.getName()));
@@ -40,7 +41,8 @@ public class AscFillSeries extends AbstractSeries implements IAscFillSeries {
                         series.setPnts(Integer.parseInt(getValue(line, value.getName())));
                         break;
                     case TYPE:
-                        series.setType(getValue(line, value.getName()));
+                        String type = getValue(line, value.getName());
+                        series.setType(EMeasureType.getNameByValue(type));
                         break;
                     case BMTY:
                         series.setBeamType(getValue(line, value.getName()));
@@ -50,6 +52,9 @@ public class AscFillSeries extends AbstractSeries implements IAscFillSeries {
                         break;
                     case SSD:
                         series.setSsd(Integer.parseInt(getValue(line, value.getName())));
+                        break;
+                    case SPD:
+                        series.setSpd(Double.parseDouble(getValue(line, value.getName())));
                         break;
                     case FLSZ:
                         series.setFieldSize(getValue(line, value.getName()));
@@ -78,14 +83,14 @@ public class AscFillSeries extends AbstractSeries implements IAscFillSeries {
         bIndex = line.indexOf(EAsc.POINT_START.getName()) + 1;
         eIndex = line.indexOf(EAsc.POINT_END.getName());
         str = line.substring(bIndex, eIndex);
-        if(Objects.equals(series.getType(), EMeasureType.MeasuredDepthDosesForOpenBeam.name())
-                || Objects.equals(series.getType(), EMeasureType.MeasuredDepthDosesForApplicator.name())
+        if(Objects.equals(series.getType(), EMeasureType.DDOE.name())
+                || Objects.equals(series.getType(), EMeasureType.DDAE.name())
                 || Objects.equals(series.getType(), EMeasureType.OPD.name()) )
         {
             fillPoint(series,
                     Double.parseDouble(str.substring(15,21)),
                     Double.parseDouble(str.substring(22)));
-        } else if(Objects.equals(series.getType(), EMeasureType.MeasuredProfileForOpenBeam.name())
+        } else if(Objects.equals(series.getType(), EMeasureType.POE.name())
                 || Objects.equals(series.getType(), EMeasureType.OPP.name()) )
         {
             fillPoint(series,

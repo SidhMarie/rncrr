@@ -1,5 +1,6 @@
 package etalas.rncrr.view;
 
+import etalas.rncrr.appres.EMeasureType;
 import etalas.rncrr.model.bean.Series;
 import etalas.rncrr.model.process.Config;
 import etalas.rncrr.view.api.IDataChart;
@@ -9,6 +10,8 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
+
+import java.util.Objects;
 
 
 public class View {
@@ -22,9 +25,9 @@ public class View {
     }
 
     public void openFileData(ActionEvent actionEvent) {
-//        seriesTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         dataTable.viewDataTable(seriesTableView, columnLabel_1, columnLabel_2, columnLabel_3);
         dataChart.initChart(profileChart);
+        clearDataGridValue();
     }
 
     public void detailRows(Event event) {
@@ -49,14 +52,23 @@ public class View {
     }
 
     private void setAscDataGridValue(Series series){
-
+        if(Objects.equals(series.getType(), EMeasureType.OPP.name())
+                || Objects.equals(series.getType(), EMeasureType.OPD.name()))
+        {
+            setAsc4OPPDataGridValue(series);
+        } else if(Objects.equals(series.getType(), EMeasureType.DDOE.name())
+                || Objects.equals(series.getType(), EMeasureType.DDAE.name())
+                || Objects.equals(series.getType(), EMeasureType.POE.name()))
+        {
+            setAsc4DDOEDataGridValue(series);
+        }
     }
 
-    private void setAsc4PPDataGridValue(Series series){
+    private void setAsc4OPPDataGridValue(Series series){
         rowLabel_0.setText(Config.getStringProperty("tg.row.label.scanId", "Scan ID"));
         rowLabel_1.setText(Config.getStringProperty("tg.row.label.machine", "Machine name"));
         rowLabel_2.setText(Config.getStringProperty("tg.row.label.beamType", "Beam type"));
-        rowLabel_3.setText(Config.getStringProperty("tg.row.label.beamEnergy", "Beam energy"));
+        rowLabel_3.setText(Config.getStringProperty("tg.row.label.pnts", "PNTS"));
         rowLabel_4.setText(Config.getStringProperty("tg.row.label.ssd", "Ssd"));
         rowLabel_5.setText(Config.getStringProperty("tg.row.label.fieldSize", "Field size"));
         rowLabel_6.setText(Config.getStringProperty("tg.row.label.axis", "Axis"));
@@ -66,8 +78,8 @@ public class View {
 
         rowValue_0.setText(series.getScanId());
         rowValue_1.setText(series.getMachineName());
-        rowValue_2.setText(series.getBeamType());
-        rowValue_3.setText(series.getBeamEnergy());
+        rowValue_2.setText(series.getBeamType() + " " + series.getBeamEnergy());
+        rowValue_3.setText(Integer.toString(series.getPoints().size()));
         rowValue_4.setText(Integer.toString(series.getSsd()) + " mm");
         rowValue_5.setText(series.getFieldSize());
         rowValue_6.setText(series.getAxis());
@@ -76,31 +88,42 @@ public class View {
         rowValue_9.setText(series.getDate());
     }
 
-    private void setAsc4EPDataGridValue(Series series){
+    private void setAsc4DDOEDataGridValue(Series series){
         rowLabel_0.setText(Config.getStringProperty("tg.row.label.scanId", "Scan ID"));
         rowLabel_1.setText(Config.getStringProperty("tg.row.label.machine", "Machine name"));
         rowLabel_2.setText(Config.getStringProperty("tg.row.label.beamType", "Beam type"));
         rowLabel_3.setText(Config.getStringProperty("tg.row.label.beamEnergy", "Beam energy"));
-        rowLabel_4.setText(Config.getStringProperty("tg.row.label.ssd", "Ssd"));
-        rowLabel_5.setText(Config.getStringProperty("tg.row.label.fieldSize", "Field size"));
-        rowLabel_6.setText(Config.getStringProperty("tg.row.label.axis", "Axis"));
-        rowLabel_7.setText(Config.getStringProperty("tg.row.label.depth", "Depth"));
-        rowLabel_8.setText(Config.getStringProperty("tg.row.label.step", "Step"));
+        rowLabel_4.setText(Config.getStringProperty("tg.row.label.spd", "SPD"));
+        rowLabel_5.setText(Config.getStringProperty("tg.row.label.pnts", "PNTS"));
+        rowLabel_6.setText(Config.getStringProperty("tg.row.label.cdepth", "Calb. Depth"));
+        rowLabel_7.setText(Config.getStringProperty("tg.row.label.cfactor", "Calb. Factor"));
+        rowLabel_8.setText(Config.getStringProperty("tg.row.label.fieldSize", "Field size"));
         rowLabel_9.setText(Config.getStringProperty("tg.row.label.date", "Date"));
+
 
         rowValue_0.setText(series.getScanId());
         rowValue_1.setText(series.getMachineName());
         rowValue_2.setText(series.getBeamType());
         rowValue_3.setText(series.getBeamEnergy());
-        rowValue_4.setText(Integer.toString(series.getSsd()) + " mm");
-        rowValue_5.setText(series.getFieldSize());
-        rowValue_6.setText(series.getAxis());
-        rowValue_7.setText(Integer.toString(series.getDepth()) + " mm");
-        rowValue_8.setText(Integer.toString(series.getStep()) + " mm");
+        rowValue_4.setText(Double.toString(series.getSpd()));
+        rowValue_5.setText(Integer.toString(series.getPnts()));
+        rowValue_6.setText(Double.toString(series.getcDepth()));
+        rowValue_7.setText(Double.toString(series.getcFactor()));
+        rowValue_8.setText(series.getFieldSize());
         rowValue_9.setText(series.getDate());
     }
 
     private void clearDataGridValue(){
+        rowLabel_0.setText("");
+        rowLabel_1.setText("");
+        rowLabel_2.setText("");
+        rowLabel_3.setText("");
+        rowLabel_4.setText("");
+        rowLabel_5.setText("");
+        rowLabel_6.setText("");
+        rowLabel_7.setText("");
+        rowLabel_8.setText("");
+        rowLabel_9.setText("");
         rowValue_0.setText("");
         rowValue_1.setText("");
         rowValue_2.setText("");
