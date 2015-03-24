@@ -21,17 +21,15 @@ public class FFT {
             even[k] = frame[2*k];
         }
         Complex[] q = fft(even);
-
-
         for (int k = 0; k < halfSize; k++)
             even[k] = frame[2 * k + 1];
         Complex[] r = fft(even);
 
         // combine
         Complex[] y = new Complex[frameSize];
+        Complex wk;
         for (int k = 0; k < halfSize; k++) {
-            double kth = -2 * k * Math.PI / frameSize;
-            Complex wk = new Complex(Math.cos(kth), Math.sin(kth));
+            wk = new Complex(Math.cos(-2 * k * Math.PI / frameSize), Math.sin(-2 * k * Math.PI / frameSize));
             y[k] = q[k].plus(wk.times(r[k]));
             y[k + halfSize] = q[k].minus(wk.times(r[k]));
         }
@@ -216,13 +214,14 @@ public class FFT {
         // FFT of original data
         Complex[] y = fft(x);
 //        show(y, "y = fft(x)");
-        long timeSpent = System.nanoTime() - startTime;
-        System.out.println(timeSpent);
+
 //
 //        // take inverse FFT
         Complex[] z = ifft(y);
         show(z, "z = ifft(y)");
 //
+        long timeSpent = System.nanoTime() - startTime;
+        System.out.println(timeSpent);
 //        // circular convolution of x with itself
 //        Complex[] c = cconvolve(x, x);
 //        show(c, "c = cconvolve(x, x)");
