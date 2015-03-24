@@ -1,5 +1,8 @@
 package etalas.rncrr.model.process;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Sidh on 05.03.2015.
  */
@@ -23,11 +26,8 @@ public class FFT {
         Complex[] q = fft(even);
 
         // fft of odd terms
-        Complex[] odd  = even;  // reuse the array
-        for (int k = 0; k < N/2; k++) {
-            odd[k] = x[2*k + 1];
-        }
-        Complex[] r = fft(odd);
+        for (int k = 0; k < N/2; k++) even[k] = x[2 * k + 1];
+        Complex[] r = fft(even);
 
         // combine
         Complex[] y = new Complex[N];
@@ -97,11 +97,11 @@ public class FFT {
         Complex ZERO = new Complex(0, 0);
 
         Complex[] a = new Complex[2*x.length];
-        for (int i = 0;        i <   x.length; i++) a[i] = x[i];
+        System.arraycopy(x, 0, a, 0, x.length);
         for (int i = x.length; i < 2*x.length; i++) a[i] = ZERO;
 
         Complex[] b = new Complex[2*y.length];
-        for (int i = 0;        i <   y.length; i++) b[i] = y[i];
+        System.arraycopy(y, 0, b, 0, y.length);
         for (int i = y.length; i < 2*y.length; i++) b[i] = ZERO;
 
         return cconvolve(a, b);
@@ -163,14 +163,45 @@ public class FFT {
      *
      *********************************************************************/
 
+    public static List<Double> frameN(List<Double> list){
+        int n = list.size();
+        int k = 0; // Длина n в битах
+        while ((1 << k) < n) k++;
+        List<Integer> rev = new ArrayList<>();
+        int h = -1;
+        for(int i = 1; i < n; i++){
+            System.out.println((i & (i-1)));
+            if((i & (i-1)) == 0) h++;
+
+        }
+
+        return new ArrayList<>();
+    }
+
     public static void main(String[] args) {
-        int N = Integer.parseInt(args[0]);
+//        int N = Integer.parseInt(args[0]);
+        List<Double> list = new ArrayList<>();
+        list.add(1.02);
+        list.add(2.53);
+        list.add(3.69);
+        list.add(4.41);
+        list.add(5.22);
+        list.add(4.50);
+        int listSize = list.size();
+        int N = 8;//frameN(listSize);
         Complex[] x = new Complex[N];
 
         // original data
         for (int i = 0; i < N; i++) {
-            x[i] = new Complex(i, 0);
-            x[i] = new Complex(-2*Math.random() + 1, 0);
+//            x[i] = new Complex(i, 0);
+//            x[i] = new Complex(-2*Math.random() + 1, 0);
+            if(listSize >= i+1) {
+                x[i] = new Complex(list.get(i), 0);
+            }
+            else {
+                x[i] = new Complex(0,0);
+            }
+
         }
         show(x, "x");
 
