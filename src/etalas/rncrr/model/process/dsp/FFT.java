@@ -1,4 +1,4 @@
-package etalas.rncrr.model.process;
+package etalas.rncrr.model.process.dsp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,34 +8,32 @@ import java.util.List;
  */
 public class FFT {
 
-    // compute the FFT of x[], assuming its length is a power of 2
-    public static Complex[] fft(Complex[] x) {
-        int N = x.length;
+    // Прореживание по времени
+    public static Complex[] fft(Complex[] frame) {
+        if (frame.length == 1) return new Complex[] { frame[0] };
+        int halfSize = frame.length >> 1;
+        int frameSize = frame.length;
 
-        // base case
-        if (N == 1) return new Complex[] { x[0] };
+        if (frameSize % 2 != 0) { throw new RuntimeException("N is not a power of 2"); }
 
-        // radix 2 Cooley-Tukey FFT
-        if (N % 2 != 0) { throw new RuntimeException("N is not a power of 2"); }
-
-        // fft of even terms
-        Complex[] even = new Complex[N/2];
-        for (int k = 0; k < N/2; k++) {
-            even[k] = x[2*k];
+        Complex[] even = new Complex[halfSize];
+        for (int k = 0; k < halfSize; k++) {
+            even[k] = frame[2*k];
         }
         Complex[] q = fft(even);
 
-        // fft of odd terms
-        for (int k = 0; k < N/2; k++) even[k] = x[2 * k + 1];
+
+        for (int k = 0; k < halfSize; k++)
+            even[k] = frame[2 * k + 1];
         Complex[] r = fft(even);
 
         // combine
-        Complex[] y = new Complex[N];
-        for (int k = 0; k < N/2; k++) {
-            double kth = -2 * k * Math.PI / N;
+        Complex[] y = new Complex[frameSize];
+        for (int k = 0; k < halfSize; k++) {
+            double kth = -2 * k * Math.PI / frameSize;
             Complex wk = new Complex(Math.cos(kth), Math.sin(kth));
-            y[k]       = q[k].plus(wk.times(r[k]));
-            y[k + N/2] = q[k].minus(wk.times(r[k]));
+            y[k] = q[k].plus(wk.times(r[k]));
+            y[k + halfSize] = q[k].minus(wk.times(r[k]));
         }
         return y;
     }
@@ -111,8 +109,8 @@ public class FFT {
     public static void show(Complex[] x, String title) {
         System.out.println(title);
         System.out.println("-------------------");
-        for (int i = 0; i < x.length; i++) {
-            System.out.println(x[i]);
+        for (Complex aX : x) {
+            System.out.println(aX);
         }
         System.out.println();
     }
@@ -180,6 +178,7 @@ public class FFT {
 
     public static void main(String[] args) {
 //        int N = Integer.parseInt(args[0]);
+
         List<Double> list = new ArrayList<>();
         list.add(1.02);
         list.add(2.53);
@@ -187,39 +186,50 @@ public class FFT {
         list.add(4.41);
         list.add(5.22);
         list.add(4.50);
+        list.add(7.53);
+        list.add(1.90);
         int listSize = list.size();
-        int N = 8;//frameN(listSize);
-        Complex[] x = new Complex[N];
+
+        long startTime = System.nanoTime();
+//        int N = list.size();
+//        int N = 32768;
+//        int N = (int) Math.pow(2, );
+
+        Complex[] x = new Complex[listSize];
 
         // original data
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i < listSize; i++) {
 //            x[i] = new Complex(i, 0);
 //            x[i] = new Complex(-2*Math.random() + 1, 0);
-            if(listSize >= i+1) {
-                x[i] = new Complex(list.get(i), 0);
-            }
-            else {
-                x[i] = new Complex(0,0);
-            }
+//            if(listSize >= i+1) {
+//                x[i] = new Complex(list.get(i), 0);
+//            }
+//            else {
+//                x[i] = new Complex(0,0);
+//            }
+//            x[i] = new Complex(list.get(i), 0);
+            x[i] = new Complex(list.get(i), 0);
 
         }
-        show(x, "x");
+//        show(x, "x");
 
         // FFT of original data
         Complex[] y = fft(x);
-        show(y, "y = fft(x)");
-
-        // take inverse FFT
+//        show(y, "y = fft(x)");
+        long timeSpent = System.nanoTime() - startTime;
+        System.out.println(timeSpent);
+//
+//        // take inverse FFT
         Complex[] z = ifft(y);
         show(z, "z = ifft(y)");
-
-        // circular convolution of x with itself
-        Complex[] c = cconvolve(x, x);
-        show(c, "c = cconvolve(x, x)");
-
-        // linear convolution of x with itself
-        Complex[] d = convolve(x, x);
-        show(d, "d = convolve(x, x)");
+//
+//        // circular convolution of x with itself
+//        Complex[] c = cconvolve(x, x);
+//        show(c, "c = cconvolve(x, x)");
+//
+//        // linear convolution of x with itself
+//        Complex[] d = convolve(x, x);
+//        show(d, "d = convolve(x, x)");
     }
 
 }

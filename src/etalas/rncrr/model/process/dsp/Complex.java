@@ -1,4 +1,4 @@
-package etalas.rncrr.model.process;
+package etalas.rncrr.model.process.dsp;
 
 /**
  * Created by Sidh on 05.03.2015.
