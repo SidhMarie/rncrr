@@ -1,8 +1,5 @@
 package etalas.rncrr.model.process.dsp;
 
-/**
- * Created by Sidh on 05.03.2015.
- */
 public class Complex {
 
     private final double re;   // the real part

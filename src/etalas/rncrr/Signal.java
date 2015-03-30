@@ -1,6 +1,6 @@
 package etalas.rncrr;
 
-import etalas.rncrr.model.process.Config;
+import etalas.rncrr.model.utils.Config;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

@@ -22,7 +22,7 @@ public class Series {
     private double cDepth;
     private double cFactor;
     private List<Points> points;
-    private List<SubSeries> subSeries;
+    private List<DigitalSeries> subSeries;
 
     public Series() {
         points = new ArrayList<>();
@@ -165,11 +165,11 @@ public class Series {
         this.points.add(points);
     }
 
-    public List<SubSeries> getSubSeries() {
+    public List<DigitalSeries> getSubSeries() {
         return subSeries;
     }
 
-    public void addSubSeries(SubSeries subSeries) {
+    public void addSubSeries(DigitalSeries subSeries) {
         this.subSeries.add(subSeries);
     }
 }

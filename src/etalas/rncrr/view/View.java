@@ -2,7 +2,7 @@ package etalas.rncrr.view;
 
 import etalas.rncrr.appres.EMeasureType;
 import etalas.rncrr.model.bean.Series;
-import etalas.rncrr.model.process.Config;
+import etalas.rncrr.model.utils.Config;
 import etalas.rncrr.view.api.IDataChart;
 import etalas.rncrr.view.api.IDataTable;
 import javafx.event.ActionEvent;
@@ -47,6 +47,10 @@ public class View {
         }
     }
 
+    public void doTransform(ActionEvent actionEvent) {
+
+    }
+
     public void closeApplication(ActionEvent actionEvent) {
         System.exit(0);
     }
@@ -78,13 +82,13 @@ public class View {
 
         rowValue_0.setText(series.getScanId());
         rowValue_1.setText(series.getMachineName());
-        rowValue_2.setText(series.getBeamType() + " " + series.getBeamEnergy());
+        rowValue_2.setText(new StringBuilder().append(series.getBeamType()).append(" ").append(series.getBeamEnergy()).toString());
         rowValue_3.setText(Integer.toString(series.getPoints().size()));
-        rowValue_4.setText(Integer.toString(series.getSsd()) + " mm");
+        rowValue_4.setText(new StringBuilder().append(series.getSsd()).append(" ").append("mm").toString());
         rowValue_5.setText(series.getFieldSize());
         rowValue_6.setText(series.getAxis());
-        rowValue_7.setText(Integer.toString(series.getDepth()) + " mm");
-        rowValue_8.setText(Integer.toString(series.getStep()) + " mm");
+        rowValue_7.setText(new StringBuilder().append(series.getDepth()).append(" ").append("mm").toString());
+        rowValue_7.setText(new StringBuilder().append(series.getStep()).append(" ").append("mm").toString());
         rowValue_9.setText(series.getDate());
     }
 

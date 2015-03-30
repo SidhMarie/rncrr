@@ -6,12 +6,12 @@ import java.util.List;
 /**
  * Created by Sidh on 20.02.2015.
  */
-public class SubSeries {
+public class DigitalSeries {
 
     private String subId;
     private List<Points> points;
 
-    public SubSeries() {
+    public DigitalSeries() {
         this.points = new ArrayList<>();
     }
 

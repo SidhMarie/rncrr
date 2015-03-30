@@ -3,7 +3,7 @@ package etalas.rncrr.view;
 
 import etalas.rncrr.model.bean.Points;
 import etalas.rncrr.model.bean.Series;
-import etalas.rncrr.model.process.Config;
+import etalas.rncrr.model.utils.Config;
 import etalas.rncrr.view.api.IDataChart;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

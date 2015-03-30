@@ -42,7 +42,7 @@
                        <Button mnemonicParsing="false" onAction="#openFileData" style="-fx-graphic: url('file:resources/img/toolBarButOpen.png');" text="" />
                        <Button mnemonicParsing="false" onAction="#deleteRows" style="-fx-graphic: url('file:resources/img/toolBarButDelRow.png');" text="" />
                        <Separator />
-                       <Button mnemonicParsing="false" style="-fx-graphic: url('file:resources/img/toolBarButFFT.png');" text="" />
+                       <Button mnemonicParsing="false" onAction="#doTransform" style="-fx-graphic: url('file:resources/img/toolBarButFFT.png');" text="" />
                    </items>
                </ToolBar>
            </children>

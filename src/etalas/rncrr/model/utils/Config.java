@@ -1,4 +1,4 @@
-package etalas.rncrr.model.process;
+package etalas.rncrr.model.utils;
 
 import java.io.FileInputStream;
 import java.io.IOException;

@@ -10,7 +10,7 @@ import java.util.Scanner;
 /**
  * Created by Sidh on 28.02.2015.
  */
-public class AbstractFileReader {
+public abstract class AbstractFileReader {
 
     protected ObservableList<Series> seriesList;
 
@@ -41,10 +41,12 @@ public class AbstractFileReader {
         return seriesList;
     }
 
-    protected void readLine(String line)
-    {}
+    protected String getValue(String line, String key){
+        return line.substring(line.indexOf(key) + key.length()).trim();
+    }
 
-    protected void fill( String line)
-    {}
+    abstract protected void readLine(String line);
+
+    abstract protected void fill( String line);
 
 }

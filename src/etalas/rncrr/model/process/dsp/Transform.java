@@ -1,14 +1,12 @@
 package etalas.rncrr.model.process.dsp;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Sidh on 24.03.2015.
  */
 public class Transform {
 
-    public static final double DoublePi = 2*Math.PI;
+    private static final double DoublePi = 2*Math.PI;
 
     // прорежиание по времени
     public static Complex[] directTransform(Complex[] frame) {
@@ -56,45 +54,4 @@ public class Transform {
         return source;
     }
 
-    public static void show(Complex[] x, String title) {
-        System.out.println(title);
-        System.out.println("-------------------");
-        for (Complex aX : x) {
-            System.out.println(aX);
-        }
-        System.out.println();
-    }
-
-    public static void main(String[] args) {
-        List<Double> list = new ArrayList<>();
-        list.add(1.02);
-        list.add(2.53);
-        list.add(3.69);
-        list.add(4.41);
-        list.add(5.22);
-        list.add(4.50);
-        list.add(7.53);
-        list.add(1.90);
-
-        long startTime = System.nanoTime();
-//        long startTime = System.currentTimeMillis();
-
-        int N = list.size();
-//        int N = 4096;
-        Complex[] frame = new Complex[N];
-        for (int i = 0; i < N; i++) {
-            frame[i] = new Complex(list.get(i), 0);
-//            frame[i] = new Complex(-2*Math.random() + 1, 0);
-        }
-//        show(frame, "frame");
-        Complex[] x = directTransform(frame);
-//        show(x, "x");
-
-        Complex[] y = inverseTransform(x);
-//        show(y, "y");
-
-        long timeSpent = System.nanoTime() - startTime;
-//        long timeSpent = System.currentTimeMillis() - startTime;
-        System.out.println(timeSpent);
-    }
 }
