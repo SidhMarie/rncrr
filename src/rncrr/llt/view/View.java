@@ -1,5 +1,7 @@
 package rncrr.llt.view;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import rncrr.llt.model.bean.eobject.EMeasureType;
 import rncrr.llt.model.bean.SSeries;
 import rncrr.llt.model.utils.Config;
@@ -16,6 +18,8 @@ import java.util.Objects;
 
 public class View {
 
+    private static final Logger log = LogManager.getLogger(View.class);
+
     private IDataTable dataTable;
     private IDataChart dataChart;
 
@@ -24,6 +28,11 @@ public class View {
         dataChart = new VDataChart();
     }
 
+    /**
+     * Метод открывает на чтение файл с данными
+     * Инициализирует область графика
+     * Очищает таблицу подробного представления данных
+     */
     public void openFileData(ActionEvent actionEvent) {
         dataTable.viewDataTable(seriesTableView, columnLabel_1, columnLabel_2, columnLabel_3);
         dataChart.initChart(profileChart);
