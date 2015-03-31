@@ -20,7 +20,7 @@ public class VDataChart implements IDataChart {
     private LineChart.Series<Double, Double> seriesChart;
 
     @Override
-    public void initChart(LineChart<Double, Double> profileChart){
+    public void initChart(LineChart<Double, Double> profileChart) {
         profileChart.setTitle(Config.getStringProperty("line.chart.name"));
         lineChart = FXCollections.observableArrayList();
         seriesChart = new LineChart.Series<>();

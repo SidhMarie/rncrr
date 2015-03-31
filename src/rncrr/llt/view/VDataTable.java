@@ -12,6 +12,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
+import rncrr.llt.view.utils.VUtil;
 
 import java.io.File;
 
@@ -45,6 +46,7 @@ public class VDataTable implements IDataTable{
                 columnLabel_3.setCellValueFactory(new PropertyValueFactory<>("beamEnergy"));
                 seriesTableView.setItems(seriesList);
             } catch (Exception e) {
+                VUtil.alertException("An error occurred while reading the file", e);
                 log.error("There was an error in the method VDataTable.viewDataTable", e);
             }
         }

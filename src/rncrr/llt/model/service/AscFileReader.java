@@ -1,7 +1,7 @@
 package rncrr.llt.model.service;
 
-import rncrr.llt.model.bean.eobject.EAsc;
-import rncrr.llt.model.bean.eobject.EMeasureType;
+import rncrr.llt.model.utils.eobject.EAsc;
+import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.bean.SSeries;
 import rncrr.llt.model.service.api.AbstractFileReader;

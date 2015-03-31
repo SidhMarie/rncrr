@@ -2,7 +2,7 @@ package rncrr.llt.view;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import rncrr.llt.model.bean.eobject.EMeasureType;
+import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.SSeries;
 import rncrr.llt.model.utils.Config;
 import rncrr.llt.view.api.IDataChart;
