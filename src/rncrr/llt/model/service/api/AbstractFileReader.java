@@ -1,7 +1,10 @@
 package rncrr.llt.model.service.api;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import rncrr.llt.model.bean.SSeries;
 import javafx.collections.ObservableList;
+import rncrr.llt.view.utils.VUtil;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -12,6 +15,8 @@ import java.util.Scanner;
  */
 public abstract class AbstractFileReader {
 
+    private static final Logger log = LogManager.getLogger(AbstractFileReader.class);
+
     protected ObservableList<SSeries> seriesList;
 
     public void setSeriesList(ObservableList<SSeries> seriesList) {
@@ -19,12 +24,14 @@ public abstract class AbstractFileReader {
     }
 
     public ObservableList<SSeries> read(String path) {
+        log.trace("Entering into method AbstractFileReader.read");
         if (!path.trim().isEmpty()) {
             try {
                 InputStream stream = new FileInputStream(path);
                 parse(stream);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("There was an error in the method AbstractFileReader.read", e);
+                VUtil.alertException("An error occurred while reading the file", e);
             }
         }
         return seriesList;

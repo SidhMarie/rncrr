@@ -10,10 +10,10 @@ import javafx.scene.control.TableView;
  */
 public interface IDataTable {
 
-    public void viewDataTable(TableView<SSeries> seriesTableView,
-                              TableColumn<SSeries, String> columnLabel_1,
-                              TableColumn<SSeries, String> columnLabel_2,
-                              TableColumn<SSeries, String> columnLabel_3);
+    public ObservableList<SSeries> viewDataTable(TableView<SSeries> seriesTableView,
+                                                 TableColumn<SSeries, String> columnLabel_1,
+                                                 TableColumn<SSeries, String> columnLabel_2,
+                                                 TableColumn<SSeries, String> columnLabel_3);
 
     public void deleteRows(ObservableList<SSeries> selectedList);
 

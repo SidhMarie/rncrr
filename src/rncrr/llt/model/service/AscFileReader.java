@@ -27,7 +27,7 @@ public class AscFileReader extends AbstractFileReader {
 
     @Override
     protected void readLine(String line) {
-        if(!line.trim().isEmpty()){
+        if(!line.trim().isEmpty()) {
             if(line.equals(EAsc.BLOCK_START.getName())){
                 flag = 1;
             } else if(line.equals(EAsc.BLOCK_END.getName())){

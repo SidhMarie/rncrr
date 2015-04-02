@@ -1,6 +1,5 @@
 package rncrr.llt.view;
 
-import javafx.scene.control.Alert;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rncrr.llt.model.bean.SSeries;
@@ -29,38 +28,57 @@ public class VDataTable implements IDataTable{
     }
 
     @Override
-    public void viewDataTable(TableView<SSeries> seriesTableView,
-                              TableColumn<SSeries, String> columnLabel_1,
-                              TableColumn<SSeries, String> columnLabel_2,
-                              TableColumn<SSeries, String> columnLabel_3)
+    public ObservableList<SSeries> viewDataTable(TableView<SSeries> seriesTableView,
+                                                 TableColumn<SSeries, String> columnLabel_1,
+                                                 TableColumn<SSeries, String> columnLabel_2,
+                                                 TableColumn<SSeries, String> columnLabel_3)
     {
-        log.debug("Entering into method VDataTable.viewDataTable");
+        log.trace("Entering into method");
         FileChooser fileChooser = new FileChooser();
         File file = fileChooser.showOpenDialog(null);
         if(file != null) {
-            log.info(new StringBuilder("Beginning to read file ").append(file).toString());
-            try {
-                readFile(file);
-                columnLabel_1.setCellValueFactory(new PropertyValueFactory<>("type"));
-                columnLabel_2.setCellValueFactory(new PropertyValueFactory<>("machineName"));
-                columnLabel_3.setCellValueFactory(new PropertyValueFactory<>("beamEnergy"));
-                seriesTableView.setItems(seriesList);
-            } catch (Exception e) {
-                VUtil.alertException("An error occurred while reading the file", e);
-                log.error("There was an error in the method VDataTable.viewDataTable", e);
-            }
+            readFile(file);
+            setColumnLabel(seriesTableView, columnLabel_1, columnLabel_2, columnLabel_3);
         }
-        log.debug("Exit from method VDataTable.viewDataTable");
+        return seriesList;
     }
 
     @Override
     public void deleteRows(ObservableList<SSeries> selectedList) {
-        this.seriesList.removeAll(selectedList);
+        log.trace("Entering into method");
+        try{
+            this.seriesList.removeAll(selectedList);
+        } catch (Exception e){
+            log.error("There was an error in the method VDataTable.deleteRows", e);
+            VUtil.alertException("An error occurred while delete rows", e);
+        }
     }
 
     private ObservableList<SSeries> readFile(File file){
-        AscFileReader fr = new AscFileReader();
-        fr.setSeriesList(seriesList);
-        return fr.read(file.getPath());
+        try{
+            AscFileReader fr = new AscFileReader();
+            fr.setSeriesList(seriesList);
+            return fr.read(file.getPath());
+        } catch (Exception e) {
+            log.error("There was an error in the method VDataTable.viewDataTable", e);
+            VUtil.alertException("An error occurred while reading the file", e);
+        }
+        return null;
+    }
+
+    private void setColumnLabel(TableView<SSeries> seriesTableView,
+                                TableColumn<SSeries, String> columnLabel_1,
+                                TableColumn<SSeries, String> columnLabel_2,
+                                TableColumn<SSeries, String> columnLabel_3)
+    {
+        try{
+            columnLabel_1.setCellValueFactory(new PropertyValueFactory<>("type"));
+            columnLabel_2.setCellValueFactory(new PropertyValueFactory<>("machineName"));
+            columnLabel_3.setCellValueFactory(new PropertyValueFactory<>("beamEnergy"));
+            seriesTableView.setItems(seriesList);
+        } catch (Exception e) {
+            log.error("There was an error in the method VDataTable.viewDataTable", e);
+            VUtil.alertException("An error occurred while set columns value", e);
+        }
     }
 }

@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
  */
 public class DspUtil {
 
-    public static int[] degree2 = {2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,
+    public static int[] rate2 = {2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,
             65536,131072,262144,524288,1048576,2097152,4194304,8388608,16777216,
             33554432,67108864,134217728,268435456,536870912,1073741824};
 
     public static List<Double> fillList(List<Double> inList){
         int size = inList.size();
-        for (int aDegree2 : degree2) {
+        for (int aDegree2 : rate2) {
             if (size < aDegree2) {
                 for (int k = size; k < aDegree2; k++) {
                     inList.add(0.0);
