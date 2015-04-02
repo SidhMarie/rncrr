@@ -9,30 +9,37 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import rncrr.llt.view.utils.VUtil;
 
 
 public class Signal extends Application {
 
     private static final Logger log = LogManager.getLogger(Signal.class);
 
-    private void initApplication() {
-        try {
-            Config.loadConfig("resources/profile.properties");
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     *
+     * @param primaryStage
+     * @throws IOException
+     */
     @Override
-    public void start(Stage primaryStage) throws IOException {
-        initApplication();
-        Parent root = FXMLLoader.load(getClass().getResource("appres/profile.fxml"));
-        primaryStage.setTitle(Config.getStringProperty("app.title", "Additional Calculation Profiles"));
-        Scene scene = new Scene(root, Config.getDoubleProperty("app.width", 700), Config.getDoubleProperty("app.height", 500));
-        scene.getStylesheets().add(getClass().getResource("appres/chart.css").toExternalForm());
+    public void start(Stage primaryStage) {
+        log.trace("Entering into method Signal.start");
+        try {
+            log.trace("Try loading profile.properties");
+            Config.loadConfig("resources/profile.properties");
+            log.trace("Try loading profile.fxml");
+            Parent root = FXMLLoader.load(getClass().getResource("appres/profile.fxml"));
+            primaryStage.setTitle(Config.getStringProperty("app.title", "Digital Signal Processing Laboratory"));
+            Scene scene = new Scene(root, Config.getDoubleProperty("app.width", 700), Config.getDoubleProperty("app.height", 500));
+            log.trace("Try loading chart.css");
+            scene.getStylesheets().add(getClass().getResource("appres/chart.css").toExternalForm());
 
-        primaryStage.setScene(scene);
-        primaryStage.show();
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        }catch (Exception e) {
+            log.error("An error occurred in the method Signal.start",e);
+            VUtil.alertException("An error occurred while loading the application",e);
+        }
     }
 
 

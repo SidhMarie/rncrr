@@ -49,7 +49,7 @@ public class VDataTable implements IDataTable{
         try{
             this.seriesList.removeAll(selectedList);
         } catch (Exception e){
-            log.error("There was an error in the method VDataTable.deleteRows", e);
+            log.error("An error occurred in the method VDataTable.deleteRows", e);
             VUtil.alertException("An error occurred while delete rows", e);
         }
     }
@@ -60,7 +60,7 @@ public class VDataTable implements IDataTable{
             fr.setSeriesList(seriesList);
             return fr.read(file.getPath());
         } catch (Exception e) {
-            log.error("There was an error in the method VDataTable.viewDataTable", e);
+            log.error("An error occurred in the method VDataTable.readFile", e);
             VUtil.alertException("An error occurred while reading the file", e);
         }
         return null;
@@ -77,7 +77,7 @@ public class VDataTable implements IDataTable{
             columnLabel_3.setCellValueFactory(new PropertyValueFactory<>("beamEnergy"));
             seriesTableView.setItems(seriesList);
         } catch (Exception e) {
-            log.error("There was an error in the method VDataTable.viewDataTable", e);
+            log.error("An error occurred in the method VDataTable.setColumnLabel", e);
             VUtil.alertException("An error occurred while set columns value", e);
         }
     }

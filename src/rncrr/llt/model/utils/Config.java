@@ -1,5 +1,10 @@
 package rncrr.llt.model.utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import rncrr.llt.view.utils.VUtil;
+import sun.rmi.runtime.Log;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -7,6 +12,7 @@ import java.util.Properties;
 public class Config extends Properties {
 
     private static Properties properties;
+    private static final Logger log = LogManager.getLogger(Config.class);
 
     private static synchronized Properties createConfig() {
         if (properties == null)
@@ -29,7 +35,8 @@ public class Config extends Properties {
                 properties.load(is);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("An error occurred in the method Signal.initApplication", e);
+            VUtil.alertException("An error occurred while load config file", e);
         }
         return properties;
     }
