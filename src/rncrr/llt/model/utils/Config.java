@@ -25,19 +25,20 @@ public class Config extends Properties {
      * @param configFile - конфугурационный файл
      * @return все свойства конфига
      */
-    public static Properties loadConfig(String configFile) {
-        try {
-            FileInputStream is = new FileInputStream(configFile);
-            if (properties == null) {
-                createConfig();
-                properties.load(is);
-            } else {
-                properties.load(is);
-            }
-        } catch (IOException e) {
-            log.error("An error occurred in the method Signal.initApplication", e);
-            VUtil.alertException("An error occurred while load config file", e);
+    public static Properties loadConfig(String configFile) throws IOException {
+        log.trace("Entering into method -> Config.loadConfig");
+        log.trace("Try create new object -> FileInputStream");
+        FileInputStream is = new FileInputStream(configFile);
+        if (properties == null) {
+            log.trace("Try create new object -> Config");
+            createConfig();
+            log.trace("Try loading properties from input stream");
+            properties.load(is);
+        } else {
+            log.trace("Try loading properties from input stream");
+            properties.load(is);
         }
+        log.trace("Return object -> properties");
         return properties;
     }
 

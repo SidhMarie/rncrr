@@ -15,45 +15,71 @@ import java.util.Scanner;
  */
 public abstract class AbstractFileReader {
 
+    protected ObservableList<SSeries> seriesList;
     private static final Logger log = LogManager.getLogger(AbstractFileReader.class);
 
-    protected ObservableList<SSeries> seriesList;
-
+    /**
+     *
+     * @param seriesList
+     */
     public void setSeriesList(ObservableList<SSeries> seriesList) {
         this.seriesList = seriesList;
     }
 
-    public ObservableList<SSeries> read(String path) {
-        log.trace("Entering into method AbstractFileReader.read");
+    /**
+     *
+     * @param path
+     * @return
+     */
+    public ObservableList<SSeries> read(String path) throws Exception {
+        log.trace("Entering into method -> read");
         if (!path.trim().isEmpty()) {
-            try {
-                InputStream stream = new FileInputStream(path);
-                parse(stream);
-            } catch (Exception e) {
-                log.error("There was an error in the method AbstractFileReader.read", e);
-                VUtil.alertException("An error occurred while reading the file", e);
-            }
+            InputStream stream = new FileInputStream(path);
+            parse(stream);
         }
         return seriesList;
     }
 
-    protected ObservableList<SSeries> parse(InputStream stream) {
+    /**
+     *
+     * @param stream
+     * @return
+     */
+    protected ObservableList<SSeries> parse(InputStream stream) throws Exception {
+        log.trace("Entering into method -> parse");
         String line;
+        log.trace("Create object -> Scanner");
         Scanner scanner = new Scanner(stream);
+        log.trace("Try to read the lines in a loop and fill series");
         while(scanner.hasNext()) {
             line = scanner.nextLine();
             readLine(line);
             fill(line);
         }
+        log.trace("Return object -> seriesList");
         return seriesList;
     }
 
-    protected String getValue(String line, String key){
+    /**
+     *
+     * @param line
+     * @param key
+     * @return
+     */
+    protected String getValue(String line, String key) {
         return line.substring(line.indexOf(key) + key.length()).trim();
     }
 
+    /**
+     *
+     * @param line
+     */
     abstract protected void readLine(String line);
 
+    /**
+     *
+     * @param line
+     */
     abstract protected void fill( String line);
 
 }

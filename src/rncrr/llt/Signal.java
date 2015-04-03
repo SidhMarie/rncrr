@@ -23,20 +23,22 @@ public class Signal extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-        log.trace("Entering into method Signal.start");
+        log.trace("Entering into method -> Signal.start");
         try {
             log.trace("Try loading profile.properties");
             Config.loadConfig("resources/profile.properties");
             log.trace("Try loading profile.fxml");
             Parent root = FXMLLoader.load(getClass().getResource("appres/profile.fxml"));
+            log.trace("Set the application title");
             primaryStage.setTitle(Config.getStringProperty("app.title", "Digital Signal Processing Laboratory"));
+            log.trace("Set the size of the application window");
             Scene scene = new Scene(root, Config.getDoubleProperty("app.width", 700), Config.getDoubleProperty("app.height", 500));
             log.trace("Try loading chart.css");
             scene.getStylesheets().add(getClass().getResource("appres/chart.css").toExternalForm());
-
+            log.trace("Show application on the screen");
             primaryStage.setScene(scene);
             primaryStage.show();
-        }catch (Exception e) {
+        }catch (IOException | NullPointerException e) {
             log.error("An error occurred in the method Signal.start",e);
             VUtil.alertException("An error occurred while loading the application",e);
         }
@@ -44,6 +46,9 @@ public class Signal extends Application {
 
 
     public static void main(String[] args) {
+        log.trace("#######################################################################################");
+        log.trace("####################### create a new instance of the application ######################");
+        log.trace("#######################################################################################");
         launch(args);
     }
 }

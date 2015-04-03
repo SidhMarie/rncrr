@@ -9,10 +9,10 @@ import javafx.scene.control.TableView;
  */
 public interface IDataChart {
 
-    public void buildingChart(TableView<SSeries> seriesTableView, LineChart<Double, Double> profileChart);
+    void buildingChart(TableView<SSeries> seriesTableView, LineChart<Double, Double> profileChart);
 
-    public void clearChart(LineChart<Double, Double> profileChart);
+    void clearChart(LineChart<Double, Double> profileChart);
 
-    public void initChart(LineChart<Double, Double> profileChart);
+    void initChart(LineChart<Double, Double> profileChart);
 
 }

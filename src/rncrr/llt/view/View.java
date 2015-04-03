@@ -23,8 +23,14 @@ public class View {
     private IDataTable dataTable;
     private IDataChart dataChart;
 
+    /**
+     * Конструктор - инициализирует объекты VDataTable и VDataChart
+     */
     public View() {
+        log.trace("Entering into class -> View");
+        log.trace("Initialize the new object -> VDataTable");
         dataTable = new VDataTable();
+        log.trace("Initialize the new object -> VDataChart");
         dataChart = new VDataChart();
     }
 
@@ -34,46 +40,82 @@ public class View {
      * Очищает таблицу подробного представления данных
      */
     public void openFileData(ActionEvent actionEvent) {
-        dataTable.viewDataTable(seriesTableView, columnLabel_1, columnLabel_2, columnLabel_3);
+        log.trace("Entering into method -> View.openFileData");
+        log.trace("Try to open a data file for reading");
+        dataTable.viewDataTable(seriesTableView);
+        log.trace("Try to initialize chart");
         dataChart.initChart(profileChart);
+        log.trace("Try to clear the table details");
         clearDataGridValue();
     }
 
+    /**
+     * Метод заполняет таблицу детальной информации серии
+     * и строит график по данным серии
+     */
     public void detailRows(Event event) {
-        if(!seriesTableView.getItems().isEmpty()) {
+        log.trace("Entering into method -> View.detailRows");
+        if (!seriesTableView.getItems().isEmpty()) {
             SSeries series = seriesTableView.getSelectionModel().getSelectedItem();
+            log.trace("Try to set the values in the table details");
             setAscDataGridValue(series);
-
+            log.trace("Try to build a chart");
             dataChart.buildingChart(seriesTableView, profileChart);
         }
     }
 
+    /**
+     * Метод удаляет выбранную строку в списке серий
+     * Очищает график и таблицу детальной инормации
+     */
     public void deleteRows(ActionEvent actionEvent) {
-        if(!seriesTableView.getItems().isEmpty()){
+        log.trace("Entering into method -> View.deleteRows");
+        if (!seriesTableView.getItems().isEmpty()) {
+            log.trace("Try to remove the selected row");
             dataTable.deleteRows(seriesTableView.getSelectionModel().getSelectedItems());
+            log.trace("Try to clear the chart");
             dataChart.clearChart(profileChart);
+            log.trace("Try to clear the table details");
             clearDataGridValue();
         }
     }
 
+    /**
+     * Метод завершает выполнение приложения
+     */
     public void closeApplication(ActionEvent actionEvent) {
+        log.trace("Entering into method -> View.closeApplication");
+        log.trace("Try to close the application. System.exit");
         System.exit(0);
     }
 
-    private void setAscDataGridValue(SSeries series){
-        if(Objects.equals(series.getType(), EMeasureType.OPP.name())
-                || Objects.equals(series.getType(), EMeasureType.OPD.name()))
-        {
-            setAsc4OPPDataGridValue(series);
-        } else if(Objects.equals(series.getType(), EMeasureType.DDOE.name())
+    /**
+     * Метод устанавливает значения полей таблицы подробной информации
+     * в зависимости от типа измерений.
+     *
+     * @param series - объект типа SSeries
+     */
+    private void setAscDataGridValue(SSeries series) {
+        log.trace("Entering into method -> View.setAscDataGridValue");
+        if (Objects.equals(series.getType(), EMeasureType.OPP.name())
+                || Objects.equals(series.getType(), EMeasureType.OPD.name())) {
+            log.trace("Set the text and value for OPP/OPD types");
+            setValues4OPPDataGrid(series);
+        } else if (Objects.equals(series.getType(), EMeasureType.DDOE.name())
                 || Objects.equals(series.getType(), EMeasureType.DDAE.name())
-                || Objects.equals(series.getType(), EMeasureType.POE.name()))
-        {
-            setAsc4DDOEDataGridValue(series);
+                || Objects.equals(series.getType(), EMeasureType.POE.name())) {
+            log.trace("Set the text and value for DDOE/DDAE/POE types");
+            setValues4DDOEDataGrid(series);
         }
     }
 
-    private void setAsc4OPPDataGridValue(SSeries series){
+    /**
+     * Метод устанавливает значения полей таблицы подробной информации
+     * для типа OPP и OPD
+     *
+     * @param series - объект типа SSeries
+     */
+    private void setValues4OPPDataGrid(SSeries series) {
         rowLabel_0.setText(Config.getStringProperty("tg.row.label.scanId", "Scan ID"));
         rowLabel_1.setText(Config.getStringProperty("tg.row.label.machine", "Machine name"));
         rowLabel_2.setText(Config.getStringProperty("tg.row.label.beamType", "Beam type"));
@@ -97,7 +139,13 @@ public class View {
         rowValue_9.setText(series.getDate());
     }
 
-    private void setAsc4DDOEDataGridValue(SSeries series){
+    /**
+     * Метод устанавливает значения полей таблицы подробной информации
+     * для типа DDOE, DDAE и POE
+     *
+     * @param series - объект типа SSeries
+     */
+    private void setValues4DDOEDataGrid(SSeries series) {
         rowLabel_0.setText(Config.getStringProperty("tg.row.label.scanId", "Scan ID"));
         rowLabel_1.setText(Config.getStringProperty("tg.row.label.machine", "Machine name"));
         rowLabel_2.setText(Config.getStringProperty("tg.row.label.beamType", "Beam type"));
@@ -122,7 +170,10 @@ public class View {
         rowValue_9.setText(series.getDate());
     }
 
-    private void clearDataGridValue(){
+    /**
+     * Метод очищает поля таблицы подробной информации
+     */
+    private void clearDataGridValue() {
         rowLabel_0.setText("");
         rowLabel_1.setText("");
         rowLabel_2.setText("");
@@ -148,11 +199,7 @@ public class View {
     @FXML
     private TableView<SSeries> seriesTableView;
     @FXML
-    private TableColumn<SSeries, String> columnLabel_1;
-    @FXML
-    private TableColumn<SSeries, String> columnLabel_2;
-    @FXML
-    private TableColumn<SSeries, String> columnLabel_3;
+    private LineChart<Double, Double> profileChart;
     @FXML
     private Label rowLabel_0;
     @FXML
@@ -193,7 +240,5 @@ public class View {
     private Label rowValue_8;
     @FXML
     private Label rowValue_9;
-    @FXML
-    private LineChart<Double, Double> profileChart;
 
 }

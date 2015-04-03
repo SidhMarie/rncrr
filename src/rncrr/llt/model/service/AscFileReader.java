@@ -1,5 +1,7 @@
 package rncrr.llt.model.service;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import rncrr.llt.model.utils.eobject.EAsc;
 import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.Points;
@@ -15,16 +17,25 @@ import java.util.Objects;
 public class AscFileReader extends AbstractFileReader {
 
     private int flag;
-    private int bIndex;
-    private int eIndex;
-    private String str;
     private SSeries series;
+    private String serviceString;
+    private static final Logger log = LogManager.getLogger(AscFileReader.class);
 
+    /**
+     *
+     */
     public AscFileReader() {
+        log.trace("Entering into class -> AscFileReader");
+        log.trace("Initialize the variable -> flag = 0");
         this.flag = 0;
+        log.trace("Initialize the new object -> SSeries");
         this.series = new SSeries();
     }
 
+    /**
+     *
+     * @param line
+     */
     @Override
     protected void readLine(String line) {
         if(!line.trim().isEmpty()) {
@@ -38,6 +49,10 @@ public class AscFileReader extends AbstractFileReader {
         }
     }
 
+    /**
+     *
+     * @param line
+     */
     @Override
     protected void fill(String line) {
         switch (flag) {
@@ -51,6 +66,11 @@ public class AscFileReader extends AbstractFileReader {
         }
     }
 
+    /**
+     *
+     * @param series
+     * @param line
+     */
     public void fillSeries(SSeries series, String line) {
         for(EAsc value : EAsc.values()) {
             if(line.contains(value.getName())) {
@@ -114,26 +134,35 @@ public class AscFileReader extends AbstractFileReader {
         }
     }
 
+    /**
+     *
+     * @param series
+     * @param line
+     */
     private void addPointsData(SSeries series, String line) {
-        bIndex = line.indexOf(EAsc.POINT_START.getName()) + 1;
-        eIndex = line.indexOf(EAsc.POINT_END.getName());
-        str = line.substring(bIndex, eIndex);
+        serviceString = line.substring(2, 29);  // стандартная строка, всегда одного размера <-000.0 -000.0 +000.0 +000.0>
         if(Objects.equals(series.getType(), EMeasureType.DDOE.name())
                 || Objects.equals(series.getType(), EMeasureType.DDAE.name())
                 || Objects.equals(series.getType(), EMeasureType.OPD.name()) )
         {
             fillPoint(series,
-                    Double.parseDouble(str.substring(15,21)),
-                    Double.parseDouble(str.substring(22)));
+                    Double.parseDouble(serviceString.substring(15,21)),
+                    Double.parseDouble(serviceString.substring(22)));
         } else if(Objects.equals(series.getType(), EMeasureType.POE.name())
                 || Objects.equals(series.getType(), EMeasureType.OPP.name()) )
         {
             fillPoint(series,
-                    Double.parseDouble(str.substring(0,6)),
-                    Double.parseDouble(str.substring(22)));
+                    Double.parseDouble(serviceString.substring(0,6)),
+                    Double.parseDouble(serviceString.substring(22)));
         }
     }
 
+    /**
+     *
+     * @param series
+     * @param x
+     * @param y
+     */
     private void fillPoint(SSeries series, double x, double y){
         series.addPoints(new Points(x,y));
     }

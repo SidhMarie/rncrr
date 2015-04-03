@@ -29,7 +29,7 @@ public enum EAsc {
 
     private String name;
 
-    private EAsc(String name){
+    EAsc(String name){
         this.name = name;
     }
 

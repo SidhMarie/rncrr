@@ -13,7 +13,7 @@ public enum EMeasureType {
 
     private String name;
 
-    private EMeasureType(String name) {
+    EMeasureType(String name) {
         this.name = name;
     }
 
