@@ -27,16 +27,20 @@ public class Config extends Properties {
      */
     public static Properties loadConfig(String configFile) throws IOException {
         log.trace("Entering into method -> Config.loadConfig");
-        log.trace("Try create new object -> FileInputStream");
-        FileInputStream is = new FileInputStream(configFile);
-        if (properties == null) {
-            log.trace("Try create new object -> Config");
-            createConfig();
-            log.trace("Try loading properties from input stream");
-            properties.load(is);
-        } else {
-            log.trace("Try loading properties from input stream");
-            properties.load(is);
+        try{
+            log.trace("Try create new object -> FileInputStream");
+            FileInputStream is = new FileInputStream(configFile);
+            if (properties == null) {
+                log.trace("Try create new object -> Config");
+                createConfig();
+                log.trace("Try loading properties from input stream");
+                properties.load(is);
+            } else {
+                log.trace("Try loading properties from input stream");
+                properties.load(is);
+            }
+        } catch (IOException ioe){
+            throw new IOException(ioe);
         }
         log.trace("Return object -> properties");
         return properties;
@@ -59,7 +63,7 @@ public class Config extends Properties {
      * @return value - значенипо ключу
      */
     public static String getStringProperty(String key) {
-        return properties.getProperty(key);
+        return getStringProperty(key,"");
     }
 
     /**
