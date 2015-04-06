@@ -12,6 +12,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
+import rncrr.llt.view.utils.VUtil;
 
 import java.util.Objects;
 
@@ -41,12 +42,17 @@ public class View {
      */
     public void openFileData(ActionEvent actionEvent) {
         log.trace("Entering into method -> View.openFileData");
-        log.trace("Try to open a data file for reading");
-        dataTable.viewDataTable(seriesTableView);
-        log.trace("Try to initialize chart");
-        dataChart.initChart(profileChart);
-        log.trace("Try to clear the table details");
-        clearDataGridValue();
+        try{
+            log.trace("Try to open a data file for reading");
+            dataTable.viewDataTable(seriesTableView);
+            log.trace("Try to initialize chart");
+            dataChart.initChart(profileChart);
+            log.trace("Try to clear the table details");
+            clearDataGridValue();
+        } catch (Exception e) {
+            log.error("An error occurred in the method View.openFileData", e);
+            VUtil.alertException("An error occurred while trying to open and read the file", e);
+        }
     }
 
     /**
@@ -70,13 +76,18 @@ public class View {
      */
     public void deleteRows(ActionEvent actionEvent) {
         log.trace("Entering into method -> View.deleteRows");
-        if (!seriesTableView.getItems().isEmpty()) {
-            log.trace("Try to remove the selected row");
-            dataTable.deleteRows(seriesTableView.getSelectionModel().getSelectedItems());
-            log.trace("Try to clear the chart");
-            dataChart.clearChart(profileChart);
-            log.trace("Try to clear the table details");
-            clearDataGridValue();
+        try{
+            if (!seriesTableView.getItems().isEmpty()) {
+                log.trace("Try to remove the selected row");
+                dataTable.deleteRows(seriesTableView.getSelectionModel().getSelectedItems());
+                log.trace("Try to clear the chart");
+                dataChart.clearChart(profileChart);
+                log.trace("Try to clear the table details");
+                clearDataGridValue();
+            }
+        } catch (Exception e){
+            log.error("An error occurred in the method View.deleteRows", e);
+            VUtil.alertException("An error occurred while deleting a row", e);
         }
     }
 

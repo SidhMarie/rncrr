@@ -2,6 +2,9 @@ package rncrr.llt.model.utils;
 
 import rncrr.llt.model.bean.Points;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,17 +17,18 @@ public class DspUtil {
             65536,131072,262144,524288,1048576,2097152,4194304,8388608,16777216,
             33554432,67108864,134217728,268435456,536870912,1073741824};
 
-    public static List<Double> fillList(List<Double> inList){
-        int size = inList.size();
-        for (int aDegree2 : rate2) {
-            if (size < aDegree2) {
-                for (int k = size; k < aDegree2; k++) {
-                    inList.add(0.0);
+    public static List<Double> fillList(List<Double> list){
+        int size = list.size();
+        for (int d2 : rate2) {
+            if (size < d2) {
+                while (size < d2) {
+                    list.add(0.0);
+                    size++;
                 }
-                return inList;
+                return list;
             }
         }
-        return inList;
+        return list;
     }
 
 
@@ -36,4 +40,23 @@ public class DspUtil {
         return pointsList.stream().map(Points::getY).collect(Collectors.toList());
     }
 
+    public static void main(String[] args) {
+        List<Double> list = new ArrayList<>(1000);
+        list.add(1.0);
+        list.add(2.0);
+        list.add(3.0);
+        list.add(4.0);
+        list.add(5.0);
+        list.add(2.0);
+        list.add(3.0);
+        list.add(4.0);
+        list.add(5.0);
+
+
+        List<Double> result = fillList(list);
+
+        for(int i = 0; i<result.size(); i++){
+            System.out.println(i + " => " +result.get(i));
+        }
+    }
 }
