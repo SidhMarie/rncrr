@@ -22,11 +22,9 @@ public class SSeries {
     private double cDepth;
     private double cFactor;
     private List<Points> points;
-    private List<DSeries> dSeries;
 
     public SSeries() {
         points = new ArrayList<>();
-        dSeries = new ArrayList<>();
     }
 
     public String getScanId() {
@@ -165,11 +163,4 @@ public class SSeries {
         this.points.add(points);
     }
 
-    public List<DSeries> getSubSeries() {
-        return dSeries;
-    }
-
-    public void addSubSeries(DSeries dSeries) {
-        this.dSeries.add(dSeries);
-    }
 }

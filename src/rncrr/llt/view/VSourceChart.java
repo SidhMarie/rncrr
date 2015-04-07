@@ -1,10 +1,13 @@
 package rncrr.llt.view;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.bean.SSeries;
 import rncrr.llt.model.utils.Config;
-import rncrr.llt.view.api.IDataChart;
+import rncrr.llt.view.api.AbstractLChart;
+import rncrr.llt.view.api.IChart;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.LineChart;
@@ -14,26 +17,18 @@ import javafx.scene.control.TableView;
 /**
  * Created by Sidh on 24.02.2015.
  */
-public class VDataChart implements IDataChart {
+public class VSourceChart extends AbstractLChart {
 
-    private ObservableList<XYChart.Series<Double, Double>> lineChart;
-    private LineChart.Series<Double, Double> seriesChart;
-
-    @Override
-    public void initChart(LineChart<Double, Double> profileChart) {
-        profileChart.setTitle(Config.getStringProperty("line.chart.name"));
-        lineChart = FXCollections.observableArrayList();
-        seriesChart = new LineChart.Series<>();
-        seriesChart.getData().add(new XYChart.Data<>(0.0, 0.0));
-        seriesChart.setName("Series");
-        lineChart.add(seriesChart);
-        profileChart.setData(lineChart);
-    }
+    private static final Logger log = LogManager.getLogger(VSourceChart.class);
 
     @Override
-    public void buildingChart(TableView<SSeries> seriesTableView, LineChart<Double, Double> profileChart){
+    public void buildingChart(TableView<SSeries> seriesTableView, LineChart<Double, Double> chart) {
+        log.trace("");
+        log.trace("");
         lineChart = FXCollections.observableArrayList();
+        log.trace("");
         ObservableList<SSeries> selectedSeriesList = seriesTableView.getSelectionModel().getSelectedItems();
+        log.trace("");
         for(SSeries s : selectedSeriesList) {
             seriesChart = new LineChart.Series<>();
             for (Points points : s.getPoints()) {
@@ -42,7 +37,8 @@ public class VDataChart implements IDataChart {
             seriesChart.setName("Series-" + s.getScanId());
             lineChart.add(seriesChart);
         }
-        profileChart.setData(lineChart);
+        log.trace("");
+        chart.setData(lineChart);
 
         //        for(XYChart.Series<Double, Double> s : profileChart.getData()) {
 //            for (XYChart.Data<Double, Double> data : s.getData()) {
@@ -63,11 +59,6 @@ public class VDataChart implements IDataChart {
 ////                });
 //            }
 //        }
-    }
-
-    @Override
-    public void clearChart(LineChart<Double, Double> profileChart){
-        profileChart.setData(FXCollections.observableArrayList());
     }
 
 }

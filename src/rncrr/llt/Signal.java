@@ -17,16 +17,13 @@ public class Signal extends Application {
     private static final Logger log = LogManager.getLogger(Signal.class);
 
     /**
-     *
-     * @param primaryStage
-     * @throws IOException
+     * Method to start the application
+     * @param primaryStage - object Stage
      */
     @Override
     public void start(Stage primaryStage) {
         log.trace("Entering into method -> Signal.start");
         try {
-            log.trace("Try loading profile.properties");
-            Config.loadConfig("resources/profile.properties");
             log.trace("Try loading profile.fxml");
             Parent root = FXMLLoader.load(getClass().getResource("appres/profile.fxml"));
             log.trace("Set the application title");
@@ -49,6 +46,13 @@ public class Signal extends Application {
         log.trace("#######################################################################################");
         log.trace("####################### create a new instance of the application ######################");
         log.trace("#######################################################################################");
+        log.trace("Try loading profile.properties");
+        try{
+            Config.loadConfig("resources/profile.properties");
+        } catch (IOException ioe){
+            log.error("An error occurred in the method Signal.main",ioe);
+            VUtil.alertException("An error occurred while loading the application",ioe);
+        }
         launch(args);
     }
 }

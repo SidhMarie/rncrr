@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.SSeries;
 import rncrr.llt.model.utils.Config;
-import rncrr.llt.view.api.IDataChart;
+import rncrr.llt.view.api.IChart;
 import rncrr.llt.view.api.IDataTable;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -22,33 +22,33 @@ public class View {
     private static final Logger log = LogManager.getLogger(View.class);
 
     private IDataTable dataTable;
-    private IDataChart dataChart;
+    private IChart sourceChart;
+    private IChart transformChart;
 
     /**
-     * Конструктор - инициализирует объекты VDataTable и VDataChart
+     * Constructor - initialize objects VDataTable и VDataChart
      */
     public View() {
         log.trace("Entering into class -> View");
         log.trace("Initialize the new object -> VDataTable");
         dataTable = new VDataTable();
-        log.trace("Initialize the new object -> VDataChart");
-        dataChart = new VDataChart();
+        log.trace("Initialize the new object -> VSourceChart");
+        sourceChart = new VSourceChart();
+        log.trace("Initialize the new object -> VTransformChart");
+        transformChart = new VTransformChart();
     }
 
     /**
-     * Метод открывает на чтение файл с данными
-     * Инициализирует область графика
-     * Очищает таблицу подробного представления данных
+     * The method opens for reading a data file
+     * Initializes the graphics
      */
     public void openFileData(ActionEvent actionEvent) {
         log.trace("Entering into method -> View.openFileData");
         try{
             log.trace("Try to open a data file for reading");
-            dataTable.viewDataTable(seriesTableView);
+            dataTable.viewDataTable(seriesTableView, columnLabel_1, columnLabel_2, columnLabel_3);
             log.trace("Try to initialize chart");
-            dataChart.initChart(profileChart);
-            log.trace("Try to clear the table details");
-            clearDataGridValue();
+            sourceChart.initChart(profileChart);
         } catch (Exception e) {
             log.error("An error occurred in the method View.openFileData", e);
             VUtil.alertException("An error occurred while trying to open and read the file", e);
@@ -56,23 +56,27 @@ public class View {
     }
 
     /**
-     * Метод заполняет таблицу детальной информации серии
-     * и строит график по данным серии
+     * Method fills in the table details the series and plotted according to series
      */
-    public void detailRows(Event event) {
-        log.trace("Entering into method -> View.detailRows");
-        if (!seriesTableView.getItems().isEmpty()) {
-            SSeries series = seriesTableView.getSelectionModel().getSelectedItem();
-            log.trace("Try to set the values in the table details");
-            setAscDataGridValue(series);
-            log.trace("Try to build a chart");
-            dataChart.buildingChart(seriesTableView, profileChart);
+    public void detailSelectedRow(Event event) {
+        log.trace("Entering into method -> View.detailSelectedRow");
+        try{
+            if (!seriesTableView.getItems().isEmpty()) {
+                SSeries series = seriesTableView.getSelectionModel().getSelectedItem();
+                log.trace("Try to set the values in the table details");
+                setAscDataGridValue(series);
+                log.trace("Try to build profile signal chart");
+                sourceChart.buildingChart(seriesTableView, profileChart);
+            }
+        } catch (Exception e) {
+            log.error("An error occurred in the method View.detailSelectedRow",e);
+            VUtil.alertException("An error occurred while trying to view detail data and building chart",e);
         }
     }
 
     /**
-     * Метод удаляет выбранную строку в списке серий
-     * Очищает график и таблицу детальной инормации
+     * The method removes the selected row in the list of series
+     * Clears the graph and table detailed use information
      */
     public void deleteRows(ActionEvent actionEvent) {
         log.trace("Entering into method -> View.deleteRows");
@@ -81,7 +85,7 @@ public class View {
                 log.trace("Try to remove the selected row");
                 dataTable.deleteRows(seriesTableView.getSelectionModel().getSelectedItems());
                 log.trace("Try to clear the chart");
-                dataChart.clearChart(profileChart);
+                sourceChart.clearChart(profileChart);
                 log.trace("Try to clear the table details");
                 clearDataGridValue();
             }
@@ -92,7 +96,7 @@ public class View {
     }
 
     /**
-     * Метод завершает выполнение приложения
+     * Method completes the execution of the application
      */
     public void closeApplication(ActionEvent actionEvent) {
         log.trace("Entering into method -> View.closeApplication");
@@ -100,11 +104,19 @@ public class View {
         System.exit(0);
     }
 
+    public void transformData(ActionEvent actionEvent) {
+        log.trace("Entering into method -> View.transformData");
+        try {
+            log.trace("Try to build spectrum signal chart");
+            transformChart.buildingChart(seriesTableView, spectrumChart);
+        } catch (Exception e) {
+            log.error("An error occurred in the method View.transformData", e);
+            VUtil.alertException("An error occurred while transformation data", e);
+        }
+    }
     /**
-     * Метод устанавливает значения полей таблицы подробной информации
-     * в зависимости от типа измерений.
-     *
-     * @param series - объект типа SSeries
+     * The method sets the information fields of the table depending on the type of measurement.
+     * @param series - object type SSeries
      */
     private void setAscDataGridValue(SSeries series) {
         log.trace("Entering into method -> View.setAscDataGridValue");
@@ -121,10 +133,8 @@ public class View {
     }
 
     /**
-     * Метод устанавливает значения полей таблицы подробной информации
-     * для типа OPP и OPD
-     *
-     * @param series - объект типа SSeries
+     * Method sets the values of the fields of the table details for type OPP и OPD
+     * @param series - object type SSeries
      */
     private void setValues4OPPDataGrid(SSeries series) {
         rowLabel_0.setText(Config.getStringProperty("tg.row.label.scanId", "Scan ID"));
@@ -151,10 +161,8 @@ public class View {
     }
 
     /**
-     * Метод устанавливает значения полей таблицы подробной информации
-     * для типа DDOE, DDAE и POE
-     *
-     * @param series - объект типа SSeries
+     * Method sets the values of the fields of the table details for type DDOE, DDAE и POE
+     * @param series - object type SSeries
      */
     private void setValues4DDOEDataGrid(SSeries series) {
         rowLabel_0.setText(Config.getStringProperty("tg.row.label.scanId", "Scan ID"));
@@ -182,7 +190,7 @@ public class View {
     }
 
     /**
-     * Метод очищает поля таблицы подробной информации
+     * Method clears the table field detailed information
      */
     private void clearDataGridValue() {
         rowLabel_0.setText("");
@@ -211,6 +219,14 @@ public class View {
     private TableView<SSeries> seriesTableView;
     @FXML
     private LineChart<Double, Double> profileChart;
+    @FXML
+    private LineChart<Double, Double> spectrumChart;
+    @FXML
+    private TableColumn<SSeries, String> columnLabel_1;
+    @FXML
+    private TableColumn<SSeries, String> columnLabel_2;
+    @FXML
+    private TableColumn<SSeries, String> columnLabel_3;
     @FXML
     private Label rowLabel_0;
     @FXML
@@ -251,5 +267,6 @@ public class View {
     private Label rowValue_8;
     @FXML
     private Label rowValue_9;
+
 
 }

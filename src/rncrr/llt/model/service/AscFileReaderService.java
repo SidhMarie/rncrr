@@ -22,7 +22,7 @@ public class AscFileReaderService extends AbstractFileReader {
     private static final Logger log = LogManager.getLogger(AscFileReaderService.class);
 
     /**
-     *
+     * Constructor - initializes the object type SSeries
      */
     public AscFileReaderService() {
         log.trace("Entering into class -> AscFileReader");
@@ -33,8 +33,8 @@ public class AscFileReaderService extends AbstractFileReader {
     }
 
     /**
-     *
-     * @param line
+     * Method looks for the start and end of the frame data and sets the flag
+     * @param line - input line
      */
     @Override
     protected void readLine(String line) {
@@ -50,8 +50,8 @@ public class AscFileReaderService extends AbstractFileReader {
     }
 
     /**
-     *
-     * @param line
+     * Method fills the series and adds it to the collection
+     * @param line - input line
      */
     @Override
     protected void fill(String line) {
@@ -67,9 +67,9 @@ public class AscFileReaderService extends AbstractFileReader {
     }
 
     /**
-     *
-     * @param series
-     * @param line
+     * Method reads the incoming line and adds value in the series
+     * @param series - object type SSeries
+     * @param line - input line
      */
     private void fillSeries(SSeries series, String line) {
         for(EAsc value : EAsc.values()) {
@@ -135,12 +135,12 @@ public class AscFileReaderService extends AbstractFileReader {
     }
 
     /**
-     *
-     * @param series
-     * @param line
+     * Method parses a line with the data coordinates and adds them to the object type SSeries
+     * @param series - object type SSeries
+     * @param line - input line
      */
     private void addPointsData(SSeries series, String line) {
-        serviceString = line.substring(2, 29);  // стандартная строка, всегда одного размера <-000.0 -000.0 +000.0 +000.0>
+        serviceString = line.substring(1, 28);  // стандартная строка, всегда одного размера <-000.0 -000.0 +000.0 +000.0>
         if(Objects.equals(series.getType(), EMeasureType.DDOE.name())
                 || Objects.equals(series.getType(), EMeasureType.DDAE.name())
                 || Objects.equals(series.getType(), EMeasureType.OPD.name()) )
@@ -158,10 +158,10 @@ public class AscFileReaderService extends AbstractFileReader {
     }
 
     /**
-     *
-     * @param series
-     * @param x
-     * @param y
+     * Method adds an object type Points in the series.
+     * @param series - object type SSeries
+     * @param x - coordinate
+     * @param y - coordinate
      */
     private void fillPoint(SSeries series, double x, double y){
         series.addPoints(new Points(x,y));

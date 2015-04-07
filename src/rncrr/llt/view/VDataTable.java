@@ -1,5 +1,7 @@
 package rncrr.llt.view;
 
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.cell.PropertyValueFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rncrr.llt.model.bean.SSeries;
@@ -14,8 +16,8 @@ import java.io.File;
 
 /**
  * Created by Sidh on 23.02.2015.
- * Класс предназначен для чтения входящего файла
- * Работает с коллекцией серий - заполняет, удаляет выбранные элементы
+ * This class is designed for reading the input file
+ * Working with a collection of series - fills, removes the selected items
  */
 public class VDataTable implements IDataTable{
 
@@ -24,8 +26,8 @@ public class VDataTable implements IDataTable{
 
 
     /**
-     * Конструктор класса VDataTable
-     * Инициализирует новыю коллекцию серий
+     * The class constructor VDataTable
+     * Initializes a new collection of series
      */
     public VDataTable() {
         log.trace("Entering into class VDataTable");
@@ -34,12 +36,15 @@ public class VDataTable implements IDataTable{
     }
 
     /**
-     * Метод открывает FileChooser
-     * @param seriesTableView
-     * @return seriesList
+     * The method opens the file and populates the collection of data
+     * @param seriesTableView - object type TableView
+     * @return seriesList - object type ObservableList
      */
     @Override
-    public ObservableList<SSeries> viewDataTable(TableView<SSeries> seriesTableView) throws Exception {
+    public ObservableList<SSeries> viewDataTable(TableView<SSeries> seriesTableView,
+                                                 TableColumn<SSeries, String> columnLabel_1,
+                                                 TableColumn<SSeries, String> columnLabel_2,
+                                                 TableColumn<SSeries, String> columnLabel_3) throws Exception {
         log.trace("Entering into method -> VDataTable.viewDataTable");
         log.trace("Try to open FileChooser");
         FileChooser fileChooser = new FileChooser();
@@ -49,14 +54,18 @@ public class VDataTable implements IDataTable{
             log.trace("Try to read the selected file");
             readFile(file);
             log.trace("Set the data of series");
+            //todo - improved based on the properties file
+            columnLabel_1.setCellValueFactory(new PropertyValueFactory<>("type"));
+            columnLabel_2.setCellValueFactory(new PropertyValueFactory<>("machineName"));
+            columnLabel_3.setCellValueFactory(new PropertyValueFactory<>("beamEnergy"));
             seriesTableView.setItems(seriesList);
         }
         return seriesList;
     }
 
     /**
-     *
-     * @param selectedList
+     * The method deletes rows from table
+     * @param selectedList - object type ObservableList
      */
     @Override
     public void deleteRows(ObservableList<SSeries> selectedList) throws Exception {
@@ -65,11 +74,6 @@ public class VDataTable implements IDataTable{
         this.seriesList.removeAll(selectedList);
     }
 
-    /**
-     *
-     * @param file
-     * @return
-     */
     private ObservableList<SSeries> readFile(File file) throws Exception {
         log.trace("Entering into method -> VDataTable.readFile");
         log.trace("Try to create new object AscFileReader");

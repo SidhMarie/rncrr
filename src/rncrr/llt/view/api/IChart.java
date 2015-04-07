@@ -7,7 +7,7 @@ import javafx.scene.control.TableView;
 /**
  * Created by Sidh on 24.02.2015.
  */
-public interface IDataChart {
+public interface IChart {
 
     void buildingChart(TableView<SSeries> seriesTableView, LineChart<Double, Double> profileChart);
 
