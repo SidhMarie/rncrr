@@ -31,10 +31,24 @@ public abstract class AbstractFileReader {
      * @return seriesList - object type ObservableList
      */
     public ObservableList<SSeries> read(String path) throws Exception {
-        log.trace("Entering into method -> read");
+        log.trace("Entering into method -> AbstractFileReader.read");
         if (!path.trim().isEmpty()) {
-            InputStream stream = new FileInputStream(path);
-            parse(stream);
+            InputStream stream = null;
+            try {
+                log.trace("Try to open FileInputStream");
+                stream = new FileInputStream(path);
+                log.trace("Try to parse input stream");
+                parse(stream);
+            }catch (Exception e){
+                log.error("An error occurred while trying to open input stream or parse it");
+                throw new Exception(e);
+            } finally {
+                if(stream != null) {
+                    log.trace("Try to close FileInputStream");
+                    stream.close();
+                    log.trace("FileInputStream close");
+                }
+            }
         }
         return seriesList;
     }
@@ -44,7 +58,7 @@ public abstract class AbstractFileReader {
      * @param stream - Input Stream
      */
     protected void parse(InputStream stream) throws Exception {
-        log.trace("Entering into method -> parse");
+        log.trace("Entering into method -> AbstractFileReader.parse");
         String line;
         log.trace("Create object -> Scanner");
         Scanner scanner = new Scanner(stream);
@@ -52,8 +66,8 @@ public abstract class AbstractFileReader {
         while(scanner.hasNext()) {
             line = scanner.nextLine();
             readLine(line);
-            fill(line);
         }
+        log.trace("The incoming stream read and successfully parsed");
     }
 
     /**
@@ -71,11 +85,5 @@ public abstract class AbstractFileReader {
      * @param line - input line
      */
     abstract protected void readLine(String line);
-
-    /**
-     * method to be implemented in the derived-class
-     * @param line - input line
-     */
-    abstract protected void fill(String line);
 
 }

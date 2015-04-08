@@ -46,6 +46,7 @@ public class AscFileReaderService extends AbstractFileReader {
             } else if(line.equals(EAsc.FILE_END.getName())){
                 flag = 0;
             }
+            fill(line);
         }
     }
 
@@ -53,8 +54,7 @@ public class AscFileReaderService extends AbstractFileReader {
      * Method fills the series and adds it to the collection
      * @param line - input line
      */
-    @Override
-    protected void fill(String line) {
+    private void fill(String line) {
         switch (flag) {
             case 1 :
                 fillSeries(series, line);

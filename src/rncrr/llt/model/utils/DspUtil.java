@@ -17,7 +17,7 @@ public class DspUtil {
             65536,131072,262144,524288,1048576,2097152,4194304,8388608,16777216,
             33554432,67108864,134217728,268435456,536870912,1073741824};
 
-    public static List<Double> fillList(List<Double> list){
+    public static List<Double> inputList(List<Double> list){
         int size = list.size();
         for (int d2 : rate2) {
             if (size < d2) {
@@ -53,7 +53,7 @@ public class DspUtil {
         list.add(5.0);
 
 
-        List<Double> result = fillList(list);
+        List<Double> result = inputList(list);
 
         for(int i = 0; i<result.size(); i++){
             System.out.println(i + " => " +result.get(i));

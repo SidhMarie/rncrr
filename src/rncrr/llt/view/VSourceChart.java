@@ -23,13 +23,13 @@ public class VSourceChart extends AbstractLChart {
 
     @Override
     public void buildingChart(TableView<SSeries> seriesTableView, LineChart<Double, Double> chart) {
-        log.trace("");
-        log.trace("");
+        log.trace("Entering into method -> VSourceChart.buildingChart");
+        log.trace("Initialize the object lineChart");
         lineChart = FXCollections.observableArrayList();
-        log.trace("");
+        log.trace("Try to get the data from the selected row");
         ObservableList<SSeries> selectedSeriesList = seriesTableView.getSelectionModel().getSelectedItems();
-        log.trace("");
-        for(SSeries s : selectedSeriesList) {
+        log.trace("Try to set the data chart");
+        for (SSeries s : selectedSeriesList) {
             seriesChart = new LineChart.Series<>();
             for (Points points : s.getPoints()) {
                 seriesChart.getData().add(new XYChart.Data<>(points.getX(), points.getY()));
@@ -37,8 +37,9 @@ public class VSourceChart extends AbstractLChart {
             seriesChart.setName("Series-" + s.getScanId());
             lineChart.add(seriesChart);
         }
-        log.trace("");
+        log.trace("Set the data chart");
         chart.setData(lineChart);
+    }
 
         //        for(XYChart.Series<Double, Double> s : profileChart.getData()) {
 //            for (XYChart.Data<Double, Double> data : s.getData()) {
@@ -59,6 +60,6 @@ public class VSourceChart extends AbstractLChart {
 ////                });
 //            }
 //        }
-    }
+//    }
 
 }

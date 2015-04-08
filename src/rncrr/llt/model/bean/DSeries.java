@@ -8,19 +8,10 @@ import java.util.List;
  */
 public class DSeries {
 
-    private String subId;
     private List<Points> points;
 
     public DSeries() {
         this.points = new ArrayList<>();
-    }
-
-    public String getSubId() {
-        return subId;
-    }
-
-    public void setSubId(String subId) {
-        this.subId = subId;
     }
 
     public List<Points> getPoints() {
