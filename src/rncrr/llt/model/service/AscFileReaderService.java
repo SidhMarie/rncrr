@@ -16,10 +16,11 @@ import java.util.Objects;
  */
 public class AscFileReaderService extends AbstractFileReader {
 
+    private static final Logger log = LogManager.getLogger(AscFileReaderService.class);
+
     private int flag;
     private SSeries series;
     private String serviceString;
-    private static final Logger log = LogManager.getLogger(AscFileReaderService.class);
 
     /**
      * Constructor - initializes the object type SSeries
@@ -140,7 +141,7 @@ public class AscFileReaderService extends AbstractFileReader {
      * @param line - input line
      */
     private void addPointsData(SSeries series, String line) {
-        serviceString = line.substring(1, 28);  // стандартная строка, всегда одного размера <-000.0 -000.0 +000.0 +000.0>
+        serviceString = line.substring(1, 28);  // line type <-000.0 -000.0 +000.0 +000.0>
         if(Objects.equals(series.getType(), EMeasureType.DDOE.name())
                 || Objects.equals(series.getType(), EMeasureType.DDAE.name())
                 || Objects.equals(series.getType(), EMeasureType.OPD.name()) )

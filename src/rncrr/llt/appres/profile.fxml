@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
@@ -43,6 +44,13 @@
                        <Button mnemonicParsing="false" onAction="#deleteRows" style="-fx-graphic: url('file:resources/img/toolBarButDelRow.png');" text="" />
                        <Separator />
                        <Button mnemonicParsing="false" onAction="#transformData" style="-fx-graphic: url('file:resources/img/toolBarButFFT.png');" text="" />
+                        <ChoiceBox fx:id="windowData" prefWidth="35.0" prefHeight="32.0">
+                            <String fx:value="RECTANGULAR"/>
+                            <String fx:value="GAUSS"/>
+                            <String fx:value="HAMMING"/>
+                            <String fx:value="HANN"/>
+                            <String fx:value="BLACKMAN_HARRIS"/>
+                        </ChoiceBox>
                    </items>
                </ToolBar>
            </children>
@@ -110,7 +118,7 @@
    <center>
        <VBox prefHeight="800.0" prefWidth="210.0" BorderPane.alignment="CENTER">
            <children>
-               <LineChart fx:id="profileChart" prefHeight="550.0">
+               <LineChart fx:id="profileChart" prefHeight="500.0">
                    <xAxis>
                        <NumberAxis side="BOTTOM" />
                    </xAxis>
@@ -118,7 +126,7 @@
                        <NumberAxis side="LEFT" />
                    </yAxis>
                </LineChart>
-               <LineChart fx:id="spectrumChart" prefHeight="250.0">
+               <LineChart fx:id="spectrumChart" prefHeight="300.0">
                    <xAxis>
                        <NumberAxis side="BOTTOM" />
                    </xAxis>

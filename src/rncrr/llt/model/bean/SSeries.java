@@ -2,6 +2,7 @@ package rncrr.llt.model.bean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SSeries {
 
@@ -163,4 +164,11 @@ public class SSeries {
         this.points.add(points);
     }
 
+    public List<Double> getXPoints(){
+        return points.stream().map(Points::getX).collect(Collectors.toList());
+    }
+
+    public List<Double> getYPoints(){
+        return points.stream().map(Points::getY).collect(Collectors.toList());
+    }
 }

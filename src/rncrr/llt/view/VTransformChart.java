@@ -12,6 +12,9 @@ import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.bean.SSeries;
 import rncrr.llt.model.service.TransformService;
 import rncrr.llt.view.api.AbstractLChart;
+import rncrr.llt.view.utils.VUtil;
+
+import java.util.List;
 
 /**
  * Created by Sidh on 07.04.2015.
@@ -25,19 +28,24 @@ public class VTransformChart extends AbstractLChart {
         log.trace("Entering into method -> VTransformChart.buildingChart");
         log.trace("Initialize the object lineChart");
         lineChart = FXCollections.observableArrayList();
+        
         log.trace("Try to get the data from the selected row");
-        ObservableList<SSeries> selectedSeriesList = seriesTableView.getSelectionModel().getSelectedItems();
-        log.trace("Try to set the data chart");
-        for (SSeries s : selectedSeriesList) {
+        SSeries selectedSeries = seriesTableView.getSelectionModel().getSelectedItem();
+        if(selectedSeries != null) {
+            DSeries d = new TransformService().getDSeries(selectedSeries);
             seriesChart = new LineChart.Series<>();
-            DSeries d = new TransformService().getDSeries(s);
+
+            log.trace("Try to set the data chart");
             for (Points points : d.getPoints()) {
                 seriesChart.getData().add(new XYChart.Data<>(points.getX(), points.getY()));
             }
-            seriesChart.setName("Series-" + s.getScanId());
             lineChart.add(seriesChart);
+
+            chart.setLegendVisible(false);
+            log.trace("Set the data chart");
+            chart.setData(lineChart);
+        } else {
+            VUtil.alertMessage("Should choose a source signal to transform");
         }
-        log.trace("Set the data chart");
-        chart.setData(lineChart);
     }
 }

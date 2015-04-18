@@ -5,13 +5,24 @@ public class Complex {
     private final double re;   // the real part
     private final double im;   // the imaginary part
 
-    // create a new object with the given real and imaginary parts
+    public Complex(){
+        this.re = 0.0;
+        this.im = 0.0;
+    }
+
+    public Complex(Complex complex) {
+        this.re = complex.re;
+        this.im = complex.im;
+    }
+
     public Complex(double real, double imag) {
         this.re = real;
         this.im = imag;
     }
 
-    // return a string representation of the invoking Complex object
+    public double re() { return this.re; }
+    public double im() { return this.im; }
+
     public String toString() {
         if (im == 0) return re + "";
         if (re == 0) return im + "i";
@@ -59,10 +70,6 @@ public class Complex {
         return new Complex(re / scale, -im / scale);
     }
 
-    // return the real or imaginary part
-    public double re() { return re; }
-    public double im() { return im; }
-
     // return a / b
     public Complex divides(Complex b) {
         return this.times(b.reciprocal());
@@ -88,11 +95,33 @@ public class Complex {
         return sin().divides(cos());
     }
 
-    // a static version of plus
     public static Complex plus(Complex a, Complex b) {
-        double real = a.re + b.re;
-        double imag = a.im + b.im;
-        return new Complex(real, imag);
+        return new Complex(a).plus(b);
     }
+
+    public static Complex minus(Complex a, Complex b) {
+        return new Complex(a).minus(b);
+    }
+
+    public static Complex times(Complex a, Complex b) {
+        return new Complex(a).times(b);
+    }
+
+    public static Complex times(Complex a, double alpha) {
+        return new Complex(a).times(alpha);
+    }
+
+    public static Complex conjugate(Complex a) {
+        return new Complex(a).conjugate();
+    }
+
+    public static Complex reciprocal(Complex a) {
+        return new Complex(a).reciprocal();
+    }
+
+    public static Complex divides(Complex a, Complex b) {
+        return new Complex(a).divides(b);
+    }
+
 
 }

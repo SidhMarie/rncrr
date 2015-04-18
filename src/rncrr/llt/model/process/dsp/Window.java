@@ -12,21 +12,17 @@ public class Window {
         return 1.0;
     }
 
+    public static double sin(double n, double size){
+        return Math.sin((Math.PI*n)/(size-1));
+    }
+
+
     /**
      * Окно Гауса
      */
     public static double gauss(double n, double size) {
         double a = (size - 1)/2;
         double b = (n - a)/(0.5*a);
-        return Math.exp(-(b*b) / 2);
-    }
-
-    /**
-     * Окно Гауса
-     */
-    public static double gauss(double n, double size, double q) {
-        double a = (size - 1)/2;
-        double b = (n - a)/(q*a);
         return Math.exp(-(b*b) / 2);
     }
 

@@ -26,17 +26,16 @@ public class VSourceChart extends AbstractLChart {
         log.trace("Entering into method -> VSourceChart.buildingChart");
         log.trace("Initialize the object lineChart");
         lineChart = FXCollections.observableArrayList();
+        chart.setLegendVisible(true);
         log.trace("Try to get the data from the selected row");
-        ObservableList<SSeries> selectedSeriesList = seriesTableView.getSelectionModel().getSelectedItems();
+        SSeries ss = seriesTableView.getSelectionModel().getSelectedItem();
         log.trace("Try to set the data chart");
-        for (SSeries s : selectedSeriesList) {
-            seriesChart = new LineChart.Series<>();
-            for (Points points : s.getPoints()) {
-                seriesChart.getData().add(new XYChart.Data<>(points.getX(), points.getY()));
-            }
-            seriesChart.setName("Series-" + s.getScanId());
-            lineChart.add(seriesChart);
+        seriesChart = new LineChart.Series<>();
+        for (Points points : ss.getPoints()) {
+            seriesChart.getData().add(new XYChart.Data<>(points.getX(), points.getY()));
         }
+        seriesChart.setName("Series-" + ss.getScanId());
+        lineChart.add(seriesChart);
         log.trace("Set the data chart");
         chart.setData(lineChart);
     }

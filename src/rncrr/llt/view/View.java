@@ -49,6 +49,7 @@ public class View {
             dataTable.viewDataTable(seriesTableView, columnLabel_1, columnLabel_2, columnLabel_3);
             log.trace("Try to initialize chart");
             sourceChart.initChart(profileChart);
+            transformChart.initChart(spectrumChart);
         } catch (Exception e) {
             log.error("An error occurred in the method View.openFileData", e);
             VUtil.alertException("An error occurred while trying to open and read the file", e);
@@ -67,6 +68,7 @@ public class View {
                 setAscDataGridValue(series);
                 log.trace("Try to build profile signal chart");
                 sourceChart.buildingChart(seriesTableView, profileChart);
+                transformChart.clearChart(spectrumChart);
             }
         } catch (Exception e) {
             log.error("An error occurred in the method View.detailSelectedRow",e);
@@ -84,10 +86,13 @@ public class View {
             if (!seriesTableView.getItems().isEmpty()) {
                 log.trace("Try to remove the selected row");
                 dataTable.deleteRows(seriesTableView.getSelectionModel().getSelectedItems());
-                log.trace("Try to clear the chart");
+                log.trace("Try to clear the charts");
                 sourceChart.clearChart(profileChart);
+                transformChart.clearChart(spectrumChart);
                 log.trace("Try to clear the table details");
                 clearDataGridValue();
+            } else {
+                VUtil.alertMessage("You must select a row to remove");
             }
         } catch (Exception e){
             log.error("An error occurred in the method View.deleteRows", e);
@@ -104,16 +109,23 @@ public class View {
         System.exit(0);
     }
 
+    /**
+     *
+     */
     public void transformData(ActionEvent actionEvent) {
         log.trace("Entering into method -> View.transformData");
         try {
             log.trace("Try to build spectrum signal chart");
             transformChart.buildingChart(seriesTableView, spectrumChart);
+
         } catch (Exception e) {
             log.error("An error occurred in the method View.transformData", e);
             VUtil.alertException("An error occurred while transformation data", e);
         }
     }
+
+
+
     /**
      * The method sets the information fields of the table depending on the type of measurement.
      * @param series - object type SSeries
@@ -267,6 +279,7 @@ public class View {
     private Label rowValue_8;
     @FXML
     private Label rowValue_9;
-
+    @FXML
+    public ChoiceBox windowData;
 
 }
