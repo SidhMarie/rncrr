@@ -24,10 +24,18 @@ public class TransformService implements ITransformService {
 
     private DigitalSeries dSeries;
 
+    /**
+     *
+     */
     public TransformService() {
         dSeries = new DigitalSeries();
     }
 
+    /**
+     *
+     * @param sSeries
+     * @return
+     */
     @Override
     public DigitalSeries getDSeries(SourceSeries sSeries, EWindows windows) {
         log.trace("");
@@ -36,7 +44,7 @@ public class TransformService implements ITransformService {
         int n = xList.size();
         Complex[] x = new Complex[n];
         for (int i = 0; i < n; i++) {
-            x[i] = new Complex(xList.get(i), 0);
+            x[i] = new Complex(xList.get(i), 0d);
         }
         Complex[] y = Transform.directTransform(x);
         double nSpectrum[] = new double[n];
