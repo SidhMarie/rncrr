@@ -31,8 +31,8 @@ public class Complex {
     }
 
     // return abs/modulus/magnitude and angle/phase/argument
-    public double abs()   { return Math.hypot(re, im); }  // Math.sqrt(re*re + im*im)
-    public double phase() { return Math.atan2(im, re); }  // between -pi and pi
+    public double abs()   { return Math.hypot(re, im); }  // Math.sqrt(re*re + im*im) - амплитуда
+    public double phase() { return Math.atan2(im, re); }  // between -pi and pi - фаза
 
     // return a new Complex object whose value is (this + b)
     public Complex plus(Complex b) {

@@ -1,6 +1,7 @@
 package rncrr.llt.model.process.dsp;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.*;
@@ -12,20 +13,12 @@ public class Transform {
 
     private static final double DoublePi = 2*PI;
 
-    public static int[] rate2 = {2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,
-            65536,131072,262144,524288,1048576,2097152,4194304,8388608,16777216,
-            33554432,67108864,134217728,268435456,536870912,1073741824};
-
     public static List<Double> inputList(List<Double> list){
         int size = list.size();
-        for (int d2 : rate2) {
-            if (size < d2) {
-                while (size < d2) {
-                    list.add(0.0);
-                    size++;
-                }
-                return list;
-            }
+        int rate = bit2(size);
+        while (size < rate) {
+            list.add(0D);
+            size++;
         }
         return list;
     }
@@ -78,6 +71,51 @@ public class Transform {
             source[i] = source[i].times(1.0 / frameFullSize);
         }
         return source;
+    }
+
+    /**
+     * calculate the closest of degree 2
+     * @param x - input value
+     * @return closest of degree 2 for x
+     */
+    private static int bit2(int x) {
+        x |= x >> 1;
+        x |= x >> 2;
+        x |= x >> 4;
+        x |= x >> 8;
+        x |= x >> 16;
+        return x + 1;
+    }
+
+    public static void main(String[] args) {
+        List<Double> list = new ArrayList<>();
+        list.add(1D);
+        list.add(1D);
+        list.add(1D);
+        list.add(1D);
+        list.add(1D);
+        list.add(1D);
+        list.add(1D);
+        list.add(1D);
+        list.add(1D);
+        list.add(1D);
+        list.add(1D);
+        list.add(1D);
+        list.add(1D);
+        list.add(1D);
+        list.add(1D);
+        list.add(1D);
+        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+
+        Transform.inputList(list);
+        System.out.println(list.size());
+        for(double d : list){
+            System.out.println(d);
+        }
     }
 
 }

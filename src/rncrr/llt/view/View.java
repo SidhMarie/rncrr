@@ -3,9 +3,8 @@ package rncrr.llt.view;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rncrr.llt.model.utils.eobject.EMeasureType;
-import rncrr.llt.model.bean.SSeries;
+import rncrr.llt.model.bean.SourceSeries;
 import rncrr.llt.model.utils.Config;
-import rncrr.llt.view.api.IChart;
 import rncrr.llt.view.api.IDataTable;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -22,8 +21,8 @@ public class View {
     private static final Logger log = LogManager.getLogger(View.class);
 
     private IDataTable dataTable;
-    private IChart sourceChart;
-    private IChart transformChart;
+    private VSourceChart sourceChart;
+    private VTransformChart transformChart;
 
     /**
      * Constructor - initialize objects VDataTable и VDataChart
@@ -56,6 +55,9 @@ public class View {
         }
     }
 
+    public void saveFileData(ActionEvent actionEvent) {
+    }
+
     /**
      * Method fills in the table details the series and plotted according to series
      */
@@ -63,11 +65,11 @@ public class View {
         log.trace("Entering into method -> View.detailSelectedRow");
         try{
             if (!seriesTableView.getItems().isEmpty()) {
-                SSeries series = seriesTableView.getSelectionModel().getSelectedItem();
+                SourceSeries series = seriesTableView.getSelectionModel().getSelectedItem();
                 log.trace("Try to set the values in the table details");
                 setAscDataGridValue(series);
                 log.trace("Try to build profile signal chart");
-                sourceChart.buildingChart(seriesTableView, profileChart);
+                sourceChart.buildingSourceChart(seriesTableView, profileChart);
                 transformChart.clearChart(spectrumChart);
             }
         } catch (Exception e) {
@@ -109,6 +111,19 @@ public class View {
         System.exit(0);
     }
 
+
+    /**
+     *
+     */
+    public void windowData(ActionEvent actionEvent) {
+        try{
+            transformChart.buildingWindowChart(seriesTableView, spectrumChart, windowData);
+        } catch (Exception e){
+            log.error("An error occurred in the method View.transformData", e);
+            VUtil.alertException("An error occurred while transformation data", e);
+        }
+    }
+
     /**
      *
      */
@@ -116,7 +131,8 @@ public class View {
         log.trace("Entering into method -> View.transformData");
         try {
             log.trace("Try to build spectrum signal chart");
-            transformChart.buildingChart(seriesTableView, spectrumChart);
+
+            transformChart.buildingSpectrumChart(seriesTableView, spectrumChart, windowData);
 
         } catch (Exception e) {
             log.error("An error occurred in the method View.transformData", e);
@@ -124,13 +140,11 @@ public class View {
         }
     }
 
-
-
     /**
      * The method sets the information fields of the table depending on the type of measurement.
      * @param series - object type SSeries
      */
-    private void setAscDataGridValue(SSeries series) {
+    private void setAscDataGridValue(SourceSeries series) {
         log.trace("Entering into method -> View.setAscDataGridValue");
         if (Objects.equals(series.getType(), EMeasureType.OPP.name())
                 || Objects.equals(series.getType(), EMeasureType.OPD.name())) {
@@ -148,7 +162,7 @@ public class View {
      * Method sets the values of the fields of the table details for type OPP и OPD
      * @param series - object type SSeries
      */
-    private void setValues4OPPDataGrid(SSeries series) {
+    private void setValues4OPPDataGrid(SourceSeries series) {
         rowLabel_0.setText(Config.getStringProperty("tg.row.label.scanId", "Scan ID"));
         rowLabel_1.setText(Config.getStringProperty("tg.row.label.machine", "Machine name"));
         rowLabel_2.setText(Config.getStringProperty("tg.row.label.beamType", "Beam type"));
@@ -176,7 +190,7 @@ public class View {
      * Method sets the values of the fields of the table details for type DDOE, DDAE и POE
      * @param series - object type SSeries
      */
-    private void setValues4DDOEDataGrid(SSeries series) {
+    private void setValues4DDOEDataGrid(SourceSeries series) {
         rowLabel_0.setText(Config.getStringProperty("tg.row.label.scanId", "Scan ID"));
         rowLabel_1.setText(Config.getStringProperty("tg.row.label.machine", "Machine name"));
         rowLabel_2.setText(Config.getStringProperty("tg.row.label.beamType", "Beam type"));
@@ -228,17 +242,17 @@ public class View {
     }
 
     @FXML
-    private TableView<SSeries> seriesTableView;
+    private TableView<SourceSeries> seriesTableView;
     @FXML
     private LineChart<Double, Double> profileChart;
     @FXML
     private LineChart<Double, Double> spectrumChart;
     @FXML
-    private TableColumn<SSeries, String> columnLabel_1;
+    private TableColumn<SourceSeries, String> columnLabel_1;
     @FXML
-    private TableColumn<SSeries, String> columnLabel_2;
+    private TableColumn<SourceSeries, String> columnLabel_2;
     @FXML
-    private TableColumn<SSeries, String> columnLabel_3;
+    private TableColumn<SourceSeries, String> columnLabel_3;
     @FXML
     private Label rowLabel_0;
     @FXML

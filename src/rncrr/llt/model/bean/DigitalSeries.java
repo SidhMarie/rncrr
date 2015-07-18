@@ -6,11 +6,11 @@ import java.util.List;
 /**
  * Created by Sidh on 20.02.2015.
  */
-public class DSeries {
+public class DigitalSeries {
 
     private List<Points> points;
 
-    public DSeries() {
+    public DigitalSeries() {
         this.points = new ArrayList<>();
     }
 

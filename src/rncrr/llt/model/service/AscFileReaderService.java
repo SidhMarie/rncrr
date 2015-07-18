@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import rncrr.llt.model.utils.eobject.EAsc;
 import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.Points;
-import rncrr.llt.model.bean.SSeries;
+import rncrr.llt.model.bean.SourceSeries;
 import rncrr.llt.model.process.api.AbstractFileReader;
 
 import java.util.Objects;
@@ -19,7 +19,7 @@ public class AscFileReaderService extends AbstractFileReader {
     private static final Logger log = LogManager.getLogger(AscFileReaderService.class);
 
     private int flag;
-    private SSeries series;
+    private SourceSeries series;
     private String serviceString;
 
     /**
@@ -30,7 +30,7 @@ public class AscFileReaderService extends AbstractFileReader {
         log.trace("Initialize the variable -> flag = 0");
         this.flag = 0;
         log.trace("Initialize the new object -> SSeries");
-        this.series = new SSeries();
+        this.series = new SourceSeries();
     }
 
     /**
@@ -62,7 +62,7 @@ public class AscFileReaderService extends AbstractFileReader {
                 break;
             case 2 :
                 seriesList.add(series);
-                series = new SSeries();
+                series = new SourceSeries();
                 break;
         }
     }
@@ -72,7 +72,7 @@ public class AscFileReaderService extends AbstractFileReader {
      * @param series - object type SSeries
      * @param line - input line
      */
-    private void fillSeries(SSeries series, String line) {
+    private void fillSeries(SourceSeries series, String line) {
         for(EAsc value : EAsc.values()) {
             if(line.contains(value.getName())) {
                 switch (value){
@@ -140,7 +140,7 @@ public class AscFileReaderService extends AbstractFileReader {
      * @param series - object type SSeries
      * @param line - input line
      */
-    private void addPointsData(SSeries series, String line) {
+    private void addPointsData(SourceSeries series, String line) {
         serviceString = line.substring(1, 28);  // line type <-000.0 -000.0 +000.0 +000.0>
         if(Objects.equals(series.getType(), EMeasureType.DDOE.name())
                 || Objects.equals(series.getType(), EMeasureType.DDAE.name())
@@ -164,7 +164,7 @@ public class AscFileReaderService extends AbstractFileReader {
      * @param x - coordinate
      * @param y - coordinate
      */
-    private void fillPoint(SSeries series, double x, double y){
+    private void fillPoint(SourceSeries series, double x, double y){
         series.addPoints(new Points(x,y));
     }
 

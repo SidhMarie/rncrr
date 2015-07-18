@@ -4,7 +4,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import rncrr.llt.model.bean.SSeries;
+import rncrr.llt.model.bean.SourceSeries;
 import rncrr.llt.model.service.AscFileReaderService;
 import rncrr.llt.view.api.IDataTable;
 import javafx.collections.FXCollections;
@@ -21,7 +21,7 @@ import java.io.File;
  */
 public class VDataTable implements IDataTable{
 
-    private ObservableList<SSeries> seriesList;
+    private ObservableList<SourceSeries> seriesList;
     private static final Logger log = LogManager.getLogger(VDataTable.class);
 
 
@@ -41,10 +41,10 @@ public class VDataTable implements IDataTable{
      * @return seriesList - object type ObservableList
      */
     @Override
-    public ObservableList<SSeries> viewDataTable(TableView<SSeries> seriesTableView,
-                                                 TableColumn<SSeries, String> columnLabel_1,
-                                                 TableColumn<SSeries, String> columnLabel_2,
-                                                 TableColumn<SSeries, String> columnLabel_3) throws Exception {
+    public ObservableList<SourceSeries> viewDataTable(TableView<SourceSeries> seriesTableView,
+                                                 TableColumn<SourceSeries, String> columnLabel_1,
+                                                 TableColumn<SourceSeries, String> columnLabel_2,
+                                                 TableColumn<SourceSeries, String> columnLabel_3) throws Exception {
         log.trace("Entering into method -> VDataTable.viewDataTable");
         log.trace("Try to open FileChooser");
         FileChooser fileChooser = new FileChooser();
@@ -68,13 +68,13 @@ public class VDataTable implements IDataTable{
      * @param selectedList - object type ObservableList
      */
     @Override
-    public void deleteRows(ObservableList<SSeries> selectedList) throws Exception {
+    public void deleteRows(ObservableList<SourceSeries> selectedList) throws Exception {
         log.trace("Entering into method -> VDataTable.deleteRows");
         log.trace("Try to remove the selected rows from the list of series ");
         this.seriesList.removeAll(selectedList);
     }
 
-    private ObservableList<SSeries> readFile(File file) throws Exception {
+    private ObservableList<SourceSeries> readFile(File file) throws Exception {
         log.trace("Entering into method -> VDataTable.readFile");
         log.trace("Try to create new object AscFileReader");
         AscFileReaderService fr = new AscFileReaderService();

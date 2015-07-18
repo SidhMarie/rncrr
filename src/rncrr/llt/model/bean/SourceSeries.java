@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SSeries {
+public class SourceSeries {
 
     private String scanId;
     private int step;
@@ -24,7 +24,7 @@ public class SSeries {
     private double cFactor;
     private List<Points> points;
 
-    public SSeries() {
+    public SourceSeries() {
         points = new ArrayList<>();
     }
 
