@@ -20,10 +20,18 @@ public class TransformService implements ITransformService {
 
     private DSeries dSeries;
 
+    /**
+     *
+     */
     public TransformService() {
         dSeries = new DSeries();
     }
 
+    /**
+     *
+     * @param sSeries
+     * @return
+     */
     @Override
     public DSeries getDSeries(SSeries sSeries) {
         log.trace("");
@@ -32,7 +40,7 @@ public class TransformService implements ITransformService {
         int n = xList.size();
         Complex[] x = new Complex[n];
         for (int i = 0; i < n; i++) {
-            x[i] = new Complex(xList.get(i), 0);
+            x[i] = new Complex(xList.get(i), 0d);
         }
         Complex[] y = Transform.directTransform(x);
         for(int i = 0; i < n; i++) {

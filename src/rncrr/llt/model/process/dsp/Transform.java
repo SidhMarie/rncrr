@@ -21,7 +21,7 @@ public class Transform {
         for (int d2 : rate2) {
             if (size < d2) {
                 while (size < d2) {
-                    list.add(0.0);
+                    list.add(0.0d);
                     size++;
                 }
                 return list;

@@ -101,12 +101,16 @@ public class View {
     }
 
     /**
-     * Method completes the execution of the application
+     *
      */
-    public void closeApplication(ActionEvent actionEvent) {
-        log.trace("Entering into method -> View.closeApplication");
-        log.trace("Try to close the application. System.exit");
-        System.exit(0);
+    public void refreshData(ActionEvent actionEvent) {
+        log.trace("Entering into method -> View.refreshData");
+        try{
+            windowData.getSelectionModel().getSelectedItem();
+        } catch(Exception e){
+            log.error("An error occurred in the method View.refreshData", e);
+            VUtil.alertException("An error occurred while refresh data", e);
+        }
     }
 
     /**
@@ -117,13 +121,20 @@ public class View {
         try {
             log.trace("Try to build spectrum signal chart");
             transformChart.buildingChart(seriesTableView, spectrumChart);
-
         } catch (Exception e) {
             log.error("An error occurred in the method View.transformData", e);
             VUtil.alertException("An error occurred while transformation data", e);
         }
     }
 
+    /**
+     * Method completes the execution of the application
+     */
+    public void closeApplication(ActionEvent actionEvent) {
+        log.trace("Entering into method -> View.closeApplication");
+        log.trace("Try to close the application. System.exit");
+        System.exit(0);
+    }
 
 
     /**
@@ -240,6 +251,9 @@ public class View {
     @FXML
     private TableColumn<SSeries, String> columnLabel_3;
     @FXML
+    public ChoiceBox windowData;
+
+    @FXML
     private Label rowLabel_0;
     @FXML
     private Label rowLabel_1;
@@ -279,7 +293,5 @@ public class View {
     private Label rowValue_8;
     @FXML
     private Label rowValue_9;
-    @FXML
-    public ChoiceBox windowData;
 
 }
