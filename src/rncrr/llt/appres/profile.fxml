@@ -10,49 +10,24 @@
    <top>
        <VBox prefHeight="50" prefWidth="600.0">
            <children>
-               <MenuBar fx:id="menuBar">
-                   <menus>
-                       <Menu text="File">
-                           <items>
-                               <MenuItem onAction="#openFileData" text="Open..." />
-                               <MenuItem onAction="#closeApplication" text="Exit" />
-                           </items>
-                       </Menu>
-                       <Menu text="View">
-                           <items>
-                               <MenuItem text="Show general chart" />
-                               <MenuItem text="Show sub chart" />
-                           </items>
-                       </Menu>
-                       <Menu text="Tools">
-                           <items>
-                               <MenuItem text="FFT" />
-                               <MenuItem text="IFT" />
-                           </items>
-                       </Menu>
-                       <Menu text="Help">
-                           <items>
-                               <MenuItem text="Help" />
-                               <MenuItem text="About" />
-                           </items>
-                       </Menu>
-                   </menus>
-               </MenuBar>
                <ToolBar>
                    <items>
+                       <Button mnemonicParsing="false" onAction="#saveFileData" style="-fx-graphic: url('file:resources/img/toolBarButSave.png');" text="" />
                        <Button mnemonicParsing="false" onAction="#openFileData" style="-fx-graphic: url('file:resources/img/toolBarButOpen.png');" text="" />
                        <Button mnemonicParsing="false" onAction="#deleteRows" style="-fx-graphic: url('file:resources/img/toolBarButDelRow.png');" text="" />
                        <Separator />
-                       <Button mnemonicParsing="false" onAction="#refreshData" style="-fx-graphic: url('file:resources/img/toolBarButRefresh.png');" text="" />
-                       <Button mnemonicParsing="false" onAction="#transformData" style="-fx-graphic: url('file:resources/img/toolBarButFFT.png');" text="" />
-                       <ChoiceBox fx:id="windowData" value="DEFAULT" maxWidth="32.0" prefHeight="32.0">
-                            <String fx:value="DEFAULT"/>
+                       <ChoiceBox fx:id="windowData" prefWidth="110.0" prefHeight="32.0">
                             <String fx:value="RECTANGULAR"/>
                             <String fx:value="GAUSS"/>
                             <String fx:value="HAMMING"/>
                             <String fx:value="HANN"/>
                             <String fx:value="BLACKMAN_HARRIS"/>
-                        </ChoiceBox>
+                            <value>
+                                <String fx:value="RECTANGULAR" />
+                            </value>
+                       </ChoiceBox>
+                       <Button mnemonicParsing="false" onAction="#windowData" style="-fx-graphic: url('file:resources/img/toolBarButWindow.png');" text="" />
+                       <Button mnemonicParsing="false" onAction="#transformData" style="-fx-graphic: url('file:resources/img/toolBarButFFT.png');" text="" />
                    </items>
                </ToolBar>
            </children>

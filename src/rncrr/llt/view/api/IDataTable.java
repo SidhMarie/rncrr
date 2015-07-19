@@ -1,6 +1,6 @@
 package rncrr.llt.view.api;
 
-import rncrr.llt.model.bean.SSeries;
+import rncrr.llt.model.bean.SourceSeries;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -10,11 +10,11 @@ import javafx.scene.control.TableView;
  */
 public interface IDataTable {
 
-    ObservableList<SSeries> viewDataTable(TableView<SSeries> seriesTableView,
-                                          TableColumn<SSeries, String> columnLabel_1,
-                                          TableColumn<SSeries, String> columnLabel_2,
-                                          TableColumn<SSeries, String> columnLabel_3) throws Exception;
+    ObservableList<SourceSeries> viewDataTable(TableView<SourceSeries> seriesTableView,
+                                          TableColumn<SourceSeries, String> columnLabel_1,
+                                          TableColumn<SourceSeries, String> columnLabel_2,
+                                          TableColumn<SourceSeries, String> columnLabel_3) throws Exception;
 
-    void deleteRows(ObservableList<SSeries> selectedList) throws Exception;
+    void deleteRows(ObservableList<SourceSeries> selectedList) throws Exception;
 
 }

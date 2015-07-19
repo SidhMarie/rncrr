@@ -5,5 +5,14 @@ package rncrr.llt.model.utils.eobject;
  */
 public enum EWindows {
 
-    RECTANGULAR, GAUSS, HAMMING, HANN, BLACKMAN_HARRIS
+    RECTANGULAR, GAUSS, HAMMING, HANN, BLACKMAN_HARRIS;
+
+    public static EWindows getNameByValue(String key){
+        for(EWindows value : values()){
+            if(value.toString().equalsIgnoreCase(key)){
+                return value;
+            }
+        }
+        return RECTANGULAR;
+    }
 }

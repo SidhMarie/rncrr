@@ -35,7 +35,7 @@ public class Signal extends Application {
             log.trace("Show application on the screen");
             primaryStage.setScene(scene);
             primaryStage.show();
-        }catch (IOException | NullPointerException e) {
+        } catch (IOException | NullPointerException e) {
             log.error("An error occurred in the method Signal.start",e);
             VUtil.alertException("An error occurred while loading the application",e);
         }

@@ -4,12 +4,9 @@ package rncrr.llt.view;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rncrr.llt.model.bean.Points;
-import rncrr.llt.model.bean.SSeries;
-import rncrr.llt.model.utils.Config;
-import rncrr.llt.view.api.AbstractLChart;
-import rncrr.llt.view.api.IChart;
+import rncrr.llt.model.bean.SourceSeries;
+import rncrr.llt.view.api.AbstractChart;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.TableView;
@@ -17,27 +14,26 @@ import javafx.scene.control.TableView;
 /**
  * Created by Sidh on 24.02.2015.
  */
-public class VSourceChart extends AbstractLChart {
+public class VSourceChart extends AbstractChart {
 
     private static final Logger log = LogManager.getLogger(VSourceChart.class);
 
-    @Override
-    public void buildingChart(TableView<SSeries> seriesTableView, LineChart<Double, Double> chart) {
-        log.trace("Entering into method -> VSourceChart.buildingChart");
-        log.trace("Initialize the object lineChart");
-        lineChart = FXCollections.observableArrayList();
+    public void buildingSourceChart(TableView<SourceSeries> seriesTableView, XYChart<Double, Double> chart) {
+        log.trace("Entering into method -> VSourceChart.buildingSpectrumChart");
+        log.trace("Initialize the object chart");
+        this.chart = FXCollections.observableArrayList();
         chart.setLegendVisible(true);
         log.trace("Try to get the data from the selected row");
-        SSeries ss = seriesTableView.getSelectionModel().getSelectedItem();
+        SourceSeries ss = seriesTableView.getSelectionModel().getSelectedItem();
         log.trace("Try to set the data chart");
         seriesChart = new LineChart.Series<>();
         for (Points points : ss.getPoints()) {
             seriesChart.getData().add(new XYChart.Data<>(points.getX(), points.getY()));
         }
         seriesChart.setName("Series-" + ss.getScanId());
-        lineChart.add(seriesChart);
+        this.chart.add(seriesChart);
         log.trace("Set the data chart");
-        chart.setData(lineChart);
+        chart.setData(this.chart);
     }
 
         //        for(XYChart.Series<Double, Double> s : profileChart.getData()) {
