@@ -2,10 +2,12 @@ package rncrr.llt.view;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import rncrr.llt.model.service.AscFileService;
 import rncrr.llt.model.utils.eobject.ECharts;
 import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.SourceSeries;
 import rncrr.llt.model.utils.Config;
+import rncrr.llt.view.api.IDataSave;
 import rncrr.llt.view.api.IDataTable;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -21,6 +23,7 @@ public class View {
 
     private static final Logger log = LogManager.getLogger(View.class);
 
+    private IDataSave dataSave;
     private IDataTable dataTable;
     private VSourceChart sourceChart;
     private VTransformChart transformChart;
@@ -30,6 +33,7 @@ public class View {
      */
     public View() {
         log.trace("Entering into class -> View");
+        dataSave = new VDataSave();
         log.trace("Initialize the new object -> VDataTable");
         dataTable = new VDataTable();
         log.trace("Initialize the new object -> VSourceChart");
@@ -57,6 +61,13 @@ public class View {
     }
 
     public void saveFileData(ActionEvent actionEvent) {
+        log.trace("");
+        try{
+            dataSave.dataSave(dataTable);
+        } catch (Exception e){
+            log.error("An error occurred in the method View.saveFileData",e);
+            VUtil.alertException("An error occurred while trying to save data",e);
+        }
     }
 
     /**
@@ -70,7 +81,7 @@ public class View {
                 log.trace("Try to set the values in the table details");
                 setAscDataGridValue(series);
                 log.trace("Try to build profile signal chart");
-                sourceChart.buildingSourceChart(seriesTableView, profileChart);
+                sourceChart.buildingSChart(seriesTableView, profileChart, "NEW");
                 transformChart.clearChart(spectrumChart);
             }
         } catch (Exception e) {
@@ -137,6 +148,19 @@ public class View {
         } catch (Exception e) {
             log.error("An error occurred in the method View.transformData", e);
             VUtil.alertException("An error occurred while transformation data", e);
+        }
+    }
+
+    /**
+     *
+     */
+    public void inverseTransformData(ActionEvent actionEvent) {
+        log.trace("");
+        try{
+            sourceChart.buildingSChart(profileChart, "");
+        } catch (Exception e){
+            log.error("An error occurred in the method View.inverseTransformData", e);
+            VUtil.alertException("An error occurred while inverse transformation data", e);
         }
     }
 

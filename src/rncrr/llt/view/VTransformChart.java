@@ -20,35 +20,17 @@ public class VTransformChart extends AbstractChart {
 
     private static final Logger log = LogManager.getLogger(VTransformChart.class);
 
-    private DigitalSeries digitalSeries;
-
     public void buildingTChart(TableView<SourceSeries> seriesTableView, XYChart<Double, Double> chart, ECharts eCharts, ChoiceBox windowData) {
         log.trace("Entering into method -> VTransformChart.buildingSpectrumChart");
         log.trace("Try to get the data from the selected row");
         SourceSeries selectedSeries = seriesTableView.getSelectionModel().getSelectedItem();
         if(selectedSeries != null) {
             setDigitalSeries(selectedSeries, eCharts, windowData);
-            buildingTransformChart(chart, digitalSeries);
+            buildingChart(chart, digitalSeries.getPoints(), "NEW");
         } else {
             log.warn("Should choose a source signal to transform");
             VUtil.alertMessage("Should choose a source signal to transform");
         }
     }
 
-    private void setDigitalSeries(SourceSeries selectedSeries, ECharts eCharts, ChoiceBox windowData){
-        switch (eCharts) {
-            case SPECTRUM :
-                digitalSeries = new TransformService().getDSeries(selectedSeries, windows(windowData));
-                break;
-            case WINDOW :
-                digitalSeries = new TransformService().getDWindows(selectedSeries, windows(windowData));
-                break;
-            default:
-                digitalSeries = new TransformService().getDSeries(selectedSeries, windows(windowData));
-        }
-    }
-
-    private EWindows windows(ChoiceBox windowData){
-        return EWindows.getNameByValue(windowData.getValue().toString());
-    }
 }

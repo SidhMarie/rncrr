@@ -5,7 +5,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rncrr.llt.model.bean.SourceSeries;
-import rncrr.llt.model.service.AscFileReaderService;
+import rncrr.llt.model.service.AscFileService;
 import rncrr.llt.view.api.IDataTable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +21,7 @@ import java.io.File;
  */
 public class VDataTable implements IDataTable{
 
+    private AscFileService fileService;
     private ObservableList<SourceSeries> seriesList;
     private static final Logger log = LogManager.getLogger(VDataTable.class);
 
@@ -32,7 +33,16 @@ public class VDataTable implements IDataTable{
     public VDataTable() {
         log.trace("Entering into class VDataTable");
         log.trace("Try to initialize new collection seriesList");
+        this.fileService = new AscFileService();
         this.seriesList = FXCollections.observableArrayList();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public AscFileService getFileService() {
+        return fileService;
     }
 
     /**
@@ -77,11 +87,11 @@ public class VDataTable implements IDataTable{
     private ObservableList<SourceSeries> readFile(File file) throws Exception {
         log.trace("Entering into method -> VDataTable.readFile");
         log.trace("Try to create new object AscFileReader");
-        AscFileReaderService fr = new AscFileReaderService();
+
         log.trace("Set collection seriesList");
-        fr.setSeriesList(seriesList);
+        fileService.setSeriesList(seriesList);
         log.trace("Try to read file data and return it");
-        return fr.read(file.getPath());
+        return fileService.read(file.getPath());
     }
 
 }

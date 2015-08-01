@@ -55,6 +55,15 @@ public class TransformService implements ITransformService {
         return dSeries;
     }
 
+//    public DigitalSeries getISeries(){
+//        int n = dSeries.getPoints().size();
+//        Complex[] x = new Complex[n];
+//        for(int i = 0; i < n; i++){
+//            x[i] = new Complex()
+//        }
+//
+//    }
+
     @Override
     public DigitalSeries getDWindows(SourceSeries sSeries, EWindows windows) {
         List<Double> wList = setWindowsData(windows, sSeries.getXPoints());

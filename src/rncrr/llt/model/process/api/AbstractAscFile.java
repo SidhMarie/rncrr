@@ -7,15 +7,20 @@ import javafx.collections.ObservableList;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
  * Created by Sidh on 28.02.2015.
  */
-public abstract class AbstractFileReader {
+public abstract class AbstractAscFile {
 
+
+    public List<String> dataLine;
     protected ObservableList<SourceSeries> seriesList;
-    private static final Logger log = LogManager.getLogger(AbstractFileReader.class);
+    private static final Logger log = LogManager.getLogger(AbstractAscFile.class);
+
 
     /**
      * Method set the seriesList
@@ -57,10 +62,13 @@ public abstract class AbstractFileReader {
         log.trace("Try to read the lines in a loop and fill series");
         while(scanner.hasNext()) {
             line = scanner.nextLine();
+            dataLine.add(line);
             readLine(line);
         }
         log.trace("The incoming stream read and successfully parsed");
     }
+
+
 
     /**
      * Helper method to parse the string
@@ -77,5 +85,6 @@ public abstract class AbstractFileReader {
      * @param line - input line
      */
     abstract protected void readLine(String line);
+
 
 }

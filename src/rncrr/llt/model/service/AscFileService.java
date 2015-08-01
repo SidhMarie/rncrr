@@ -6,17 +6,18 @@ import rncrr.llt.model.utils.eobject.EAsc;
 import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.bean.SourceSeries;
-import rncrr.llt.model.process.api.AbstractFileReader;
+import rncrr.llt.model.process.api.AbstractAscFile;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 
 /**
  * Created by Sidh on 27.02.2015.
  */
-public class AscFileReaderService extends AbstractFileReader {
+public class AscFileService extends AbstractAscFile {
 
-    private static final Logger log = LogManager.getLogger(AscFileReaderService.class);
+    private static final Logger log = LogManager.getLogger(AscFileService.class);
 
     private int flag;
     private SourceSeries series;
@@ -25,12 +26,13 @@ public class AscFileReaderService extends AbstractFileReader {
     /**
      * Constructor - initializes the object type SSeries
      */
-    public AscFileReaderService() {
+    public AscFileService() {
         log.trace("Entering into class -> AscFileReader");
         log.trace("Initialize the variable -> flag = 0");
         this.flag = 0;
         log.trace("Initialize the new object -> SSeries");
         this.series = new SourceSeries();
+        this.dataLine = new ArrayList<>();
     }
 
     /**

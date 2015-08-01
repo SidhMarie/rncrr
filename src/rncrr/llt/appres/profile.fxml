@@ -28,6 +28,7 @@
                        </ChoiceBox>
                        <Button mnemonicParsing="false" onAction="#windowData" style="-fx-graphic: url('file:resources/img/toolBarButWindow.png');" text="" />
                        <Button mnemonicParsing="false" onAction="#transformData" style="-fx-graphic: url('file:resources/img/toolBarButFFT.png');" text="" />
+                       <Button mnemonicParsing="false" onAction="#inverseTransformData" style="-fx-graphic: url('file:resources/img/toolBarButFFT.png');" text="" />
                    </items>
                </ToolBar>
            </children>
