@@ -22,32 +22,30 @@ public class TransformService implements ITransformService {
 
     private static final Logger log = LogManager.getLogger(TransformService.class);
 
+    private Complex[] x;
+    private Complex[] y;
     private DigitalSeries dSeries;
 
-    /**
-     *
-     */
-    public TransformService() {
-        dSeries = new DigitalSeries();
-    }
+    public TransformService() {}
 
-    /**
-     *
-     * @param sSeries
-     * @return
-     */
     @Override
-    public DigitalSeries getDSeries(SourceSeries sSeries, EWindows windows) {
-        log.trace("");
+    public void valuesXY(SourceSeries sSeries, EWindows windows) {
         List<Double> wList = setWindowsData(windows, sSeries.getXPoints());
         List<Double> xList = Transform.inputList(wList);
         int n = xList.size();
-        Complex[] x = new Complex[n];
+        x = new Complex[n];
         for (int i = 0; i < n; i++) {
             x[i] = new Complex(xList.get(i), 0d);
         }
-        Complex[] y = Transform.directTransform(x);
-        double nSpectrum[] = new double[n];
+        y = Transform.directTransform(x);
+    }
+
+    @Override
+    public DigitalSeries getSpectrum(SourceSeries sSeries, EWindows windows) {
+        valuesXY(sSeries, windows);
+        int n = x.length;
+        double[] nSpectrum = new double[n];
+        dSeries = new DigitalSeries();
         for(int i = 0; i < n; i++) {
             nSpectrum[i] = y[i].abs() / n; // нормировка
             dSeries.addPoints(new Points(x[i].re(), nSpectrum[i]));
@@ -55,24 +53,42 @@ public class TransformService implements ITransformService {
         return dSeries;
     }
 
-//    public DigitalSeries getISeries(){
-//        int n = dSeries.getPoints().size();
-//        Complex[] x = new Complex[n];
-//        for(int i = 0; i < n; i++){
-//            x[i] = new Complex()
-//        }
-//
-//    }
+    @Override
+    public DigitalSeries getSourceSeries(SourceSeries sSeries, EWindows windows) {
+        Complex[] source = Transform.inverseTransform(y);
+        dSeries = new DigitalSeries();
+        List<Double> yPoint = sSeries.getYPoints();
+        int ySize = yPoint.size();
+        for(int i = 0; i < source.length; i++){
+            if(i < ySize){
+                dSeries.addPoints(new Points(source[i].re(), yPoint.get(i)));
+            } else {
+                dSeries.addPoints(new Points(source[i].re(), 0D));
+            }
+        }
+        return dSeries;
+    }
 
     @Override
     public DigitalSeries getDWindows(SourceSeries sSeries, EWindows windows) {
         List<Double> wList = setWindowsData(windows, sSeries.getXPoints());
         int n = wList.size();
         List<Double> yList = sSeries.getYPoints();
+        dSeries = new DigitalSeries();
         for(int i = 0; i < n; i++){
             dSeries.addPoints(new Points(wList.get(i), yList.get(i)));
         }
         return dSeries;
+    }
+
+    @Override
+    public Complex[] getX() {
+        return x;
+    }
+
+    @Override
+    public Complex[] getY() {
+        return y;
     }
 
     private List<Double> setWindowsData(EWindows windows, List<Double> list) {

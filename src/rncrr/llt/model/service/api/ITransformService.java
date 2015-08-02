@@ -2,6 +2,7 @@ package rncrr.llt.model.service.api;
 
 import rncrr.llt.model.bean.DigitalSeries;
 import rncrr.llt.model.bean.SourceSeries;
+import rncrr.llt.model.process.dsp.Complex;
 import rncrr.llt.model.utils.eobject.EWindows;
 
 /**
@@ -9,8 +10,40 @@ import rncrr.llt.model.utils.eobject.EWindows;
  */
 public interface ITransformService {
 
-    DigitalSeries getDSeries(SourceSeries sSeries, EWindows windows);
+    /**
+     *
+     * @param sSeries
+     * @param windows
+     * @return
+     */
+    void valuesXY(SourceSeries sSeries, EWindows windows);
 
-    public DigitalSeries getDWindows(SourceSeries sSeries, EWindows windows);
+    /**
+     *
+     * @param sSeries
+     * @param windows
+     * @return
+     */
+    DigitalSeries getSpectrum(SourceSeries sSeries, EWindows windows);
+
+    /**
+     *
+     * @return
+     */
+    DigitalSeries getSourceSeries(SourceSeries sSeries, EWindows windows);
+
+    /**
+     *
+     * @param sSeries
+     * @param windows
+     * @return
+     */
+    DigitalSeries getDWindows(SourceSeries sSeries, EWindows windows);
+
+
+
+    Complex[] getX();
+
+    Complex[] getY();
 
 }
