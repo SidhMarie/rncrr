@@ -32,15 +32,17 @@ public interface ICharts {
      * @param xychart
      * @param flag
      */
-    void buildingViewChart(TableView<SourceSeries> seriesTableView, XYChart<Double, Double> xychart, String flag) throws Exception;
+    void buildingProfileChart(TableView<SourceSeries> seriesTableView, XYChart<Double, Double> xychart, ChoiceBox windowData, String flag) throws Exception;
 
     /**
      *
      * @param seriesTableView
-     * @param chart
+     * @param xychart
      * @param eCharts
      * @param windowData
+     * @param flag
+     * @throws Exception
      */
-    void buildingViewChart(TableView<SourceSeries> seriesTableView, XYChart<Double, Double> chart, ECharts eCharts, ChoiceBox windowData, String flag) throws Exception;
+    void buildingSpectrumChart(TableView<SourceSeries> seriesTableView, XYChart<Double, Double> xychart, ECharts eCharts, ChoiceBox windowData, String flag) throws  Exception;
 
 }

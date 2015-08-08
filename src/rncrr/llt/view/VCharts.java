@@ -30,20 +30,22 @@ public class VCharts implements ICharts {
     private DigitalSeries digitalSeries;
     private ITransformService transformService;
     private XYChart.Series<Double, Double> seriesChart;
-    private ObservableList<XYChart.Series<Double, Double>> chart;
+    ObservableList<XYChart.Series<Double, Double>> profileChart;
+    ObservableList<XYChart.Series<Double, Double>> spectrumChart;
 
     private static final Logger log = LogManager.getLogger(VCharts.class);
 
     public VCharts() {
         transformService = new TransformService();
+        profileChart = FXCollections.observableArrayList();
+        spectrumChart = FXCollections.observableArrayList();
     }
 
     @Override
-    public void initChart(XYChart<Double, Double> chart) throws Exception {
+    public void initChart(XYChart<Double, Double> viewChart) throws Exception {
         log.trace("Entering into method -> VCharts.initChart");
         log.trace("Initialization variable chart");
-        this.chart = FXCollections.observableArrayList();
-
+        ObservableList<XYChart.Series<Double, Double>> chart = FXCollections.observableArrayList();
         log.trace("Initialization variable seriesChart");
         seriesChart = new XYChart.Series<>();
 
@@ -51,11 +53,11 @@ public class VCharts implements ICharts {
         seriesChart.getData().add(new XYChart.Data<>(0.0, 0.0));
 
         log.trace("Add seriesChart to the chart");
-        this.chart.add(seriesChart);
+        chart.add(seriesChart);
 
         log.trace("Set data to chart");
-        chart.setLegendVisible(false);
-        chart.setData(this.chart);
+        viewChart.setLegendVisible(false);
+        viewChart.setData(chart);
         log.trace("Initialization is complete chart");
     }
 
@@ -68,13 +70,31 @@ public class VCharts implements ICharts {
     }
 
     @Override
-    public void buildingViewChart(TableView<SourceSeries> seriesTableView, XYChart<Double, Double> xychart, String flag) throws Exception {
+    public void buildingProfileChart(TableView<SourceSeries> seriesTableView, XYChart<Double, Double> xychart, ChoiceBox windowData, String flag) throws Exception {
         log.trace("Entering into method -> VCharts.buildingViewChart");
         xychart.setLegendVisible(true);
         log.trace("Try to get the data from the selected row");
         SourceSeries selectedSeries = seriesTableView.getSelectionModel().getSelectedItem();
         if(selectedSeries != null) {
-            buildingChart(xychart, selectedSeries.getPoints(), flag);
+            if(flag.equals("NEW")) {
+                profileChart = FXCollections.observableArrayList();
+                seriesChart = new LineChart.Series<>();
+                log.trace("Try to set the data chart");
+                for (Points point : selectedSeries.getPoints()) {
+                    seriesChart.getData().add(new XYChart.Data<>(point.getX(), point.getY()));
+                }
+            } else {
+                seriesChart = new LineChart.Series<>();
+                digitalSeries = transformService.getDigitalSeries(selectedSeries, ECharts.SOURCE, windowData);
+                log.trace("Try to set the data chart");
+                for (Points point : digitalSeries.getPoints()) {
+                    seriesChart.getData().add(new XYChart.Data<>(point.getX(), point.getY()));
+                }
+            }
+            profileChart.add(seriesChart);
+            xychart.setLegendVisible(false);
+            log.trace("Set the data chart");
+            xychart.setData(profileChart);
         } else {
             log.warn("Should choose a source signal to transform");
             VUtil.alertMessage("Should choose a source signal to transform");
@@ -83,14 +103,25 @@ public class VCharts implements ICharts {
 
 
     @Override
-    public void buildingViewChart(TableView<SourceSeries> seriesTableView, XYChart<Double, Double> chart, ECharts eCharts, ChoiceBox windowData, String flag) throws  Exception {
+    public void buildingSpectrumChart(TableView<SourceSeries> seriesTableView, XYChart<Double, Double> xychart, ECharts eCharts, ChoiceBox windowData, String flag) throws  Exception {
         log.trace("Entering into method -> VCharts.buildingViewChart");
         log.trace("Try to get the data from the selected row");
         SourceSeries selectedSeries = seriesTableView.getSelectionModel().getSelectedItem();
         if(selectedSeries != null) {
-            setDigitalSeries(selectedSeries, eCharts, windowData);
+            digitalSeries = transformService.getDigitalSeries(selectedSeries, eCharts, windowData);
             if(digitalSeries != null){
-                buildingChart(chart, digitalSeries.getPoints(), flag);
+                if(flag.equals("NEW")) {
+                    spectrumChart = FXCollections.observableArrayList();
+                }
+                seriesChart = new LineChart.Series<>();
+                log.trace("Try to set the data chart");
+                for (Points point : digitalSeries.getPoints()) {
+                    seriesChart.getData().add(new XYChart.Data<>(point.getX(), point.getY()));
+                }
+                spectrumChart.add(seriesChart);
+                xychart.setLegendVisible(false);
+                log.trace("Set the data chart");
+                xychart.setData(spectrumChart);
             } else {
                 log.warn("Should choose a source signal to inverse transform");
                 VUtil.alertMessage("Should choose a source signal to inverse transform");
@@ -101,67 +132,8 @@ public class VCharts implements ICharts {
         }
     }
 
-    /**
-     *
-     * @param viewChart
-     * @param pointsList
-     * @param flag
-     */
-    private void buildingChart(XYChart<Double, Double> viewChart, List<Points> pointsList, String flag) throws Exception {
-        log.trace("Entering into method -> VCharts.buildingTransformChart");
-        log.trace("Try to get the data from the selected row");
-        log.trace("Initialize the new object chart");
-        if(flag.equals("NEW")) {
-            chart = FXCollections.observableArrayList();
-        }
-        log.trace("Try to set the data chart");
-        seriesChart = new LineChart.Series<>();
-        for (Points point : pointsList) {
-            seriesChart.getData().add(new XYChart.Data<>(point.getX(), point.getY()));
-        }
-        chart.add(seriesChart);
-        viewChart.setLegendVisible(false);
-        log.trace("Set the data chart");
-        viewChart.setData(chart);
-    }
 
-
-    /**
-     *
-     * @param selectedSeries
-     * @param eCharts
-     * @param windowData
-     */
-    private void setDigitalSeries(SourceSeries selectedSeries, ECharts eCharts, ChoiceBox windowData) {
-        try{
-            switch (eCharts) {
-                case SOURCE :
-                    digitalSeries = transformService.getSourceSeries(selectedSeries, windows(windowData));
-                    break;
-                case SPECTRUM :
-                    digitalSeries = transformService.getSpectrum(selectedSeries, windows(windowData));
-                    break;
-                case WINDOW :
-                    digitalSeries = transformService.getDWindows(selectedSeries, windows(windowData));
-                    break;
-                default:
-                    digitalSeries = null;
-            }
-        } catch (Exception e) {
-            digitalSeries = null;
-        }
-    }
-
-    /**
-     *
-     * @param windowData
-     * @return
-     */
-    private EWindows windows(ChoiceBox windowData){
-        return EWindows.getNameByValue(windowData.getValue().toString());
-    }
-
-        //        for(XYChart.Series<Double, Double> s : profileChart.getData()) {
+//        for(XYChart.Series<Double, Double> s : profileChart.getData()) {
 //            for (XYChart.Data<Double, Double> data : s.getData()) {
 //                Tooltip tooltip = new Tooltip(data.getXValue() + " " + data.getYValue());
 //                data.getNode().setOnMouseEntered(new EventHandler<Event>() {

@@ -1,8 +1,10 @@
 package rncrr.llt.model.service.api;
 
+import javafx.scene.control.ChoiceBox;
 import rncrr.llt.model.bean.DigitalSeries;
 import rncrr.llt.model.bean.SourceSeries;
 import rncrr.llt.model.process.dsp.Complex;
+import rncrr.llt.model.utils.eobject.ECharts;
 import rncrr.llt.model.utils.eobject.EWindows;
 
 /**
@@ -20,30 +22,11 @@ public interface ITransformService {
 
     /**
      *
-     * @param sSeries
-     * @param windows
+     * @param selectedSeries
+     * @param eCharts
+     * @param windowData
      * @return
      */
-    DigitalSeries getSpectrum(SourceSeries sSeries, EWindows windows);
-
-    /**
-     *
-     * @return
-     */
-    DigitalSeries getSourceSeries(SourceSeries sSeries, EWindows windows);
-
-    /**
-     *
-     * @param sSeries
-     * @param windows
-     * @return
-     */
-    DigitalSeries getDWindows(SourceSeries sSeries, EWindows windows);
-
-
-
-    Complex[] getX();
-
-    Complex[] getY();
+    DigitalSeries getDigitalSeries(SourceSeries selectedSeries, ECharts eCharts, ChoiceBox windowData);
 
 }

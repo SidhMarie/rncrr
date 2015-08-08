@@ -1,6 +1,7 @@
 package rncrr.llt.model.service;
 
 
+import javafx.scene.control.ChoiceBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rncrr.llt.model.bean.DigitalSeries;
@@ -10,6 +11,7 @@ import rncrr.llt.model.process.dsp.Complex;
 import rncrr.llt.model.process.dsp.Transform;
 import rncrr.llt.model.process.dsp.Window;
 import rncrr.llt.model.service.api.ITransformService;
+import rncrr.llt.model.utils.eobject.ECharts;
 import rncrr.llt.model.utils.eobject.EWindows;
 
 import java.util.ArrayList;
@@ -41,7 +43,29 @@ public class TransformService implements ITransformService {
     }
 
     @Override
-    public DigitalSeries getSpectrum(SourceSeries sSeries, EWindows windows) {
+    public DigitalSeries getDigitalSeries(SourceSeries selectedSeries, ECharts eCharts, ChoiceBox windowData) {
+        try{
+            switch (eCharts) {
+                case SOURCE :
+                    return getSourceSeries(selectedSeries, windows(windowData));
+                case SPECTRUM :
+                    return getSpectrum(selectedSeries, windows(windowData));
+                case WINDOW :
+                    return getDWindows(selectedSeries, windows(windowData));
+                default:
+                    return null;
+            }
+        } catch (Exception e) {
+            dSeries = null;
+        }
+        return null;
+    }
+
+    private EWindows windows(ChoiceBox windowData){
+        return EWindows.getNameByValue(windowData.getValue().toString());
+    }
+
+    private DigitalSeries getSpectrum(SourceSeries sSeries, EWindows windows) {
         valuesXY(sSeries, windows);
         int n = x.length;
         double[] nSpectrum = new double[n];
@@ -53,8 +77,7 @@ public class TransformService implements ITransformService {
         return dSeries;
     }
 
-    @Override
-    public DigitalSeries getSourceSeries(SourceSeries sSeries, EWindows windows) {
+    private DigitalSeries getSourceSeries(SourceSeries sSeries, EWindows windows) {
         Complex[] source = Transform.inverseTransform(y);
         dSeries = new DigitalSeries();
         List<Double> yPoint = sSeries.getYPoints();
@@ -69,8 +92,7 @@ public class TransformService implements ITransformService {
         return dSeries;
     }
 
-    @Override
-    public DigitalSeries getDWindows(SourceSeries sSeries, EWindows windows) {
+    private DigitalSeries getDWindows(SourceSeries sSeries, EWindows windows) {
         List<Double> wList = setWindowsData(windows, sSeries.getXPoints());
         int n = wList.size();
         List<Double> yList = sSeries.getYPoints();
@@ -81,15 +103,6 @@ public class TransformService implements ITransformService {
         return dSeries;
     }
 
-    @Override
-    public Complex[] getX() {
-        return x;
-    }
-
-    @Override
-    public Complex[] getY() {
-        return y;
-    }
 
     private List<Double> setWindowsData(EWindows windows, List<Double> list) {
         List<Double> result = new ArrayList<>();

@@ -79,7 +79,7 @@ public class View {
                 log.trace("Try to set the values in the table details");
                 setAscDataGridValue(series);
                 log.trace("Try to build profile signal chart");
-                sourceChart.buildingViewChart(seriesTableView, profileChart, "NEW");
+                sourceChart.buildingProfileChart(seriesTableView, profileChart, windowData, "NEW");
                 sourceChart.clearChart(spectrumChart);
             }
         } catch (Exception e) {
@@ -128,7 +128,7 @@ public class View {
      */
     public void windowData(ActionEvent actionEvent) {
         try{
-            sourceChart.buildingViewChart(seriesTableView, spectrumChart, ECharts.WINDOW, windowData, "NEW");
+            sourceChart.buildingSpectrumChart(seriesTableView, spectrumChart, ECharts.WINDOW, windowData, "NEW");
         } catch (Exception e){
             log.error("An error occurred in the method View.transformData", e);
             VUtil.alertException("An error occurred while transformation data", e);
@@ -142,7 +142,7 @@ public class View {
         log.trace("Entering into method -> View.transformData");
         try {
             log.trace("Try to build spectrum signal chart");
-            sourceChart.buildingViewChart(seriesTableView, spectrumChart, ECharts.SPECTRUM, windowData, "NEW");
+            sourceChart.buildingSpectrumChart(seriesTableView, spectrumChart, ECharts.SPECTRUM, windowData, "NEW");
         } catch (Exception e) {
             log.error("An error occurred in the method View.transformData", e);
             VUtil.alertException("An error occurred while transformation data", e);
@@ -155,7 +155,7 @@ public class View {
     public void inverseTransformData(ActionEvent actionEvent) {
         log.trace("");
         try{
-            sourceChart.buildingViewChart(seriesTableView, profileChart, ECharts.SOURCE, windowData, "");
+            sourceChart.buildingProfileChart(seriesTableView, profileChart, windowData, "");
         } catch (Exception e){
             log.error("An error occurred in the method View.inverseTransformData", e);
             VUtil.alertException("An error occurred while inverse transformation data", e);
