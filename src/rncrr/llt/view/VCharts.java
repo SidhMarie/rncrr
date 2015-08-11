@@ -30,15 +30,15 @@ public class VCharts implements ICharts {
     private DigitalSeries digitalSeries;
     private ITransformService transformService;
     private XYChart.Series<Double, Double> seriesChart;
-    ObservableList<XYChart.Series<Double, Double>> profileChart;
-    ObservableList<XYChart.Series<Double, Double>> spectrumChart;
+    private ObservableList<XYChart.Series<Double, Double>> profileChart;
+    private ObservableList<XYChart.Series<Double, Double>> spectrumChart;
 
     private static final Logger log = LogManager.getLogger(VCharts.class);
 
-    public VCharts() {
+    public VCharts(ObservableList<XYChart.Series<Double, Double>> profileChart, ObservableList<XYChart.Series<Double, Double>> spectrumChart) {
         transformService = new TransformService();
-        profileChart = FXCollections.observableArrayList();
-        spectrumChart = FXCollections.observableArrayList();
+        this.profileChart = profileChart;
+        this.spectrumChart = spectrumChart;
     }
 
     @Override

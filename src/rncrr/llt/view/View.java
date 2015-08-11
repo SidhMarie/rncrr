@@ -1,5 +1,8 @@
 package rncrr.llt.view;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.chart.XYChart;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rncrr.llt.model.utils.eobject.ECharts;
@@ -25,7 +28,10 @@ public class View {
 
     private IDataSave dataSave;
     private IDataTable dataTable;
-    private ICharts sourceChart;
+    private ICharts chart;
+    private ObservableList<XYChart.Series<Double, Double>> pChart;
+    private ObservableList<XYChart.Series<Double, Double>> sChart;
+
 
     /**
      * Constructor - initialize objects VDataTable и VDataChart
@@ -35,9 +41,10 @@ public class View {
         dataSave = new VDataSave();
         log.trace("Initialize the new object -> VDataTable");
         dataTable = new VDataTable();
-        log.trace("Initialize the new object -> VSourceChart");
-        sourceChart = new VCharts();
-        log.trace("Initialize the new object -> VTransformChart");
+        log.trace("Initialize the new object -> VChart");
+        pChart = FXCollections.observableArrayList();
+        sChart = FXCollections.observableArrayList();
+        chart = new VCharts(pChart, sChart);
     }
 
     /**
@@ -50,8 +57,8 @@ public class View {
             log.trace("Try to open a data file for reading");
             dataTable.viewDataTable(seriesTableView, columnLabel_1, columnLabel_2, columnLabel_3);
             log.trace("Try to initialize chart");
-            sourceChart.initChart(profileChart);
-            sourceChart.initChart(spectrumChart);
+            chart.initChart(profileChart);
+            chart.initChart(spectrumChart);
         } catch (Exception e) {
             log.error("An error occurred in the method View.openFileData", e);
             VUtil.alertException("An error occurred while trying to open and read the file", e);
@@ -79,8 +86,8 @@ public class View {
                 log.trace("Try to set the values in the table details");
                 setAscDataGridValue(series);
                 log.trace("Try to build profile signal chart");
-                sourceChart.buildingProfileChart(seriesTableView, profileChart, windowData, "NEW");
-                sourceChart.clearChart(spectrumChart);
+                chart.buildingProfileChart(seriesTableView, profileChart, windowData, "NEW");
+                chart.clearChart(spectrumChart);
             }
         } catch (Exception e) {
             log.error("An error occurred in the method View.detailSelectedRow",e);
@@ -99,8 +106,8 @@ public class View {
                 log.trace("Try to remove the selected row");
                 dataTable.deleteRows(seriesTableView.getSelectionModel().getSelectedItems());
                 log.trace("Try to clear the charts");
-                sourceChart.clearChart(profileChart);
-                sourceChart.clearChart(spectrumChart);
+                chart.clearChart(profileChart);
+                chart.clearChart(spectrumChart);
                 log.trace("Try to clear the table details");
                 clearDataGridValue();
             } else {
@@ -128,7 +135,7 @@ public class View {
      */
     public void windowData(ActionEvent actionEvent) {
         try{
-            sourceChart.buildingSpectrumChart(seriesTableView, spectrumChart, ECharts.WINDOW, windowData, "NEW");
+            chart.buildingSpectrumChart(seriesTableView, spectrumChart, ECharts.WINDOW, windowData, "NEW");
         } catch (Exception e){
             log.error("An error occurred in the method View.transformData", e);
             VUtil.alertException("An error occurred while transformation data", e);
@@ -142,7 +149,7 @@ public class View {
         log.trace("Entering into method -> View.transformData");
         try {
             log.trace("Try to build spectrum signal chart");
-            sourceChart.buildingSpectrumChart(seriesTableView, spectrumChart, ECharts.SPECTRUM, windowData, "NEW");
+            chart.buildingSpectrumChart(seriesTableView, spectrumChart, ECharts.SPECTRUM, windowData, "NEW");
         } catch (Exception e) {
             log.error("An error occurred in the method View.transformData", e);
             VUtil.alertException("An error occurred while transformation data", e);
@@ -155,7 +162,7 @@ public class View {
     public void inverseTransformData(ActionEvent actionEvent) {
         log.trace("");
         try{
-            sourceChart.buildingProfileChart(seriesTableView, profileChart, windowData, "");
+            chart.buildingProfileChart(seriesTableView, profileChart, windowData, "");
         } catch (Exception e){
             log.error("An error occurred in the method View.inverseTransformData", e);
             VUtil.alertException("An error occurred while inverse transformation data", e);
