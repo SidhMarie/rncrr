@@ -67,12 +67,12 @@ public class TransformService implements ITransformService {
 
     private DigitalSeries getSpectrum(SourceSeries sSeries, EWindows windows) {
         valuesXY(sSeries, windows);
-        int n = x.length;
+        int n = x.length/2;
         double[] nSpectrum = new double[n];
         dSeries = new DigitalSeries();
         for(int i = 0; i < n; i++) {
-            nSpectrum[i] = y[i].abs() / n; // нормировка
-            dSeries.addPoints(new Points(x[i].re(), nSpectrum[i]));
+            nSpectrum[i] = y[i].ps() / n; // нормировка
+            dSeries.addPoints(new Points(i, nSpectrum[i]));
         }
         return dSeries;
     }
