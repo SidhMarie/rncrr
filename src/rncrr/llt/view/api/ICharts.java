@@ -6,6 +6,7 @@ import javafx.scene.control.TableView;
 import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.bean.SourceSeries;
 import rncrr.llt.model.utils.eobject.ECharts;
+import rncrr.llt.view.charts.LineMarkerChart;
 
 import java.util.List;
 
@@ -18,13 +19,13 @@ public interface ICharts {
      *
      * @param chart
      */
-    void initChart(XYChart<Double, Double> chart) throws Exception;
+    void initChart(XYChart<Number, Number> chart) throws Exception;
 
     /**
      *
      * @param chart
      */
-    void clearChart(XYChart<Double, Double> chart) throws Exception;
+    void clearChart(XYChart<Number, Number> chart) throws Exception;
 
     /**
      *
@@ -32,7 +33,7 @@ public interface ICharts {
      * @param xychart
      * @param flag
      */
-    void buildingProfileChart(TableView<SourceSeries> seriesTableView, XYChart<Double, Double> xychart, ChoiceBox windowData, String flag) throws Exception;
+    void buildingProfileChart(TableView<SourceSeries> seriesTableView, XYChart<Number, Number> xychart, ChoiceBox windowData, String flag) throws Exception;
 
     /**
      *
@@ -43,6 +44,6 @@ public interface ICharts {
      * @param flag
      * @throws Exception
      */
-    void buildingSpectrumChart(TableView<SourceSeries> seriesTableView, XYChart<Double, Double> xychart, ECharts eCharts, ChoiceBox windowData, String flag) throws  Exception;
+    void buildingSpectrumChart(TableView<SourceSeries> seriesTableView, LineMarkerChart<Number, Number> xychart, ECharts eCharts, ChoiceBox windowData, String flag) throws  Exception;
 
 }

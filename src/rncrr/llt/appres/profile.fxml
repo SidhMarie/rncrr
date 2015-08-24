@@ -94,9 +94,9 @@
       </VBox>
    </left>
    <center>
-       <VBox prefHeight="800.0" prefWidth="210.0" BorderPane.alignment="CENTER">
+       <VBox fx:id="vboxCharts" prefHeight="800.0" prefWidth="210.0" BorderPane.alignment="CENTER">
            <children>
-               <LineChart fx:id="profileChart" prefHeight="500.0">
+               <LineChart fx:id="profileChart" prefHeight="450.0">
                    <xAxis>
                        <NumberAxis side="BOTTOM" />
                    </xAxis>
@@ -104,14 +104,14 @@
                        <NumberAxis side="LEFT" />
                    </yAxis>
                </LineChart>
-               <LineChart fx:id="spectrumChart" prefHeight="300.0">
-                   <xAxis>
-                       <NumberAxis side="BOTTOM" />
-                   </xAxis>
-                   <yAxis>
-                       <NumberAxis side="LEFT" />
-                   </yAxis>
-               </LineChart>
+               <!--<LineChart fx:id="spectrumChart" prefHeight="350.0">-->
+                   <!--<xAxis>-->
+                       <!--<NumberAxis side="BOTTOM" />-->
+                   <!--</xAxis>-->
+                   <!--<yAxis>-->
+                       <!--<NumberAxis side="LEFT" />-->
+                   <!--</yAxis>-->
+               <!--</LineChart>-->
            </children>
        </VBox>
    </center>

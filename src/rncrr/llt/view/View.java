@@ -2,7 +2,9 @@ package rncrr.llt.view;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rncrr.llt.model.utils.eobject.ECharts;
@@ -17,6 +19,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
+import rncrr.llt.view.charts.LineMarkerChart;
 import rncrr.llt.view.utils.VUtil;
 
 import java.util.Objects;
@@ -26,11 +29,13 @@ public class View {
 
     private static final Logger log = LogManager.getLogger(View.class);
 
+
     private IDataSave dataSave;
     private IDataTable dataTable;
     private ICharts chart;
-    private ObservableList<XYChart.Series<Double, Double>> pChart;
-    private ObservableList<XYChart.Series<Double, Double>> sChart;
+    private LineMarkerChart spectrumChart;
+    private ObservableList<XYChart.Series<Number, Number>> pChart;
+    private ObservableList<XYChart.Series<Number, Number>> sChart;
 
 
     /**
@@ -45,6 +50,11 @@ public class View {
         pChart = FXCollections.observableArrayList();
         sChart = FXCollections.observableArrayList();
         chart = new VCharts(pChart, sChart);
+    }
+
+    public void initialize(){
+        this.spectrumChart = new LineMarkerChart(new NumberAxis(), new NumberAxis());
+        vboxCharts.getChildren().add(spectrumChart);
     }
 
     /**
@@ -270,59 +280,32 @@ public class View {
         rowValue_9.setText("");
     }
 
-    @FXML
-    private TableView<SourceSeries> seriesTableView;
-    @FXML
-    private LineChart<Double, Double> profileChart;
-    @FXML
-    private LineChart<Double, Double> spectrumChart;
-    @FXML
-    public ChoiceBox windowData;
-    @FXML
-    private TableColumn<SourceSeries, String> columnLabel_1;
-    @FXML
-    private TableColumn<SourceSeries, String> columnLabel_2;
-    @FXML
-    private TableColumn<SourceSeries, String> columnLabel_3;
-    @FXML
-    private Label rowLabel_0;
-    @FXML
-    private Label rowLabel_1;
-    @FXML
-    private Label rowLabel_2;
-    @FXML
-    private Label rowLabel_3;
-    @FXML
-    private Label rowLabel_4;
-    @FXML
-    private Label rowLabel_5;
-    @FXML
-    private Label rowLabel_6;
-    @FXML
-    private Label rowLabel_7;
-    @FXML
-    private Label rowLabel_8;
-    @FXML
-    private Label rowLabel_9;
-    @FXML
-    private Label rowValue_0;
-    @FXML
-    private Label rowValue_1;
-    @FXML
-    private Label rowValue_2;
-    @FXML
-    private Label rowValue_3;
-    @FXML
-    private Label rowValue_4;
-    @FXML
-    private Label rowValue_5;
-    @FXML
-    private Label rowValue_6;
-    @FXML
-    private Label rowValue_7;
-    @FXML
-    private Label rowValue_8;
-    @FXML
-    private Label rowValue_9;
+    @FXML private TableView<SourceSeries> seriesTableView;
+    @FXML private VBox vboxCharts;
+    @FXML private LineChart<Number, Number> profileChart;
+    @FXML public ChoiceBox windowData;
+    @FXML private TableColumn<SourceSeries, String> columnLabel_1;
+    @FXML private TableColumn<SourceSeries, String> columnLabel_2;
+    @FXML private TableColumn<SourceSeries, String> columnLabel_3;
+    @FXML private Label rowLabel_0;
+    @FXML private Label rowLabel_1;
+    @FXML private Label rowLabel_2;
+    @FXML private Label rowLabel_3;
+    @FXML private Label rowLabel_4;
+    @FXML private Label rowLabel_5;
+    @FXML private Label rowLabel_6;
+    @FXML private Label rowLabel_7;
+    @FXML private Label rowLabel_8;
+    @FXML private Label rowLabel_9;
+    @FXML private Label rowValue_0;
+    @FXML private Label rowValue_1;
+    @FXML private Label rowValue_2;
+    @FXML private Label rowValue_3;
+    @FXML private Label rowValue_4;
+    @FXML private Label rowValue_5;
+    @FXML private Label rowValue_6;
+    @FXML private Label rowValue_7;
+    @FXML private Label rowValue_8;
+    @FXML private Label rowValue_9;
 
 }

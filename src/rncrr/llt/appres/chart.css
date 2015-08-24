@@ -3,10 +3,10 @@
 }
 
 .chart-line-symbol {
-    /*-fx-background-color: #0000FF, white;*/
+    -fx-background-color: #009900, white;
     -fx-background-insets: 0, 1;
-    -fx-background-radius: 2px;
-    -fx-padding: 2px;
+    -fx-background-radius: 4px;
+    -fx-padding: 4px;
 }
 
 .chart-series-line {
