@@ -44,19 +44,19 @@ public class VCharts implements ICharts {
     public void initChart(XYChart<Number, Number> viewChart) throws Exception {
         log.trace("Entering into method -> VCharts.initChart");
         log.trace("Initialization variable chart");
-        ObservableList<XYChart.Series<Number, Number>> chart = FXCollections.observableArrayList();
+        ObservableList<XYChart.Series<Number, Number>> chartList = FXCollections.observableArrayList();
         log.trace("Initialization variable seriesChart");
         seriesChart = new XYChart.Series<>();
 
         log.trace("Add data to the seriesChart");
-        seriesChart.getData().add(new XYChart.Data<>(0.0, 0.0));
+        seriesChart.getData().add(new XYChart.Data<>(0,0));
 
         log.trace("Add seriesChart to the chart");
-        chart.add(seriesChart);
+        chartList.add(seriesChart);
 
         log.trace("Set data to chart");
         viewChart.setLegendVisible(false);
-        viewChart.setData(chart);
+        viewChart.setData(chartList);
         log.trace("Initialization is complete chart");
     }
 
@@ -64,7 +64,9 @@ public class VCharts implements ICharts {
     public void clearChart(XYChart<Number, Number> chart) throws Exception {
         log.trace("Entering into method -> VCharts.clearChart");
         log.trace("Try to clear chart");
-        chart.getData().clear();
+        chart.getXAxis().setAutoRanging(true);
+        chart.getYAxis().setAutoRanging(true);
+        chart.setData(FXCollections.<XYChart.Series<Number, Number>>emptyObservableList());
         log.trace("Clear is complete chart");
     }
 
@@ -149,11 +151,11 @@ public class VCharts implements ICharts {
                     }
                 });
                 data.getNode().setOnMouseExited(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent event) {
-                            tooltip.hide();
-                        }
-                    }
+                                                    @Override
+                                                    public void handle(MouseEvent event) {
+                                                        tooltip.hide();
+                                                    }
+                                                }
                 );
             }
         }

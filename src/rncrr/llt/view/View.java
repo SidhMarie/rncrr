@@ -2,11 +2,17 @@ package rncrr.llt.view;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.gillius.jfxutils.JFXUtil;
+import org.gillius.jfxutils.chart.ChartPanManager;
+import org.gillius.jfxutils.chart.JFXChartUtil;
 import rncrr.llt.model.utils.eobject.ECharts;
 import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.SourceSeries;
@@ -52,9 +58,32 @@ public class View {
         chart = new VCharts(pChart, sChart);
     }
 
-    public void initialize(){
-        this.spectrumChart = new LineMarkerChart(new NumberAxis(), new NumberAxis());
+    @FXML
+    protected void initialize(){
+        spectrumChart = new LineMarkerChart(new NumberAxis(), new NumberAxis());
         vboxCharts.getChildren().add(spectrumChart);
+        ChartPanManager panner = new ChartPanManager( spectrumChart );
+        panner.setMouseFilter( new EventHandler<MouseEvent>() {
+            @Override
+            public void handle( MouseEvent mouseEvent ) {
+                if ( mouseEvent.getButton() == MouseButton.SECONDARY ||
+                        ( mouseEvent.getButton() == MouseButton.PRIMARY &&
+                                mouseEvent.isShortcutDown() ) ) {
+                    //let it through
+                } else {
+                    mouseEvent.consume();
+                }
+            }
+        } );
+        panner.start();
+
+        JFXChartUtil.setupZooming(spectrumChart, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle( MouseEvent mouseEvent ) {
+                if ( mouseEvent.getButton() != MouseButton.PRIMARY ||  mouseEvent.isShortcutDown() )
+                    mouseEvent.consume();
+            }
+        });
     }
 
     /**
@@ -98,6 +127,7 @@ public class View {
                 log.trace("Try to build profile signal chart");
                 chart.buildingProfileChart(seriesTableView, profileChart, windowData, "NEW");
                 chart.clearChart(spectrumChart);
+                chart.initChart(spectrumChart);
             }
         } catch (Exception e) {
             log.error("An error occurred in the method View.detailSelectedRow",e);
