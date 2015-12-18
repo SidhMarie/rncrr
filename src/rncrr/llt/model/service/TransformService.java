@@ -47,11 +47,13 @@ public class TransformService implements ITransformService {
         try{
             switch (eCharts) {
                 case SOURCE :
-                    return getSourceSeries(selectedSeries, windows(windowData));
+                    return getSourceSeries(selectedSeries);
                 case SPECTRUM :
                     return getSpectrum(selectedSeries, windows(windowData));
                 case WINDOW :
                     return getDWindows(selectedSeries, windows(windowData));
+                case RECONSTRUCTED:
+                    return getReconstructed(selectedSeries, windows(windowData));
                 default:
                     return null;
             }
@@ -65,29 +67,99 @@ public class TransformService implements ITransformService {
         return EWindows.getNameByValue(windowData.getValue().toString());
     }
 
+    private DigitalSeries getSourceSeries(SourceSeries sSeries){
+        dSeries = new DigitalSeries();
+        for(Points points : sSeries.getPoints()){
+            dSeries.addPoints(points);
+        }
+        return dSeries;
+    }
+
     private DigitalSeries getSpectrum(SourceSeries sSeries, EWindows windows) {
         valuesXY(sSeries, windows);
         int n = x.length/2;
         double[] nSpectrum = new double[n];
         dSeries = new DigitalSeries();
         for(int i = 0; i < n; i++) {
-            nSpectrum[i] = y[i].ps() / n; // нормировка
+            nSpectrum[i] = y[i].ps() / n;
             dSeries.addPoints(new Points(i, nSpectrum[i]));
         }
         return dSeries;
     }
 
-    private DigitalSeries getSourceSeries(SourceSeries sSeries, EWindows windows) {
+    private DigitalSeries getReconstructed2(SourceSeries sSeries, EWindows windows) {
         Complex[] source = Transform.inverseTransform(y);
         dSeries = new DigitalSeries();
         List<Double> yPoint = sSeries.getYPoints();
         int ySize = yPoint.size();
-        for(int i = 0; i < source.length; i++){
+        for(int i = 0; i < source.length; i++) {
             if(i < ySize){
+                if(source[i].re() == 0D) {
+                    System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                    System.out.println("++++++++++++++++++++++ "+source[i].re()+" ++++++ "+yPoint.get(i)+" +++++++++++++++++++");
+                    System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                }
                 dSeries.addPoints(new Points(source[i].re(), yPoint.get(i)));
-            } else {
-                dSeries.addPoints(new Points(source[i].re(), 0D));
             }
+        }
+        return dSeries;
+    }
+
+    private DigitalSeries getReconstructed(SourceSeries sSeries, EWindows windows) {
+        Complex[] source = Transform.inverseTransform(y);
+        dSeries = new DigitalSeries();
+        List<Double> yPoint = sSeries.getYPoints();
+        int frameSize = yPoint.size();
+        double x;
+        switch (windows) {
+            case RECTANGULAR:
+                for(int i = 0; i < frameSize; i++) {
+                    x = source[i].re() == 0D ? 0D : source[i].re() / Window.rectangular(i, frameSize);
+                    if(x != 0D){
+                        dSeries.addPoints(new Points(x , yPoint.get(i)));
+                    }
+                }
+                break;
+            case GAUSS:
+                for(int i = 0; i < frameSize; i++) {
+                    x = source[i].re() == 0D ? 0D : source[i].re() / Window.gauss(i, frameSize);
+                    if(x != 0D){
+                        dSeries.addPoints(new Points(x , yPoint.get(i)));
+                    }
+                }
+                break;
+            case HAMMING:
+                for(int i = 0; i < frameSize; i++) {
+                    x = source[i].re() == 0D ? 0D : source[i].re() / Window.hamming(i, frameSize);
+                    if(x != 0D){
+                        dSeries.addPoints(new Points(x , yPoint.get(i)));
+                    }
+                }
+                break;
+            case HANN:
+                System.out.println(" frameSize => "+frameSize);
+                for(int i = 0; i < frameSize; i++) {
+                    x = source[i].re() == 0D ? 0D : source[i].re() / Window.hann(i, frameSize);
+                    if(x != 0D){
+                        dSeries.addPoints(new Points(x , yPoint.get(i)));
+                    }
+                }
+                break;
+            case BLACKMAN_HARRIS:
+                for(int i = 0; i < frameSize; i++) {
+                    x = source[i].re() == 0D ? 0D : source[i].re() / Window.blackmanHarris(i, frameSize);
+                    if(x != 0D){
+                        dSeries.addPoints(new Points(x , yPoint.get(i)));
+                    }
+                }
+                break;
+            default:
+                for(int i = 0; i < frameSize; i++) {
+                    x = source[i].re() == 0D ? 0D : source[i].re() / Window.rectangular(i, frameSize);
+                    if(x != 0D){
+                        dSeries.addPoints(new Points(x , yPoint.get(i)));
+                    }
+                }
         }
         return dSeries;
     }
@@ -103,8 +175,7 @@ public class TransformService implements ITransformService {
         return dSeries;
     }
 
-
-    private List<Double> setWindowsData(EWindows windows, List<Double> list) {
+    public static List<Double> setWindowsData(EWindows windows, List<Double> list) {
         List<Double> result = new ArrayList<>();
         switch (windows) {
             case RECTANGULAR :

@@ -51,15 +51,12 @@ public class VDataTable implements IDataTable{
      * @return seriesList - object type ObservableList
      */
     @Override
-    public ObservableList<SourceSeries> viewDataTable(TableView<SourceSeries> seriesTableView,
+    public ObservableList<SourceSeries> viewDataTable(File file,
+                                                 TableView<SourceSeries> seriesTableView,
                                                  TableColumn<SourceSeries, String> columnLabel_1,
                                                  TableColumn<SourceSeries, String> columnLabel_2,
                                                  TableColumn<SourceSeries, String> columnLabel_3) throws Exception {
         log.trace("Entering into method -> VDataTable.viewDataTable");
-        log.trace("Try to open FileChooser");
-        FileChooser fileChooser = new FileChooser();
-        log.trace("Select the file in the FileChooser");
-        File file = fileChooser.showOpenDialog(null);
         if(file != null) {
             log.trace("Try to read the selected file");
             readFile(file);

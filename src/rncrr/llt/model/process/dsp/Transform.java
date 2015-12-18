@@ -1,6 +1,9 @@
 package rncrr.llt.model.process.dsp;
 
 
+import rncrr.llt.model.service.TransformService;
+import rncrr.llt.model.utils.eobject.EWindows;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,7 +144,53 @@ public class Transform {
         return val + 1;
     }
 
+//    public static void main(String[] args) {
+//        List<Double> list = new ArrayList<>();
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+//        list.add(1D);
+////        list.add(1D);
+////        list.add(1D);
+////        list.add(1D);
+////        list.add(1D);
+//
+//        Transform.inputList(list);
+//        System.out.println(list.size());
+//        for(double d : list){
+//            System.out.println(d);
+//        }
+//    }
+
+    public static void show(Complex[] x, String title) {
+        System.out.println(title);
+        System.out.println("-------------------");
+        for (int i = 0; i < x.length; i++) {
+            System.out.println(x[i] + "             " + x[i].abs());
+        }
+        System.out.println();
+    }
+
     public static void main(String[] args) {
+        // original data
+//        for (int i = 0; i < N; i++) {
+//            x[i] = new Complex(i, 0);
+//            x[i] = new Complex(-2*Math.random() + 1, 0);
+//        }
+
         List<Double> list = new ArrayList<>();
         list.add(1D);
         list.add(1D);
@@ -160,16 +209,34 @@ public class Transform {
         list.add(1D);
         list.add(1D);
         list.add(1D);
-//        list.add(1D);
-//        list.add(1D);
-//        list.add(1D);
-//        list.add(1D);
-
-        Transform.inputList(list);
-        System.out.println(list.size());
-        for(double d : list){
-            System.out.println(d);
+        List<Double> wList = TransformService.setWindowsData(EWindows.HAMMING, list);
+        List<Double> xList = Transform.inputList(wList);
+        int n = xList.size();
+//        int n = 16;
+        Complex[] x = new Complex[n];
+        for (int i = 0; i < n; i++) {
+            x[i] = new Complex(xList.get(i), 0d);
+//            x[i] = new Complex(-2*Math.random() + 1, 0d);
         }
+        // FFT of original data
+        Complex[] y = Transform.directTransform(x);
+        show(x, "x");
+
+        // take inverse FFT
+        System.out.println("__________________________________________________________________________\n");
+        Complex[] z = Transform.inverseTransform(y);
+        for(int i = 0; i < list.size(); i++) {
+            double v = z[i].re() / Window.hamming(i, list.size());
+            System.out.println(v);
+        }
+//
+//        // circular convolution of x with itself
+//        Complex[] c = cconvolve(x, x);
+//        show(c, "c = cconvolve(x, x)");
+//
+//        // linear convolution of x with itself
+//        Complex[] d = convolve(x, x);
+//        show(d, "d = convolve(x, x)");
     }
 
 }

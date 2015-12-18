@@ -30,8 +30,8 @@ public class Signal extends Application {
             primaryStage.setTitle(Config.getStringProperty("app.title", "Digital Signal Processing Laboratory"));
             log.trace("Set the size of the application window");
             Scene scene = new Scene(root, Config.getDoubleProperty("app.width", 700), Config.getDoubleProperty("app.height", 500));
-            log.trace("Try loading chart.css");
-            scene.getStylesheets().add(getClass().getResource("appres/chart.css").toExternalForm());
+//            log.trace("Try loading chart.css");
+//            scene.getStylesheets().add(getClass().getResource("appres/chart.css").toExternalForm());
             log.trace("Show application on the screen");
             primaryStage.setScene(scene);
             primaryStage.show();

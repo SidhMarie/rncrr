@@ -3,14 +3,13 @@ package rncrr.llt.view;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.gillius.jfxutils.JFXUtil;
 import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
 import rncrr.llt.model.utils.eobject.ECharts;
@@ -25,9 +24,12 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
-import rncrr.llt.view.charts.LineMarkerChart;
+import rncrr.llt.view.utils.ChartUtil;
 import rncrr.llt.view.utils.VUtil;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -35,14 +37,12 @@ public class View {
 
     private static final Logger log = LogManager.getLogger(View.class);
 
-
     private IDataSave dataSave;
     private IDataTable dataTable;
     private ICharts chart;
-    private LineMarkerChart spectrumChart;
-    private ObservableList<XYChart.Series<Number, Number>> pChart;
-    private ObservableList<XYChart.Series<Number, Number>> sChart;
 
+    private boolean inverseFlag = false;
+    private boolean windowsFlag = false;
 
     /**
      * Constructor - initialize objects VDataTable и VDataChart
@@ -53,15 +53,11 @@ public class View {
         log.trace("Initialize the new object -> VDataTable");
         dataTable = new VDataTable();
         log.trace("Initialize the new object -> VChart");
-        pChart = FXCollections.observableArrayList();
-        sChart = FXCollections.observableArrayList();
-        chart = new VCharts(pChart, sChart);
+        chart = new VCharts();
     }
 
     @FXML
     protected void initialize(){
-        spectrumChart = new LineMarkerChart(new NumberAxis(), new NumberAxis());
-        vboxCharts.getChildren().add(spectrumChart);
         ChartPanManager panner = new ChartPanManager( spectrumChart );
         panner.setMouseFilter( new EventHandler<MouseEvent>() {
             @Override
@@ -79,8 +75,8 @@ public class View {
 
         JFXChartUtil.setupZooming(spectrumChart, new EventHandler<MouseEvent>() {
             @Override
-            public void handle( MouseEvent mouseEvent ) {
-                if ( mouseEvent.getButton() != MouseButton.PRIMARY ||  mouseEvent.isShortcutDown() )
+            public void handle(MouseEvent mouseEvent) {
+                if (mouseEvent.getButton() != MouseButton.PRIMARY || mouseEvent.isShortcutDown())
                     mouseEvent.consume();
             }
         });
@@ -94,10 +90,21 @@ public class View {
         log.trace("Entering into method -> View.openFileData");
         try{
             log.trace("Try to open a data file for reading");
-            dataTable.viewDataTable(seriesTableView, columnLabel_1, columnLabel_2, columnLabel_3);
+            log.trace("Try to open FileChooser");
+            FileChooser fileChooser = new FileChooser();
+            log.trace("Select the file in the FileChooser");
+            File file = fileChooser.showOpenDialog(null);
+            if(file != null){
+                if(file.getName().contains(".asc")){
+                    dataTable.viewDataTable(file, seriesTableView, columnLabel_1, columnLabel_2, columnLabel_3);
+                    chart.initChart(profileChart);
+                    chart.initChart(spectrumChart);
+                } else if(file.getName().contains(".dat")){
+                    chart.initChart(profileChart);
+                    chart.initChart(spectrumChart);
+                }
+            }
             log.trace("Try to initialize chart");
-            chart.initChart(profileChart);
-            chart.initChart(spectrumChart);
         } catch (Exception e) {
             log.error("An error occurred in the method View.openFileData", e);
             VUtil.alertException("An error occurred while trying to open and read the file", e);
@@ -128,6 +135,7 @@ public class View {
                 chart.buildingProfileChart(seriesTableView, profileChart, windowData, "NEW");
                 chart.clearChart(spectrumChart);
                 chart.initChart(spectrumChart);
+                windowsFlag = true;
             }
         } catch (Exception e) {
             log.error("An error occurred in the method View.detailSelectedRow",e);
@@ -173,23 +181,12 @@ public class View {
     /**
      *
      */
-    public void windowData(ActionEvent actionEvent) {
-        try{
-            chart.buildingSpectrumChart(seriesTableView, spectrumChart, ECharts.WINDOW, windowData, "NEW");
-        } catch (Exception e){
-            log.error("An error occurred in the method View.transformData", e);
-            VUtil.alertException("An error occurred while transformation data", e);
-        }
-    }
-
-    /**
-     *
-     */
     public void transformData(ActionEvent actionEvent) {
         log.trace("Entering into method -> View.transformData");
         try {
             log.trace("Try to build spectrum signal chart");
             chart.buildingSpectrumChart(seriesTableView, spectrumChart, ECharts.SPECTRUM, windowData, "NEW");
+            inverseFlag = true;
         } catch (Exception e) {
             log.error("An error occurred in the method View.transformData", e);
             VUtil.alertException("An error occurred while transformation data", e);
@@ -200,13 +197,23 @@ public class View {
      *
      */
     public void inverseTransformData(ActionEvent actionEvent) {
-        log.trace("");
+        log.trace("Entering into method -> View.inverseTransformData");
         try{
-            chart.buildingProfileChart(seriesTableView, profileChart, windowData, "");
+            if(inverseFlag) {
+                chart.buildingProfileChart(seriesTableView, profileChart, windowData, "");
+                inverseFlag = false;
+            } else {
+                VUtil.alertMessage("You must first build a spectrum chart or the reconstructed signal is already built");
+            }
         } catch (Exception e){
             log.error("An error occurred in the method View.inverseTransformData", e);
             VUtil.alertException("An error occurred while inverse transformation data", e);
         }
+    }
+
+    public void autoSizeChart(ActionEvent actionEvent) {
+        spectrumChart.getXAxis().setAutoRanging(true);
+        spectrumChart.getYAxis().setAutoRanging(true);
     }
 
     /**
@@ -310,13 +317,17 @@ public class View {
         rowValue_9.setText("");
     }
 
+
+
     @FXML private TableView<SourceSeries> seriesTableView;
-    @FXML private VBox vboxCharts;
     @FXML private LineChart<Number, Number> profileChart;
-    @FXML public ChoiceBox windowData;
+    @FXML private LineChart<Number, Number> spectrumChart;
+    @FXML private ChoiceBox windowData;
+
     @FXML private TableColumn<SourceSeries, String> columnLabel_1;
     @FXML private TableColumn<SourceSeries, String> columnLabel_2;
     @FXML private TableColumn<SourceSeries, String> columnLabel_3;
+
     @FXML private Label rowLabel_0;
     @FXML private Label rowLabel_1;
     @FXML private Label rowLabel_2;

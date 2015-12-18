@@ -2,11 +2,10 @@ package rncrr.llt.view.api;
 
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
-import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.bean.SourceSeries;
 import rncrr.llt.model.utils.eobject.ECharts;
-import rncrr.llt.view.charts.LineMarkerChart;
 
 import java.util.List;
 
@@ -44,6 +43,6 @@ public interface ICharts {
      * @param flag
      * @throws Exception
      */
-    void buildingSpectrumChart(TableView<SourceSeries> seriesTableView, LineMarkerChart<Number, Number> xychart, ECharts eCharts, ChoiceBox windowData, String flag) throws  Exception;
+    XYChart<Number, Number> buildingSpectrumChart(TableView<SourceSeries> seriesTableView, XYChart<Number, Number> xychart, ECharts eCharts, ChoiceBox windowData, String flag) throws  Exception;
 
 }

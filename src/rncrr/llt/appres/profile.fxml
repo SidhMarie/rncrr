@@ -26,7 +26,6 @@
                                 <String fx:value="RECTANGULAR" />
                             </value>
                        </ChoiceBox>
-                       <Button mnemonicParsing="false" onAction="#windowData" style="-fx-graphic: url('file:resources/img/toolBarButWindow.png');" text="" />
                        <Button mnemonicParsing="false" onAction="#transformData" style="-fx-graphic: url('file:resources/img/toolBarButFFT.png');" text="" />
                        <Button mnemonicParsing="false" onAction="#inverseTransformData" style="-fx-graphic: url('file:resources/img/toolBarButFFT.png');" text="" />
                    </items>
@@ -96,7 +95,7 @@
    <center>
        <VBox fx:id="vboxCharts" prefHeight="800.0" prefWidth="210.0" BorderPane.alignment="CENTER">
            <children>
-               <LineChart fx:id="profileChart" prefHeight="450.0">
+               <LineChart fx:id="profileChart" prefHeight="400.0">
                    <xAxis>
                        <NumberAxis side="BOTTOM" />
                    </xAxis>
@@ -104,14 +103,19 @@
                        <NumberAxis side="LEFT" />
                    </yAxis>
                </LineChart>
-               <!--<LineChart fx:id="spectrumChart" prefHeight="350.0">-->
-                   <!--<xAxis>-->
-                       <!--<NumberAxis side="BOTTOM" />-->
-                   <!--</xAxis>-->
-                   <!--<yAxis>-->
-                       <!--<NumberAxis side="LEFT" />-->
-                   <!--</yAxis>-->
-               <!--</LineChart>-->
+               <ToolBar>
+                   <items>
+                       <Button onAction="#autoSizeChart" mnemonicParsing="false" text="Auto size" />
+                   </items>
+               </ToolBar>
+               <LineChart fx:id="spectrumChart" prefHeight="400.0">
+                   <xAxis>
+                       <NumberAxis side="BOTTOM" />
+                   </xAxis>
+                   <yAxis>
+                       <NumberAxis side="LEFT" />
+                   </yAxis>
+               </LineChart>
            </children>
        </VBox>
    </center>

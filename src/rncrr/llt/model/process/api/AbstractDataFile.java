@@ -7,19 +7,18 @@ import javafx.collections.ObservableList;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 /**
  * Created by Sidh on 28.02.2015.
  */
-public abstract class AbstractAscFile {
+public abstract class AbstractDataFile {
 
 
     public List<String> dataLine;
     protected ObservableList<SourceSeries> seriesList;
-    private static final Logger log = LogManager.getLogger(AbstractAscFile.class);
+    private static final Logger log = LogManager.getLogger(AbstractDataFile.class);
 
 
     /**

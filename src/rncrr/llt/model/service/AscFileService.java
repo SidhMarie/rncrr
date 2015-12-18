@@ -6,7 +6,7 @@ import rncrr.llt.model.utils.eobject.EAsc;
 import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.bean.SourceSeries;
-import rncrr.llt.model.process.api.AbstractAscFile;
+import rncrr.llt.model.process.api.AbstractDataFile;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -15,7 +15,7 @@ import java.util.Objects;
 /**
  * Created by Sidh on 27.02.2015.
  */
-public class AscFileService extends AbstractAscFile {
+public class AscFileService extends AbstractDataFile {
 
     private static final Logger log = LogManager.getLogger(AscFileService.class);
 
