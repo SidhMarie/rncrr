@@ -19,6 +19,8 @@ import rncrr.llt.view.api.ICharts;
 import rncrr.llt.view.utils.ChartUtil;
 import rncrr.llt.view.utils.VUtil;
 
+import java.util.Set;
+
 
 /**
  * Created by Sidh on 24.02.2015.
@@ -82,9 +84,6 @@ public class VCharts implements ICharts {
                 for (Points point : selectedSeries.getPoints()) {
                     seriesChart.getData().add(new XYChart.Data<>(point.getX(), point.getY()));
                 }
-                Node line = seriesChart.getNode();
-                line.setStyle("-fx-stroke: blue;");
-//                        seriesChart.nodeProperty().get().setStyle("-fx-stroke: blue;");
             } else {
                 seriesChart = new LineChart.Series<>();
                 digitalSeries = transformService.getDigitalSeries(selectedSeries, ECharts.RECONSTRUCTED, windowData);

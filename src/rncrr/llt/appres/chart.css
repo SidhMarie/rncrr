@@ -2,25 +2,42 @@
     /*-fx-background-color: white;*/
 /*}*/
 
-/*.chart-line-symbol {*/
-    /*-fx-background-color: blue, white;*/
-    /*-fx-background-insets: 0,1;*/
-    /*-fx-background-radius: 3px;*/
-    /*-fx-padding: 3px;*/
+.chart-line-symbol {
+    -fx-background-insets: 0,1;
+    -fx-background-radius: 2px;
+    -fx-padding: 2px;
+}
+
+.chart-series-line {
+    -fx-stroke-width: 1px;
+    -fx-effect: null;
+}
+.default-color0.chart-series-line { -fx-stroke: blue; }
+.default-color1.chart-series-line { -fx-stroke: green; }
+.chart-line-symbol.series0 { -fx-background-color: blue, white; }
+.chart-line-symbol.series1 { -fx-background-color: green, white; }
+
+
+/*.chart-series-line.series0 {*/
+    /*-fx-stroke: green;*/
+/*}*/
+/*.chart-line-symbol.series0 {*/
+    /*-fx-background-color: green, white;*/
 /*}*/
 
-/*/!*.chart-series-line {*!/*/
-    /*/!*-fx-stroke: blue;*!/*/
-    /*/!*-fx-stroke-width: 1px;*!/*/
-    /*/!*-fx-effect: null;*!/*/
-/*/!*}*!/*/
-/*/!*.default-color0.chart-series-line { -fx-stroke: red; }*!/*/
-/*/!*.default-color1.chart-series-line { -fx-stroke: green; }*!/*/
-/*/!*.default-color2.chart-series-line { -fx-stroke: blue; }*!/*/
+/*.chart-series-line.series1 {*/
+    /*-fx-stroke: black;*/
+/*}*/
+/*.chart-line-symbol.series1 {*/
+    /*-fx-background-color: black, white;*/
+/*}*/
 
-/*/!*.default-color0.chart-line-symbol { -fx-background-color: #e9967a, white; }*!/*/
-/*/!*.default-color1.chart-line-symbol { -fx-background-color: #f0e68c, white; }*!/*/
-/*/!*.default-color2.chart-line-symbol { -fx-background-color: #dda0dd, white; }*!/*/
+/*.chart-series-line.series2 {*/
+    /*-fx-stroke: crimson;*/
+/*}*/
+/*.chart-line-symbol.series2 {*/
+    /*-fx-background-color: crimson, white;*/
+/*}*/
 
 
 /*.chart-legend-item{*/

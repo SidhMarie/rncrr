@@ -26,8 +26,20 @@
                                 <String fx:value="RECTANGULAR" />
                             </value>
                        </ChoiceBox>
-                       <Button mnemonicParsing="false" onAction="#transformData" style="-fx-graphic: url('file:resources/img/toolBarButFFT.png');" text="" />
-                       <Button mnemonicParsing="false" onAction="#inverseTransformData" style="-fx-graphic: url('file:resources/img/toolBarButFFT.png');" text="" />
+                       <Button mnemonicParsing="false" onAction="#transformData" prefHeight="32.0" text="FFT" />
+                       <Button mnemonicParsing="false" onAction="#inverseTransformData" prefHeight="32.0" text="IFFT" />
+                       <Separator />
+                       <ChoiceBox fx:id="filterData" prefWidth="110.0" prefHeight="32.0">
+                           <String fx:value="NO FILTER"/>
+                           <String fx:value="WIENNER"/>
+                           <String fx:value="KALMAN"/>
+                           <String fx:value="Z-FILTER"/>
+                           <value>
+                               <String fx:value="NO FILTER" />
+                           </value>
+                       </ChoiceBox>
+                       <Button mnemonicParsing="false" onAction="#doFilterData" prefHeight="32.0" style="-fx-graphic: url('file:resources/img/toolBarButFilter.png');" text="" />
+
                    </items>
                </ToolBar>
            </children>

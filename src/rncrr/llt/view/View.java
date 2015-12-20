@@ -186,6 +186,7 @@ public class View {
         try {
             log.trace("Try to build spectrum signal chart");
             chart.buildingSpectrumChart(seriesTableView, spectrumChart, ECharts.SPECTRUM, windowData, "NEW");
+            chart.buildingProfileChart(seriesTableView, profileChart, windowData, "NEW");
             inverseFlag = true;
         } catch (Exception e) {
             log.error("An error occurred in the method View.transformData", e);
@@ -211,6 +212,12 @@ public class View {
         }
     }
 
+    public void doFilterData(ActionEvent actionEvent) {
+    }
+
+    /**
+     *
+     */
     public void autoSizeChart(ActionEvent actionEvent) {
         spectrumChart.getXAxis().setAutoRanging(true);
         spectrumChart.getYAxis().setAutoRanging(true);
