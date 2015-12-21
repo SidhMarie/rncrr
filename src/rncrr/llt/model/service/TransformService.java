@@ -24,8 +24,8 @@ public class TransformService implements ITransformService {
 
     private static final Logger log = LogManager.getLogger(TransformService.class);
 
-    private Complex[] inputFrame;
-    private Complex[] x;
+    private Complex[] signal;
+    private Complex[] spectrum;
     private Complex[] filter;
 
     private DigitalSeries dSeries;
@@ -37,11 +37,11 @@ public class TransformService implements ITransformService {
         List<Double> wList = setWindowsData(windows, sSeries.getXPoints());
         List<Double> xList = Transform.inputList(wList);
         int n = xList.size();
-        inputFrame = new Complex[n];
+        signal = new Complex[n];
         for (int i = 0; i < n; i++) {
-            inputFrame[i] = new Complex(xList.get(i), 0d);
+            signal[i] = new Complex(xList.get(i), 0d);
         }
-        x = Transform.directTransform(inputFrame);
+        spectrum = Transform.directTransform(signal);
     }
 
     @Override
@@ -79,11 +79,11 @@ public class TransformService implements ITransformService {
 
     private DigitalSeries getAmplitudeSpectrum(SourceSeries sSeries, EWindows windows) {
         valuesXY(sSeries, windows);
-        int n = inputFrame.length/2;
+        int n = signal.length/2;
         double[] nSpectrum = new double[n];
         dSeries = new DigitalSeries();
         for(int i = 0; i < n; i++) {
-            nSpectrum[i] = x[i].abs() / n;
+            nSpectrum[i] = spectrum[i].abs() / n;
             dSeries.addPoints(new Points(i, nSpectrum[i]));
         }
         getWiennerFilter();
@@ -92,36 +92,34 @@ public class TransformService implements ITransformService {
 
     private void getWiennerFilter() {
 //        dSeries = new DigitalSeries();
-        int n = inputFrame.length/2;
+        int n = signal.length/2;
         System.out.println("n =====>> "+n);
-        int v = n/20;
+        int v = 5;
         System.out.println("  =====>> " + v );
         double tmp = 0D;
         for(int i = n-1; i > n - 1 - v; i--){
-            System.out.println(" ==================>> "+x[i].re());
-            tmp += x[i].re();
+            System.out.println(" ==================>> " + spectrum[i].re());
+            tmp += spectrum[i].abs();
         }
         System.out.println(" tmp =====>> "+tmp);
-        double avr = tmp/v;
-        System.out.println(" avr =====>> "+ avr);
-        filter = new Complex[x.length];
-        for(int i = 0; i < x.length; i++) {
-            double s = x[i].re() - avr;
-            filter[i] = new Complex(s / x[i].re(), x[i].im());
-            System.out.println(" ---------------  "+x[i].re()+"           "+x[i].im());
-            System.out.println(" ***************  "+s+"           "+s/x[i].re());
-            System.out.println(" >>>>>>>>>>>>>>>  "+filter[i].re()+"           "+filter[i].im());
-            System.out.println("");
+        double noise = tmp/v;
+        System.out.println(" avr =====>> "+ noise);
+        filter = new Complex[spectrum.length];
+        for(int i = 0; i < spectrum.length; i++) {
+            double s = spectrum[i].abs() - noise;
+//            double w = (s*s)/((spectrum[i].abs()* spectrum[i].abs())+(avr*avr));
+            double w = 0.0001;
+            filter[i] = new Complex(spectrum[i].re()/(1+w), spectrum[i].im());
         }
     }
 
     private DigitalSeries getReconstructed2(SourceSeries sSeries, EWindows windows) {
-        Complex[] source = Transform.inverseTransform(x);
+        Complex[] source = Transform.inverseTransform(spectrum);
         dSeries = new DigitalSeries();
         List<Double> yPoint = sSeries.getYPoints();
         int ySize = yPoint.size();
         for(int i = 0; i < source.length; i++) {
-            if(i < ySize){
+            if(i < ySize) {
                 if(source[i].re() == 0D) {
                     System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                     System.out.println("++++++++++++++++++++++ "+source[i].re()+" ++++++ "+yPoint.get(i)+" +++++++++++++++++++");
@@ -135,18 +133,20 @@ public class TransformService implements ITransformService {
 
     private DigitalSeries getReconstructed(SourceSeries sSeries, EWindows windows) {
         Complex[] source;
-        source = Transform.inverseTransform(x);
+//        source = Transform.inverseTransform(spectrum);
+        source = Transform.inverseTransform(filter);
         dSeries = new DigitalSeries();
         List<Double> yPoint = sSeries.getYPoints();
         int frameSize = yPoint.size();
         double x;
         switch (windows) {
             case RECTANGULAR:
+                System.out.println(" frameSize => "+frameSize);
                 for(int i = 0; i < frameSize; i++) {
-                    x = source[i].re() == 0D ? 0D : source[i].re() / Window.rectangular(i, frameSize);
-                    if(x != 0D){
-                        dSeries.addPoints(new Points(x , yPoint.get(i)));
-                    }
+//                    x = source[i].re() == 0D ? 0D : source[i].abs() / Window.rectangular(i, frameSize);
+//                    if(x != 0D){
+                        dSeries.addPoints(new Points(source[i].re(), yPoint.get(i)));
+//                    }
                 }
                 break;
             case GAUSS:
