@@ -3,7 +3,7 @@ package rncrr.llt.model.utils.eobject;
 /**
  * Created by Sidh on 28.02.2015.
  */
-public enum EAsc {
+public enum EAscFile {
 
     BLOCK_START("$STOM"),
     BLOCK_END("$ENOM"),
@@ -29,7 +29,7 @@ public enum EAsc {
 
     private String name;
 
-    EAsc(String name){
+    EAscFile(String name){
         this.name = name;
     }
 

@@ -2,12 +2,9 @@ package rncrr.llt.view.api;
 
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
-import rncrr.llt.model.bean.SourceSeries;
+import rncrr.llt.model.bean.AscSourceSeries;
 import rncrr.llt.model.utils.eobject.ECharts;
-
-import java.util.List;
 
 /**
  * Created by Sidh on 01.08.2015.
@@ -32,7 +29,7 @@ public interface ICharts {
      * @param xychart
      * @param flag
      */
-    void buildingProfileChart(TableView<SourceSeries> seriesTableView, XYChart<Number, Number> xychart, ChoiceBox windowData, String flag) throws Exception;
+    void buildingProfileChart(TableView<AscSourceSeries> seriesTableView, XYChart<Number, Number> xychart, ChoiceBox windowData, String flag) throws Exception;
 
     /**
      *
@@ -43,6 +40,6 @@ public interface ICharts {
      * @param flag
      * @throws Exception
      */
-    XYChart<Number, Number> buildingSpectrumChart(TableView<SourceSeries> seriesTableView, XYChart<Number, Number> xychart, ECharts eCharts, ChoiceBox windowData, String flag) throws  Exception;
+    XYChart<Number, Number> buildingSpectrumChart(TableView<AscSourceSeries> seriesTableView, XYChart<Number, Number> xychart, ECharts eCharts, ChoiceBox windowData, String flag) throws  Exception;
 
 }

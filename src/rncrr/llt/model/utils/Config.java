@@ -1,10 +1,5 @@
 package rncrr.llt.model.utils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import rncrr.llt.view.utils.VUtil;
-import sun.rmi.runtime.Log;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -12,7 +7,6 @@ import java.util.Properties;
 public class Config extends Properties {
 
     private static Properties properties;
-    private static final Logger log = LogManager.getLogger(Config.class);
 
     private static synchronized Properties createConfig() {
         if (properties == null)
@@ -26,19 +20,13 @@ public class Config extends Properties {
      * @return все свойства конфига
      */
     public static Properties loadConfig(String configFile) throws IOException {
-        log.trace("Entering into method -> Config.loadConfig");
-        log.trace("Try create new object -> FileInputStream");
         FileInputStream is = new FileInputStream(configFile);
         if (properties == null) {
-            log.trace("Try create new object -> Config");
             createConfig();
-            log.trace("Try loading properties from input stream");
             properties.load(is);
         } else {
-            log.trace("Try loading properties from input stream");
             properties.load(is);
         }
-        log.trace("Return object -> properties");
         return properties;
     }
 

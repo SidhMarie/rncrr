@@ -1,10 +1,12 @@
 package rncrr.llt.model.bean;
 
+import rncrr.llt.model.bean.api.ISourceSeries;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SourceSeries {
+public class AscSourceSeries implements ISourceSeries {
 
     private String scanId;
     private int step;
@@ -24,7 +26,7 @@ public class SourceSeries {
     private double cFactor;
     private List<Points> points;
 
-    public SourceSeries() {
+    public AscSourceSeries() {
         points = new ArrayList<>();
     }
 

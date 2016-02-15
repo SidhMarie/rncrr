@@ -1,9 +1,8 @@
 package rncrr.llt.model.process.api;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import rncrr.llt.model.bean.SourceSeries;
 import javafx.collections.ObservableList;
+import rncrr.llt.model.bean.api.ISourceSeries;
+import rncrr.llt.view.utils.VUtil;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -15,17 +14,14 @@ import java.util.Scanner;
  */
 public abstract class AbstractDataFile {
 
-
     public List<String> dataLine;
-    protected ObservableList<SourceSeries> seriesList;
-    private static final Logger log = LogManager.getLogger(AbstractDataFile.class);
-
+    protected ObservableList<ISourceSeries> seriesList;
 
     /**
      * Method set the seriesList
      * @param seriesList - object type ObservableList
      */
-    public void setSeriesList(ObservableList<SourceSeries> seriesList) {
+    public void setSeriesList(ObservableList<ISourceSeries> seriesList) {
         this.seriesList = seriesList;
     }
 
@@ -34,15 +30,12 @@ public abstract class AbstractDataFile {
      * @param path - path to file
      * @return seriesList - object type ObservableList
      */
-    public ObservableList<SourceSeries> read(String path) throws Exception {
-        log.trace("Entering into method -> AbstractFileReader.read");
+    public ObservableList<ISourceSeries> read(String path) throws Exception {
         if (!path.trim().isEmpty()) {
-            log.trace("Try to open FileInputStream");
             try(InputStream stream = new FileInputStream(path)) {
-                log.trace("Try to parse input stream");
                 parse(stream);
             }catch (Exception e){
-                log.error("An error occurred while trying to open input stream or parse it");
+                VUtil.printError("An error occurred while trying to open input stream or parse it -> method AbstractDataFile.read");
                 throw new Exception(e);
             }
         }
@@ -54,20 +47,14 @@ public abstract class AbstractDataFile {
      * @param stream - Input Stream
      */
     protected void parse(InputStream stream) throws Exception {
-        log.trace("Entering into method -> AbstractFileReader.parse");
         String line;
-        log.trace("Create object -> Scanner");
         Scanner scanner = new Scanner(stream);
-        log.trace("Try to read the lines in a loop and fill series");
         while(scanner.hasNext()) {
             line = scanner.nextLine();
             dataLine.add(line);
             readLine(line);
         }
-        log.trace("The incoming stream read and successfully parsed");
     }
-
-
 
     /**
      * Helper method to parse the string

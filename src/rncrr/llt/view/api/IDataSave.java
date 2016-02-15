@@ -6,6 +6,6 @@ package rncrr.llt.view.api;
  */
 public interface IDataSave {
 
-    void dataSave(IDataTable dataTable) throws Exception;
+    void dataSave(IAscTable dataTable) throws Exception;
 
 }

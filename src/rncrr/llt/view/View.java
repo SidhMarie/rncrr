@@ -1,44 +1,34 @@
 package rncrr.llt.view;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
 import rncrr.llt.model.utils.eobject.ECharts;
 import rncrr.llt.model.utils.eobject.EMeasureType;
-import rncrr.llt.model.bean.SourceSeries;
+import rncrr.llt.model.bean.AscSourceSeries;
 import rncrr.llt.model.utils.Config;
 import rncrr.llt.view.api.ICharts;
 import rncrr.llt.view.api.IDataSave;
-import rncrr.llt.view.api.IDataTable;
+import rncrr.llt.view.api.IAscTable;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
-import rncrr.llt.view.utils.ChartUtil;
 import rncrr.llt.view.utils.VUtil;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 
 public class View {
 
-    private static final Logger log = LogManager.getLogger(View.class);
-
     private IDataSave dataSave;
-    private IDataTable dataTable;
+    private IAscTable dataTable;
     private ICharts chart;
 
     private boolean inverseFlag = false;
@@ -48,11 +38,8 @@ public class View {
      * Constructor - initialize objects VDataTable и VDataChart
      */
     public View() {
-        log.trace("Entering into class -> View");
         dataSave = new VDataSave();
-        log.trace("Initialize the new object -> VDataTable");
-        dataTable = new VDataTable();
-        log.trace("Initialize the new object -> VChart");
+        dataTable = new VAscTable();
         chart = new VCharts();
     }
 
@@ -87,36 +74,35 @@ public class View {
      * Initializes the graphics
      */
     public void openFileData(ActionEvent actionEvent) {
-        log.trace("Entering into method -> View.openFileData");
         try{
-            log.trace("Try to open a data file for reading");
-            log.trace("Try to open FileChooser");
             FileChooser fileChooser = new FileChooser();
-            log.trace("Select the file in the FileChooser");
             File file = fileChooser.showOpenDialog(null);
             if(file != null){
+                fileName.setText(fileName.getText() + file.getName());
                 if(file.getName().contains(".asc")){
+                    ascFileTab.setDisable(false);
+                    datFileTab.setDisable(true);
                     dataTable.viewDataTable(file, seriesTableView, columnLabel_1, columnLabel_2, columnLabel_3);
                     chart.initChart(profileChart);
                     chart.initChart(spectrumChart);
                 } else if(file.getName().contains(".dat")){
+                    ascFileTab.setDisable(true);
+                    datFileTab.setDisable(false);
                     chart.initChart(profileChart);
                     chart.initChart(spectrumChart);
                 }
             }
-            log.trace("Try to initialize chart");
         } catch (Exception e) {
-            log.error("An error occurred in the method View.openFileData", e);
+            VUtil.printError("An error occurred in the method View.openFileData", e);
             VUtil.alertException("An error occurred while trying to open and read the file", e);
         }
     }
 
     public void saveFileData(ActionEvent actionEvent) {
-        log.trace("");
         try{
             dataSave.dataSave(dataTable);
         } catch (Exception e){
-            log.error("An error occurred in the method View.saveFileData",e);
+            VUtil.printError("An error occurred in the method View.saveFileData", e);
             VUtil.alertException("An error occurred while trying to save data",e);
         }
     }
@@ -125,20 +111,17 @@ public class View {
      * Method fills in the table details the series and plotted according to series
      */
     public void detailSelectedRow(Event event) {
-        log.trace("Entering into method -> View.detailSelectedRow");
         try{
             if (!seriesTableView.getItems().isEmpty()) {
-                SourceSeries series = seriesTableView.getSelectionModel().getSelectedItem();
-                log.trace("Try to set the values in the table details");
+                AscSourceSeries series = seriesTableView.getSelectionModel().getSelectedItem();
                 setAscDataGridValue(series);
-                log.trace("Try to build profile signal chart");
                 chart.buildingProfileChart(seriesTableView, profileChart, windowData, "NEW");
                 chart.clearChart(spectrumChart);
                 chart.initChart(spectrumChart);
                 windowsFlag = true;
             }
         } catch (Exception e) {
-            log.error("An error occurred in the method View.detailSelectedRow",e);
+            VUtil.printError("An error occurred in the method View.detailSelectedRow", e);
             VUtil.alertException("An error occurred while trying to view detail data and building chart",e);
         }
     }
@@ -148,22 +131,18 @@ public class View {
      * Clears the graph and table detailed use information
      */
     public void deleteRows(ActionEvent actionEvent) {
-        log.trace("Entering into method -> View.deleteRows");
         try{
             if (!seriesTableView.getItems().isEmpty()) {
-                log.trace("Try to remove the selected row");
                 dataTable.deleteRows(seriesTableView.getSelectionModel().getSelectedItems());
-                log.trace("Try to clear the charts");
                 chart.clearChart(profileChart);
                 chart.clearChart(spectrumChart);
-                log.trace("Try to clear the table details");
                 clearDataGridValue();
             } else {
-                log.warn("You must select a row to remove");
+                VUtil.printWarning("You must select a row to remove");
                 VUtil.alertMessage("You must select a row to remove");
             }
         } catch (Exception e){
-            log.error("An error occurred in the method View.deleteRows", e);
+            VUtil.printError("An error occurred in the method View.deleteRows", e);
             VUtil.alertException("An error occurred while deleting a row", e);
         }
     }
@@ -172,8 +151,6 @@ public class View {
      * Method completes the execution of the application
      */
     public void closeApplication(ActionEvent actionEvent) {
-        log.trace("Entering into method -> View.closeApplication");
-        log.trace("Try to close the application. System.exit");
         System.exit(0);
     }
 
@@ -182,14 +159,12 @@ public class View {
      *
      */
     public void transformData(ActionEvent actionEvent) {
-        log.trace("Entering into method -> View.transformData");
         try {
-            log.trace("Try to build spectrum signal chart");
             chart.buildingSpectrumChart(seriesTableView, spectrumChart, ECharts.SPECTRUM, windowData, "NEW");
             chart.buildingProfileChart(seriesTableView, profileChart, windowData, "NEW");
             inverseFlag = true;
         } catch (Exception e) {
-            log.error("An error occurred in the method View.transformData", e);
+            VUtil.printError("An error occurred in the method View.transformData", e);
             VUtil.alertException("An error occurred while transformation data", e);
         }
     }
@@ -198,16 +173,16 @@ public class View {
      *
      */
     public void inverseTransformData(ActionEvent actionEvent) {
-        log.trace("Entering into method -> View.inverseTransformData");
         try{
             if(inverseFlag) {
                 chart.buildingProfileChart(seriesTableView, profileChart, windowData, "");
                 inverseFlag = false;
             } else {
+                System.out.println("You must first build a spectrum chart or the reconstructed signal is already built");
                 VUtil.alertMessage("You must first build a spectrum chart or the reconstructed signal is already built");
             }
         } catch (Exception e){
-            log.error("An error occurred in the method View.inverseTransformData", e);
+            VUtil.printError("An error occurred in the method View.inverseTransformData", e);
             VUtil.alertException("An error occurred while inverse transformation data", e);
         }
     }
@@ -215,6 +190,7 @@ public class View {
     public void doFilterData(ActionEvent actionEvent) {
     }
 
+    //TOOLBAR for charts
     /**
      *
      */
@@ -223,20 +199,21 @@ public class View {
         spectrumChart.getYAxis().setAutoRanging(true);
     }
 
+    public void showAllWindows(ActionEvent actionEvent) {
+        VUtil.alertMessage(String.valueOf(checkBoxAllWindows.isSelected()));
+    }
+
     /**
      * The method sets the information fields of the table depending on the type of measurement.
      * @param series - object type SSeries
      */
-    private void setAscDataGridValue(SourceSeries series) {
-        log.trace("Entering into method -> View.setAscDataGridValue");
+    private void setAscDataGridValue(AscSourceSeries series) {
         if (Objects.equals(series.getType(), EMeasureType.OPP.name())
                 || Objects.equals(series.getType(), EMeasureType.OPD.name())) {
-            log.trace("Set the text and value for OPP/OPD types");
             setValues4OPPDataGrid(series);
         } else if (Objects.equals(series.getType(), EMeasureType.DDOE.name())
                 || Objects.equals(series.getType(), EMeasureType.DDAE.name())
                 || Objects.equals(series.getType(), EMeasureType.POE.name())) {
-            log.trace("Set the text and value for DDOE/DDAE/POE types");
             setValues4DDOEDataGrid(series);
         }
     }
@@ -245,7 +222,7 @@ public class View {
      * Method sets the values of the fields of the table details for type OPP и OPD
      * @param series - object type SSeries
      */
-    private void setValues4OPPDataGrid(SourceSeries series) {
+    private void setValues4OPPDataGrid(AscSourceSeries series) {
         rowLabel_0.setText(Config.getStringProperty("tg.row.label.scanId", "Scan ID"));
         rowLabel_1.setText(Config.getStringProperty("tg.row.label.machine", "Machine name"));
         rowLabel_2.setText(Config.getStringProperty("tg.row.label.beamType", "Beam type"));
@@ -273,7 +250,7 @@ public class View {
      * Method sets the values of the fields of the table details for type DDOE, DDAE и POE
      * @param series - object type SSeries
      */
-    private void setValues4DDOEDataGrid(SourceSeries series) {
+    private void setValues4DDOEDataGrid(AscSourceSeries series) {
         rowLabel_0.setText(Config.getStringProperty("tg.row.label.scanId", "Scan ID"));
         rowLabel_1.setText(Config.getStringProperty("tg.row.label.machine", "Machine name"));
         rowLabel_2.setText(Config.getStringProperty("tg.row.label.beamType", "Beam type"));
@@ -325,15 +302,20 @@ public class View {
     }
 
 
-
-    @FXML private TableView<SourceSeries> seriesTableView;
+    @FXML private TableView<AscSourceSeries> seriesTableView;
     @FXML private LineChart<Number, Number> profileChart;
     @FXML private LineChart<Number, Number> spectrumChart;
     @FXML private ChoiceBox windowData;
+    @FXML private GridPane detailPaneAsc;
+    @FXML private Label fileName;
+    @FXML private CheckBox checkBoxAllWindows;
 
-    @FXML private TableColumn<SourceSeries, String> columnLabel_1;
-    @FXML private TableColumn<SourceSeries, String> columnLabel_2;
-    @FXML private TableColumn<SourceSeries, String> columnLabel_3;
+    @FXML private Tab ascFileTab;
+    @FXML private Tab datFileTab;
+
+    @FXML private TableColumn<AscSourceSeries, String> columnLabel_1;
+    @FXML private TableColumn<AscSourceSeries, String> columnLabel_2;
+    @FXML private TableColumn<AscSourceSeries, String> columnLabel_3;
 
     @FXML private Label rowLabel_0;
     @FXML private Label rowLabel_1;
@@ -355,5 +337,6 @@ public class View {
     @FXML private Label rowValue_7;
     @FXML private Label rowValue_8;
     @FXML private Label rowValue_9;
+
 
 }

@@ -10,6 +10,8 @@ import rncrr.llt.model.utils.eobject.EMessage;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Sidh on 31.03.2015.
@@ -22,6 +24,9 @@ public class VUtil {
      * @param message - информационное сообщение
      */
     public static void alertMessage(String information, String message) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy G 'at' HH:mm:ss z");
+        String messageText = new StringBuilder().append(dateFormat.format( new Date() )).append("INFORMATION: ").append(message).toString();
+        System.out.println(messageText);
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle(EMessage.INFORMATION.toString());
         alert.setHeaderText(information);
@@ -43,6 +48,9 @@ public class VUtil {
      * @param message - информационное сообщение
      */
     public static void alertWarning(String information, String message) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy G 'at' HH:mm:ss z");
+        String warningText = new StringBuilder().append(dateFormat.format( new Date() )).append("WARNING: ").append(message).toString();
+        System.out.println(warningText);
         Alert alert = new Alert(AlertType.WARNING);
         alert.setTitle(EMessage.WARNING.toString());
         alert.setHeaderText(information);
@@ -64,6 +72,9 @@ public class VUtil {
      * @param message - информационное сообщение
      */
     public static void alertError(String information, String message) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy G 'at' HH:mm:ss z");
+        String exceptionText = new StringBuilder().append(dateFormat.format( new Date() )).append("ERROR: ").append(message).toString();
+        System.err.println(exceptionText);
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle(EMessage.ERROR.toString());
         alert.setHeaderText(information);
@@ -96,6 +107,10 @@ public class VUtil {
         e.printStackTrace(pw);
         String exceptionText = sw.toString();
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy G 'at' HH:mm:ss z");
+        String exceptionLog = new StringBuilder().append(dateFormat.format( new Date() )).append("ERROR: ").append(message).append(" ===>>> \n").append(sw.toString()).toString();
+        System.err.println(exceptionLog);
+
         Label label = new Label("The exception stacktrace was:");
 
         TextArea textArea = new TextArea(exceptionText);
@@ -118,5 +133,27 @@ public class VUtil {
 
     public static void alertException(String message, Exception e) {
         alertException(null, message, e);
+    }
+
+    public static void printError(String message, Exception e){
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy G 'at' HH:mm:ss z");
+        String exceptionLog = new StringBuilder().append(dateFormat.format( new Date() )).append("ERROR: ").append(message).append(" ===>>> \n").append(sw.toString()).toString();
+        System.err.println(exceptionLog);
+    }
+
+    public static void printError(String message){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy G 'at' HH:mm:ss z");
+        String exceptionLog = new StringBuilder().append(dateFormat.format(new Date())).append("ERROR: ").append(message).toString();
+        System.err.println(exceptionLog);
+    }
+
+    public static void printWarning(String message) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy G 'at' HH:mm:ss z");
+        String exceptionText = new StringBuilder().append(dateFormat.format( new Date() )).append("WARNING: ").append(message).toString();
+        System.out.println(exceptionText);
     }
 }

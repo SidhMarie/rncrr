@@ -2,11 +2,9 @@ package rncrr.llt.model.service;
 
 
 import javafx.scene.control.ChoiceBox;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import rncrr.llt.model.bean.DigitalSeries;
 import rncrr.llt.model.bean.Points;
-import rncrr.llt.model.bean.SourceSeries;
+import rncrr.llt.model.bean.AscSourceSeries;
 import rncrr.llt.model.process.dsp.Complex;
 import rncrr.llt.model.process.dsp.Transform;
 import rncrr.llt.model.process.dsp.Window;
@@ -22,8 +20,6 @@ import java.util.List;
  */
 public class TransformService implements ITransformService {
 
-    private static final Logger log = LogManager.getLogger(TransformService.class);
-
     private Complex[] signal;
     private Complex[] spectrum;
     private Complex[] filter;
@@ -33,7 +29,7 @@ public class TransformService implements ITransformService {
     public TransformService() {}
 
     @Override
-    public void valuesXY(SourceSeries sSeries, EWindows windows) {
+    public void valuesXY(AscSourceSeries sSeries, EWindows windows) {
         List<Double> wList = setWindowsData(windows, sSeries.getXPoints());
         List<Double> xList = Transform.inputList(wList);
         int n = xList.size();
@@ -45,7 +41,7 @@ public class TransformService implements ITransformService {
     }
 
     @Override
-    public DigitalSeries getDigitalSeries(SourceSeries selectedSeries, ECharts eCharts, ChoiceBox windowData) {
+    public DigitalSeries getDigitalSeries(AscSourceSeries selectedSeries, ECharts eCharts, ChoiceBox windowData) {
         try{
             switch (eCharts) {
                 case SOURCE :
@@ -69,7 +65,7 @@ public class TransformService implements ITransformService {
         return EWindows.getNameByValue(windowData.getValue().toString());
     }
 
-    private DigitalSeries getSourceSeries(SourceSeries sSeries){
+    private DigitalSeries getSourceSeries(AscSourceSeries sSeries){
         dSeries = new DigitalSeries();
         for(Points points : sSeries.getPoints()) {
             dSeries.addPoints(points);
@@ -77,13 +73,15 @@ public class TransformService implements ITransformService {
         return dSeries;
     }
 
-    private DigitalSeries getAmplitudeSpectrum(SourceSeries sSeries, EWindows windows) {
+    private DigitalSeries getAmplitudeSpectrum(AscSourceSeries sSeries, EWindows windows) {
         valuesXY(sSeries, windows);
         int n = signal.length/2;
         double[] nSpectrum = new double[n];
         dSeries = new DigitalSeries();
+        System.out.println("spectrum***********************************************");
         for(int i = 0; i < n; i++) {
             nSpectrum[i] = spectrum[i].abs() / n;
+            System.out.println(nSpectrum[i]);
             dSeries.addPoints(new Points(i, nSpectrum[i]));
         }
         getWiennerFilter();
@@ -107,13 +105,13 @@ public class TransformService implements ITransformService {
         filter = new Complex[spectrum.length];
         for(int i = 0; i < spectrum.length; i++) {
             double s = spectrum[i].abs() - noise;
-//            double w = (s*s)/((spectrum[i].abs()* spectrum[i].abs())+(avr*avr));
-            double w = 0.0001;
+            double w = (s*s)/((spectrum[i].abs()* spectrum[i].abs())+(noise*noise));
+//            double w = 0.0001;
             filter[i] = new Complex(spectrum[i].re()/(1+w), spectrum[i].im());
         }
     }
 
-    private DigitalSeries getReconstructed2(SourceSeries sSeries, EWindows windows) {
+    private DigitalSeries getReconstructed2(AscSourceSeries sSeries, EWindows windows) {
         Complex[] source = Transform.inverseTransform(spectrum);
         dSeries = new DigitalSeries();
         List<Double> yPoint = sSeries.getYPoints();
@@ -131,7 +129,7 @@ public class TransformService implements ITransformService {
         return dSeries;
     }
 
-    private DigitalSeries getReconstructed(SourceSeries sSeries, EWindows windows) {
+    private DigitalSeries getReconstructed(AscSourceSeries sSeries, EWindows windows) {
         Complex[] source;
 //        source = Transform.inverseTransform(spectrum);
         source = Transform.inverseTransform(filter);
@@ -170,7 +168,19 @@ public class TransformService implements ITransformService {
                 for(int i = 0; i < frameSize; i++) {
                     x = source[i].re() == 0D ? 0D : source[i].re() / Window.hann(i, frameSize);
                     if(x != 0D){
-                        dSeries.addPoints(new Points(x , yPoint.get(i)));
+                        if(x != Double.POSITIVE_INFINITY && x != Double.NEGATIVE_INFINITY) {
+                            System.out.println(x);
+                            dSeries.addPoints(new Points(x, yPoint.get(i)));
+                        }
+                    }
+                }
+                for(int i = 0; i < frameSize; i++) {
+                    x = source[i].re() == 0D ? 0D : source[i].re() / Window.hann(i, frameSize);
+                    if(x != 0D){
+                        if(x != Double.POSITIVE_INFINITY && x != Double.NEGATIVE_INFINITY) {
+                            System.out.println(yPoint.get(i));
+                            dSeries.addPoints(new Points(x, yPoint.get(i)));
+                        }
                     }
                 }
                 break;
@@ -193,7 +203,7 @@ public class TransformService implements ITransformService {
         return dSeries;
     }
 
-    private DigitalSeries getDWindows(SourceSeries sSeries, EWindows windows) {
+    private DigitalSeries getDWindows(AscSourceSeries sSeries, EWindows windows) {
         List<Double> wList = setWindowsData(windows, sSeries.getXPoints());
         int n = wList.size();
         List<Double> yList = sSeries.getYPoints();

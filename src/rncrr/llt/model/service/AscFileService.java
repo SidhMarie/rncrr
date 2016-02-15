@@ -1,11 +1,9 @@
 package rncrr.llt.model.service;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import rncrr.llt.model.utils.eobject.EAsc;
+import rncrr.llt.model.utils.eobject.EAscFile;
 import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.Points;
-import rncrr.llt.model.bean.SourceSeries;
+import rncrr.llt.model.bean.AscSourceSeries;
 import rncrr.llt.model.process.api.AbstractDataFile;
 
 import java.util.ArrayList;
@@ -17,21 +15,16 @@ import java.util.Objects;
  */
 public class AscFileService extends AbstractDataFile {
 
-    private static final Logger log = LogManager.getLogger(AscFileService.class);
-
     private int flag;
-    private SourceSeries series;
+    private AscSourceSeries series;
     private String serviceString;
 
     /**
      * Constructor - initializes the object type SSeries
      */
     public AscFileService() {
-        log.trace("Entering into class -> AscFileReader");
-        log.trace("Initialize the variable -> flag = 0");
         this.flag = 0;
-        log.trace("Initialize the new object -> SSeries");
-        this.series = new SourceSeries();
+        this.series = new AscSourceSeries();
         this.dataLine = new ArrayList<>();
     }
 
@@ -42,11 +35,11 @@ public class AscFileService extends AbstractDataFile {
     @Override
     protected void readLine(String line) {
         if(!line.trim().isEmpty()) {
-            if(line.equals(EAsc.BLOCK_START.getName())){
+            if(line.equals(EAscFile.BLOCK_START.getName())){
                 flag = 1;
-            } else if(line.equals(EAsc.BLOCK_END.getName())){
+            } else if(line.equals(EAscFile.BLOCK_END.getName())){
                 flag = 2;
-            } else if(line.equals(EAsc.FILE_END.getName())){
+            } else if(line.equals(EAscFile.FILE_END.getName())){
                 flag = 0;
             }
             fill(line);
@@ -64,7 +57,7 @@ public class AscFileService extends AbstractDataFile {
                 break;
             case 2 :
                 seriesList.add(series);
-                series = new SourceSeries();
+                series = new AscSourceSeries();
                 break;
         }
     }
@@ -74,8 +67,8 @@ public class AscFileService extends AbstractDataFile {
      * @param series - object type SSeries
      * @param line - input line
      */
-    private void fillSeries(SourceSeries series, String line) {
-        for(EAsc value : EAsc.values()) {
+    private void fillSeries(AscSourceSeries series, String line) {
+        for(EAscFile value : EAscFile.values()) {
             if(line.contains(value.getName())) {
                 switch (value){
                     case SCAN_ID :
@@ -142,7 +135,7 @@ public class AscFileService extends AbstractDataFile {
      * @param series - object type SSeries
      * @param line - input line
      */
-    private void addPointsData(SourceSeries series, String line) {
+    private void addPointsData(AscSourceSeries series, String line) {
         serviceString = line.substring(1, 28);  // line type <-000.0 -000.0 +000.0 +000.0>
         if(Objects.equals(series.getType(), EMeasureType.DDOE.name())
                 || Objects.equals(series.getType(), EMeasureType.DDAE.name())
@@ -166,7 +159,7 @@ public class AscFileService extends AbstractDataFile {
      * @param x - coordinate
      * @param y - coordinate
      */
-    private void fillPoint(SourceSeries series, double x, double y){
+    private void fillPoint(AscSourceSeries series, double x, double y){
         series.addPoints(new Points(x,y));
     }
 

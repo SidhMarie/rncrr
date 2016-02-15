@@ -2,15 +2,12 @@ package rncrr.llt.view;
 
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import rncrr.llt.model.bean.SourceSeries;
+import rncrr.llt.model.bean.AscSourceSeries;
 import rncrr.llt.model.service.AscFileService;
-import rncrr.llt.view.api.IDataTable;
+import rncrr.llt.view.api.IAscTable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
-import javafx.stage.FileChooser;
 
 import java.io.File;
 
@@ -19,20 +16,16 @@ import java.io.File;
  * This class is designed for reading the input file
  * Working with a collection of series - fills, removes the selected items
  */
-public class VDataTable implements IDataTable{
+public class VAscTable implements IAscTable {
 
     private AscFileService fileService;
-    private ObservableList<SourceSeries> seriesList;
-    private static final Logger log = LogManager.getLogger(VDataTable.class);
-
+    private ObservableList<AscSourceSeries> seriesList;
 
     /**
      * The class constructor VDataTable
      * Initializes a new collection of series
      */
-    public VDataTable() {
-        log.trace("Entering into class VDataTable");
-        log.trace("Try to initialize new collection seriesList");
+    public VAscTable() {
         this.fileService = new AscFileService();
         this.seriesList = FXCollections.observableArrayList();
     }
@@ -51,16 +44,13 @@ public class VDataTable implements IDataTable{
      * @return seriesList - object type ObservableList
      */
     @Override
-    public ObservableList<SourceSeries> viewDataTable(File file,
-                                                 TableView<SourceSeries> seriesTableView,
-                                                 TableColumn<SourceSeries, String> columnLabel_1,
-                                                 TableColumn<SourceSeries, String> columnLabel_2,
-                                                 TableColumn<SourceSeries, String> columnLabel_3) throws Exception {
-        log.trace("Entering into method -> VDataTable.viewDataTable");
+    public ObservableList<AscSourceSeries> viewDataTable(File file,
+                                                 TableView<AscSourceSeries> seriesTableView,
+                                                 TableColumn<AscSourceSeries, String> columnLabel_1,
+                                                 TableColumn<AscSourceSeries, String> columnLabel_2,
+                                                 TableColumn<AscSourceSeries, String> columnLabel_3) throws Exception {
         if(file != null) {
-            log.trace("Try to read the selected file");
             readFile(file);
-            log.trace("Set the data of series");
             //todo - improved based on the properties file
             columnLabel_1.setCellValueFactory(new PropertyValueFactory<>("type"));
             columnLabel_2.setCellValueFactory(new PropertyValueFactory<>("machineName"));
@@ -75,19 +65,12 @@ public class VDataTable implements IDataTable{
      * @param selectedList - object type ObservableList
      */
     @Override
-    public void deleteRows(ObservableList<SourceSeries> selectedList) throws Exception {
-        log.trace("Entering into method -> VDataTable.deleteRows");
-        log.trace("Try to remove the selected rows from the list of series ");
+    public void deleteRows(ObservableList<AscSourceSeries> selectedList) throws Exception {
         this.seriesList.removeAll(selectedList);
     }
 
-    private ObservableList<SourceSeries> readFile(File file) throws Exception {
-        log.trace("Entering into method -> VDataTable.readFile");
-        log.trace("Try to create new object AscFileReader");
-
-        log.trace("Set collection seriesList");
+    private ObservableList<AscSourceSeries> readFile(File file) throws Exception {
         fileService.setSeriesList(seriesList);
-        log.trace("Try to read file data and return it");
         return fileService.read(file.getPath());
     }
 
