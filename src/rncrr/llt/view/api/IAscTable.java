@@ -4,6 +4,7 @@ import rncrr.llt.model.bean.AscSourceSeries;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.service.AscFileService;
 
 import java.io.File;
@@ -15,11 +16,11 @@ public interface IAscTable {
 
     AscFileService getFileService();
 
-    ObservableList<AscSourceSeries> viewDataTable(File file, TableView<AscSourceSeries> seriesTableView,
-                                          TableColumn<AscSourceSeries, String> columnLabel_1,
-                                          TableColumn<AscSourceSeries, String> columnLabel_2,
-                                          TableColumn<AscSourceSeries, String> columnLabel_3) throws Exception;
+    ObservableList<ISourceSeries> viewDataTable(File file, TableView<ISourceSeries> seriesTableView,
+                                          TableColumn<ISourceSeries, String> columnLabel_1,
+                                          TableColumn<ISourceSeries, String> columnLabel_2,
+                                          TableColumn<ISourceSeries, String> columnLabel_3) throws Exception;
 
-    void deleteRows(ObservableList<AscSourceSeries> selectedList) throws Exception;
+    void deleteRows(ObservableList<ISourceSeries> selectedList) throws Exception;
 
 }

@@ -1,21 +1,26 @@
 package rncrr.llt.model.bean;
 
-import rncrr.llt.model.bean.api.ISourceSeries;
+import rncrr.llt.model.bean.api.AbstractSourceSeries;
+import java.util.ArrayList;
 
-import java.util.List;
 
 /**
  * Created by Sidh on 15.02.2016.
  */
-public class DatSourceSeries implements ISourceSeries {
+public class DatSourceSeries extends AbstractSourceSeries {
 
-    private List<Points> points;
+    private String dataType;
+    private String seriesName;
 
-    public List<Points> getPoints() {
-        return points;
+    public DatSourceSeries() {
+        points = new ArrayList<>();
     }
 
-    public void addPoints(Points points) {
-        this.points.add(points);
-    }
+    public String getDataType() { return dataType; }
+
+    public void setDataType(String dataType) { this.dataType = dataType; }
+
+    public String getSeriesName() { return seriesName; }
+
+    public void setSeriesName(String seriesName) { this.seriesName = seriesName; }
 }

@@ -14,7 +14,7 @@ import java.util.Scanner;
  */
 public abstract class AbstractDataFile {
 
-    public List<String> dataLine;
+    public List<String> dataList;
     protected ObservableList<ISourceSeries> seriesList;
 
     /**
@@ -51,9 +51,9 @@ public abstract class AbstractDataFile {
         Scanner scanner = new Scanner(stream);
         while(scanner.hasNext()) {
             line = scanner.nextLine();
-            dataLine.add(line);
-            readLine(line);
+            dataList.add(line);
         }
+        readList();
     }
 
     /**
@@ -68,9 +68,8 @@ public abstract class AbstractDataFile {
 
     /**
      * method to be implemented in the derived-class
-     * @param line - input line
      */
-    abstract protected void readLine(String line);
+    abstract protected void readList();
 
 
 }

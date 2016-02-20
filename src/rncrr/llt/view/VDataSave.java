@@ -14,7 +14,7 @@ public class VDataSave implements IDataSave {
     @Override
     public void dataSave(IAscTable dataTable) throws Exception {
         AscFileService fileService = dataTable.getFileService();
-        if(fileService.dataLine.size() != 0){
+        if(fileService.dataList.size() != 0) {
 
         } else {
             VUtil.printWarning("An error occurred in the method View.saveFileData -> No data for saving");

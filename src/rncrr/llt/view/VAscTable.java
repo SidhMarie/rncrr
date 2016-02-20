@@ -3,6 +3,7 @@ package rncrr.llt.view;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import rncrr.llt.model.bean.AscSourceSeries;
+import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.service.AscFileService;
 import rncrr.llt.view.api.IAscTable;
 import javafx.collections.FXCollections;
@@ -19,7 +20,7 @@ import java.io.File;
 public class VAscTable implements IAscTable {
 
     private AscFileService fileService;
-    private ObservableList<AscSourceSeries> seriesList;
+    private ObservableList<ISourceSeries> seriesList;
 
     /**
      * The class constructor VDataTable
@@ -44,14 +45,13 @@ public class VAscTable implements IAscTable {
      * @return seriesList - object type ObservableList
      */
     @Override
-    public ObservableList<AscSourceSeries> viewDataTable(File file,
-                                                 TableView<AscSourceSeries> seriesTableView,
-                                                 TableColumn<AscSourceSeries, String> columnLabel_1,
-                                                 TableColumn<AscSourceSeries, String> columnLabel_2,
-                                                 TableColumn<AscSourceSeries, String> columnLabel_3) throws Exception {
+    public ObservableList<ISourceSeries> viewDataTable(File file,
+                                                 TableView<ISourceSeries> seriesTableView,
+                                                 TableColumn<ISourceSeries, String> columnLabel_1,
+                                                 TableColumn<ISourceSeries, String> columnLabel_2,
+                                                 TableColumn<ISourceSeries, String> columnLabel_3) throws Exception {
         if(file != null) {
             readFile(file);
-            //todo - improved based on the properties file
             columnLabel_1.setCellValueFactory(new PropertyValueFactory<>("type"));
             columnLabel_2.setCellValueFactory(new PropertyValueFactory<>("machineName"));
             columnLabel_3.setCellValueFactory(new PropertyValueFactory<>("beamEnergy"));
@@ -65,11 +65,11 @@ public class VAscTable implements IAscTable {
      * @param selectedList - object type ObservableList
      */
     @Override
-    public void deleteRows(ObservableList<AscSourceSeries> selectedList) throws Exception {
+    public void deleteRows(ObservableList<ISourceSeries> selectedList) throws Exception {
         this.seriesList.removeAll(selectedList);
     }
 
-    private ObservableList<AscSourceSeries> readFile(File file) throws Exception {
+    private ObservableList<ISourceSeries> readFile(File file) throws Exception {
         fileService.setSeriesList(seriesList);
         return fileService.read(file.getPath());
     }

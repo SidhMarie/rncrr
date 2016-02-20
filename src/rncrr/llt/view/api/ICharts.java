@@ -4,6 +4,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableView;
 import rncrr.llt.model.bean.AscSourceSeries;
+import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.utils.eobject.ECharts;
 
 /**
@@ -29,7 +30,7 @@ public interface ICharts {
      * @param xychart
      * @param flag
      */
-    void buildingProfileChart(TableView<AscSourceSeries> seriesTableView, XYChart<Number, Number> xychart, ChoiceBox windowData, String flag) throws Exception;
+    void buildingProfileChart(TableView<ISourceSeries> seriesTableView, XYChart<Number, Number> xychart, ChoiceBox windowData, String flag) throws Exception;
 
     /**
      *
@@ -40,6 +41,6 @@ public interface ICharts {
      * @param flag
      * @throws Exception
      */
-    XYChart<Number, Number> buildingSpectrumChart(TableView<AscSourceSeries> seriesTableView, XYChart<Number, Number> xychart, ECharts eCharts, ChoiceBox windowData, String flag) throws  Exception;
+    XYChart<Number, Number> buildingSpectrumChart(TableView<ISourceSeries> seriesTableView, XYChart<Number, Number> xychart, ECharts eCharts, ChoiceBox windowData, String flag) throws  Exception;
 
 }

@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import rncrr.llt.model.bean.DigitalSeries;
 import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.bean.AscSourceSeries;
+import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.service.TransformService;
 import rncrr.llt.model.service.api.ITransformService;
 import rncrr.llt.model.utils.eobject.ECharts;
@@ -53,9 +54,9 @@ public class VCharts implements ICharts {
     }
 
     @Override
-    public void buildingProfileChart(TableView<AscSourceSeries> seriesTableView, XYChart<Number, Number> xychart, ChoiceBox windowData, String flag) throws Exception {
+    public void buildingProfileChart(TableView<ISourceSeries> seriesTableView, XYChart<Number, Number> xychart, ChoiceBox windowData, String flag) throws Exception {
         xychart.setLegendVisible(true);
-        AscSourceSeries selectedSeries = seriesTableView.getSelectionModel().getSelectedItem();
+        AscSourceSeries selectedSeries = (AscSourceSeries) seriesTableView.getSelectionModel().getSelectedItem();
         if(selectedSeries != null) {
             if(flag.equals("NEW")) {
                 profileSeries = FXCollections.observableArrayList();
@@ -80,8 +81,8 @@ public class VCharts implements ICharts {
     }
 
     @Override
-    public XYChart<Number, Number> buildingSpectrumChart(TableView<AscSourceSeries> seriesTableView, XYChart<Number, Number> xychart, ECharts eCharts, ChoiceBox windowData, String flag) throws  Exception {
-        AscSourceSeries selectedSeries = seriesTableView.getSelectionModel().getSelectedItem();
+    public XYChart<Number, Number> buildingSpectrumChart(TableView<ISourceSeries> seriesTableView, XYChart<Number, Number> xychart, ECharts eCharts, ChoiceBox windowData, String flag) throws  Exception {
+        AscSourceSeries selectedSeries = (AscSourceSeries) seriesTableView.getSelectionModel().getSelectedItem();
         if(selectedSeries != null) {
             digitalSeries = transformService.getDigitalSeries(selectedSeries, eCharts, windowData);
             if(digitalSeries != null){

@@ -36,7 +36,7 @@ public class Signal extends Application {
 
 
     public static void main(String[] args) {
-        homeLog("logs", "out.log", "err.log");
+//        homeLog("logs", "out.log", "err.log");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy G 'at' HH:mm:ss z");
         System.out.println("Date: "+dateFormat.format(new Date()));
         System.out.println("#######################################################################################");
@@ -49,31 +49,31 @@ public class Signal extends Application {
         }
         launch(args);
     }
-
-    /**
-     * Переопределяет системные выводы стандартный и ошибок в переменные  out и err
-     * А также изменяет пути по которым они выводятся. Пути определяются переменной user.home
-     * @param loghome String путь в системе
-     * @param nameOut String Имя файла вывода
-     * @param nameErr String Имя файла вывода ошибок
-     */
-    static public void homeLog(String loghome,String nameOut, String nameErr) {
-        try {
-            File file_mess = new File(loghome);
-            if (!file_mess.exists())
-                if (!file_mess.mkdir()) throw new Exception("Unable to create add directory for logs");
-
-            OutputStream sos = new FileOutputStream(loghome + "/"+nameOut);
-            OutputStream eos = new FileOutputStream(loghome + "/"+nameErr);
-
-            System.setOut(new java.io.PrintStream(sos));
-            System.setErr(new java.io.PrintStream(eos));
-        } catch (FileNotFoundException fnfo) {
-            fnfo.printStackTrace();
-        }
-        catch (Exception fnfo) {
-            fnfo.printStackTrace();
-        }
-    }
+//
+//    /**
+//     * Переопределяет системные выводы стандартный и ошибок в переменные  out и err
+//     * А также изменяет пути по которым они выводятся. Пути определяются переменной user.home
+//     * @param loghome String путь в системе
+//     * @param nameOut String Имя файла вывода
+//     * @param nameErr String Имя файла вывода ошибок
+//     */
+//    static public void homeLog(String loghome,String nameOut, String nameErr) {
+//        try {
+//            File file_mess = new File(loghome);
+//            if (!file_mess.exists())
+//                if (!file_mess.mkdir()) throw new Exception("Unable to create add directory for logs");
+//
+//            OutputStream sos = new FileOutputStream(loghome + "/"+nameOut);
+//            OutputStream eos = new FileOutputStream(loghome + "/"+nameErr);
+//
+//            System.setOut(new java.io.PrintStream(sos));
+//            System.setErr(new java.io.PrintStream(eos));
+//        } catch (FileNotFoundException fnfo) {
+//            fnfo.printStackTrace();
+//        }
+//        catch (Exception fnfo) {
+//            fnfo.printStackTrace();
+//        }
+//    }
 
 }

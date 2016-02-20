@@ -3,20 +3,18 @@ package rncrr.llt.model.utils.eobject;
 /**
  * Created by Sidh on 22.10.2015.
  */
-public enum EDatFile {
+public enum EDatFileKey {
 
     SEPARATOR("|"),
     DATA_TYPE("$DATA_TYPE"),
     SERIES_START("$SERIES_START"),
     SERIES_END("$SERIES_END"),
-    DATA_END("$DATA_END"),
-    COUNTS_Y("COUNTS_Y"),
-    COUNTS_XY("COUNTS_XY"),
-    COUNTS_XYZ("COUNTS_XYZ");
+    SERIES_NAME("$SERIES_NAME"),
+    DATA_END("$DATA_END");
 
     private String name;
 
-    EDatFile(String name){
+    EDatFileKey(String name){
         this.name = name;
     }
 

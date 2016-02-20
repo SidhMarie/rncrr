@@ -5,6 +5,7 @@ import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.bean.AscSourceSeries;
 import rncrr.llt.model.process.api.AbstractDataFile;
+import rncrr.llt.view.utils.VUtil;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -17,7 +18,6 @@ public class AscFileService extends AbstractDataFile {
 
     private int flag;
     private AscSourceSeries series;
-    private String serviceString;
 
     /**
      * Constructor - initializes the object type SSeries
@@ -25,24 +25,30 @@ public class AscFileService extends AbstractDataFile {
     public AscFileService() {
         this.flag = 0;
         this.series = new AscSourceSeries();
-        this.dataLine = new ArrayList<>();
+        this.dataList = new ArrayList<>();
     }
 
     /**
      * Method looks for the start and end of the frame data and sets the flag
-     * @param line - input line
      */
     @Override
-    protected void readLine(String line) {
-        if(!line.trim().isEmpty()) {
-            if(line.equals(EAscFile.BLOCK_START.getName())){
-                flag = 1;
-            } else if(line.equals(EAscFile.BLOCK_END.getName())){
-                flag = 2;
-            } else if(line.equals(EAscFile.FILE_END.getName())){
-                flag = 0;
+    protected void readList() {
+        if(dataList.size() == 0) {
+            VUtil.printWarning("File is empty");
+            VUtil.alertWarning("File is empty");
+            return;
+        }
+        for(String line : dataList) {
+            if (!line.trim().isEmpty()) {
+                if (line.equals(EAscFile.BLOCK_START.getName())) {
+                    flag = 1;
+                } else if (line.equals(EAscFile.BLOCK_END.getName())) {
+                    flag = 2;
+                } else if (line.equals(EAscFile.FILE_END.getName())) {
+                    flag = 0;
+                }
+                fill(line);
             }
-            fill(line);
         }
     }
 
@@ -53,7 +59,7 @@ public class AscFileService extends AbstractDataFile {
     private void fill(String line) {
         switch (flag) {
             case 1 :
-                fillSeries(series, line);
+                fillSeries(line);
                 break;
             case 2 :
                 seriesList.add(series);
@@ -64,10 +70,9 @@ public class AscFileService extends AbstractDataFile {
 
     /**
      * Method reads the incoming line and adds value in the series
-     * @param series - object type SSeries
      * @param line - input line
      */
-    private void fillSeries(AscSourceSeries series, String line) {
+    private void fillSeries(String line) {
         for(EAscFile value : EAscFile.values()) {
             if(line.contains(value.getName())) {
                 switch (value){
@@ -123,7 +128,7 @@ public class AscFileService extends AbstractDataFile {
                         series.setcFactor(Double.parseDouble(getValue(line, value.getName())));
                         break;
                     case POINT_START :
-                        addPointsData(series, line);
+                        addPointsData(line);
                         break;
                 }
             }
@@ -132,34 +137,30 @@ public class AscFileService extends AbstractDataFile {
 
     /**
      * Method parses a line with the data coordinates and adds them to the object type SSeries
-     * @param series - object type SSeries
      * @param line - input line
      */
-    private void addPointsData(AscSourceSeries series, String line) {
-        serviceString = line.substring(1, 28);  // line type <-000.0 -000.0 +000.0 +000.0>
+    private void addPointsData(String line) {
+        String serviceString = line.substring(1, 28);
         if(Objects.equals(series.getType(), EMeasureType.DDOE.name())
                 || Objects.equals(series.getType(), EMeasureType.DDAE.name())
                 || Objects.equals(series.getType(), EMeasureType.OPD.name()) )
         {
-            fillPoint(series,
-                    Double.parseDouble(serviceString.substring(15,21)),
-                    Double.parseDouble(serviceString.substring(22)));
+            fillPoint(Double.parseDouble(serviceString.substring(15, 21)),
+                      Double.parseDouble(serviceString.substring(22)));
         } else if(Objects.equals(series.getType(), EMeasureType.POE.name())
                 || Objects.equals(series.getType(), EMeasureType.OPP.name()) )
         {
-            fillPoint(series,
-                    Double.parseDouble(serviceString.substring(0,6)),
-                    Double.parseDouble(serviceString.substring(22)));
+            fillPoint(Double.parseDouble(serviceString.substring(0, 6)),
+                      Double.parseDouble(serviceString.substring(22)));
         }
     }
 
     /**
      * Method adds an object type Points in the series.
-     * @param series - object type SSeries
      * @param x - coordinate
      * @param y - coordinate
      */
-    private void fillPoint(AscSourceSeries series, double x, double y){
+    private void fillPoint(double x, double y){
         series.addPoints(new Points(x,y));
     }
 

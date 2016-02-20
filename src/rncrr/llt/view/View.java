@@ -7,11 +7,13 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
+import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.utils.eobject.ECharts;
 import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.AscSourceSeries;
 import rncrr.llt.model.utils.Config;
 import rncrr.llt.view.api.ICharts;
+import rncrr.llt.view.api.IDatTable;
 import rncrr.llt.view.api.IDataSave;
 import rncrr.llt.view.api.IAscTable;
 import javafx.event.ActionEvent;
@@ -28,18 +30,19 @@ import java.util.Objects;
 public class View {
 
     private IDataSave dataSave;
-    private IAscTable dataTable;
+    private IAscTable ascTable;
+    private IDatTable datTable;
     private ICharts chart;
 
     private boolean inverseFlag = false;
-    private boolean windowsFlag = false;
 
     /**
      * Constructor - initialize objects VDataTable и VDataChart
      */
     public View() {
         dataSave = new VDataSave();
-        dataTable = new VAscTable();
+        ascTable = new VAscTable();
+        datTable = new VDatTable();
         chart = new VCharts();
     }
 
@@ -82,12 +85,15 @@ public class View {
                 if(file.getName().contains(".asc")){
                     ascFileTab.setDisable(false);
                     datFileTab.setDisable(true);
-                    dataTable.viewDataTable(file, seriesTableView, columnLabel_1, columnLabel_2, columnLabel_3);
+                    tabPane.getSelectionModel().select(ascFileTab);
+                    ascTable.viewDataTable(file, seriesTableView, columnLabel_1, columnLabel_2, columnLabel_3);
                     chart.initChart(profileChart);
                     chart.initChart(spectrumChart);
                 } else if(file.getName().contains(".dat")){
                     ascFileTab.setDisable(true);
                     datFileTab.setDisable(false);
+                    tabPane.getSelectionModel().select(datFileTab);
+                    datTable.viewDataTable(file,seriesDatTableView, columnLabelDat_1,columnLabelDat_2);
                     chart.initChart(profileChart);
                     chart.initChart(spectrumChart);
                 }
@@ -100,7 +106,7 @@ public class View {
 
     public void saveFileData(ActionEvent actionEvent) {
         try{
-            dataSave.dataSave(dataTable);
+            dataSave.dataSave(ascTable);
         } catch (Exception e){
             VUtil.printError("An error occurred in the method View.saveFileData", e);
             VUtil.alertException("An error occurred while trying to save data",e);
@@ -113,12 +119,11 @@ public class View {
     public void detailSelectedRow(Event event) {
         try{
             if (!seriesTableView.getItems().isEmpty()) {
-                AscSourceSeries series = seriesTableView.getSelectionModel().getSelectedItem();
+                AscSourceSeries series = (AscSourceSeries) seriesTableView.getSelectionModel().getSelectedItem();
                 setAscDataGridValue(series);
                 chart.buildingProfileChart(seriesTableView, profileChart, windowData, "NEW");
                 chart.clearChart(spectrumChart);
                 chart.initChart(spectrumChart);
-                windowsFlag = true;
             }
         } catch (Exception e) {
             VUtil.printError("An error occurred in the method View.detailSelectedRow", e);
@@ -133,7 +138,7 @@ public class View {
     public void deleteRows(ActionEvent actionEvent) {
         try{
             if (!seriesTableView.getItems().isEmpty()) {
-                dataTable.deleteRows(seriesTableView.getSelectionModel().getSelectedItems());
+                ascTable.deleteRows(seriesTableView.getSelectionModel().getSelectedItems());
                 chart.clearChart(profileChart);
                 chart.clearChart(spectrumChart);
                 clearDataGridValue();
@@ -302,7 +307,10 @@ public class View {
     }
 
 
-    @FXML private TableView<AscSourceSeries> seriesTableView;
+    @FXML private TabPane tabPane;
+    @FXML private TableView<ISourceSeries> seriesTableView;
+    @FXML private TableView<ISourceSeries> seriesDatTableView;
+
     @FXML private LineChart<Number, Number> profileChart;
     @FXML private LineChart<Number, Number> spectrumChart;
     @FXML private ChoiceBox windowData;
@@ -313,9 +321,12 @@ public class View {
     @FXML private Tab ascFileTab;
     @FXML private Tab datFileTab;
 
-    @FXML private TableColumn<AscSourceSeries, String> columnLabel_1;
-    @FXML private TableColumn<AscSourceSeries, String> columnLabel_2;
-    @FXML private TableColumn<AscSourceSeries, String> columnLabel_3;
+    @FXML private TableColumn<ISourceSeries, String> columnLabel_1;
+    @FXML private TableColumn<ISourceSeries, String> columnLabel_2;
+    @FXML private TableColumn<ISourceSeries, String> columnLabel_3;
+
+    @FXML private TableColumn<ISourceSeries, String> columnLabelDat_1;
+    @FXML private TableColumn<ISourceSeries, String> columnLabelDat_2;
 
     @FXML private Label rowLabel_0;
     @FXML private Label rowLabel_1;

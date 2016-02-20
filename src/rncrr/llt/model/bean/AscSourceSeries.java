@@ -1,12 +1,13 @@
 package rncrr.llt.model.bean;
 
+import rncrr.llt.model.bean.api.AbstractSourceSeries;
 import rncrr.llt.model.bean.api.ISourceSeries;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AscSourceSeries implements ISourceSeries {
+public class AscSourceSeries extends AbstractSourceSeries {
 
     private String scanId;
     private int step;
@@ -24,7 +25,6 @@ public class AscSourceSeries implements ISourceSeries {
     private double spd;
     private double cDepth;
     private double cFactor;
-    private List<Points> points;
 
     public AscSourceSeries() {
         points = new ArrayList<>();
@@ -158,19 +158,4 @@ public class AscSourceSeries implements ISourceSeries {
         this.cFactor = cFactor;
     }
 
-    public List<Points> getPoints() {
-        return points;
-    }
-
-    public void addPoints(Points points) {
-        this.points.add(points);
-    }
-
-    public List<Double> getXPoints(){
-        return points.stream().map(Points::getX).collect(Collectors.toList());
-    }
-
-    public List<Double> getYPoints(){
-        return points.stream().map(Points::getY).collect(Collectors.toList());
-    }
 }

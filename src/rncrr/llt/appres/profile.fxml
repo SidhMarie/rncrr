@@ -46,7 +46,7 @@
        <VBox prefWidth="220.0" BorderPane.alignment="TOP_LEFT">
            <children>
                <Label fx:id="fileName" prefWidth="190.0" text=" File: "/>
-               <TabPane prefWidth="220.0" tabClosingPolicy="UNAVAILABLE">
+               <TabPane fx:id="tabPane" prefWidth="220.0" tabClosingPolicy="UNAVAILABLE">
                    <tabs>
                        <Tab text="asc file" fx:id="ascFileTab" disable="true">
                            <content>
@@ -109,7 +109,20 @@
                                </VBox>
                            </content>
                        </Tab>
-                       <Tab text="dat file" fx:id="datFileTab" disable="true" />
+                       <Tab text="dat file" fx:id="datFileTab" disable="true" >
+                           <content>
+                               <VBox prefWidth="210.0" BorderPane.alignment="TOP_LEFT">
+                               <children>
+                               <TableView fx:id="seriesDatTableView"  prefHeight="320.0" prefWidth="210.0" visible="true">
+                                   <columns>
+                                       <TableColumn fx:id="columnLabelDat_1" prefWidth="100.0" text="Type" />
+                                       <TableColumn fx:id="columnLabelDat_2" prefWidth="110.0" text="Series Name" />
+                                   </columns>
+                               </TableView>
+                               </children>
+                               </VBox>
+                           </content>
+                       </Tab>
                    </tabs>
                </TabPane>
            </children>
