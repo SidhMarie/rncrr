@@ -3,6 +3,7 @@ package rncrr.llt.model.service.api;
 import javafx.scene.control.ChoiceBox;
 import rncrr.llt.model.bean.DigitalSeries;
 import rncrr.llt.model.bean.AscSourceSeries;
+import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.utils.eobject.ECharts;
 import rncrr.llt.model.utils.eobject.EWindows;
 
@@ -17,15 +18,15 @@ public interface ITransformService {
      * @param windows
      * @return
      */
-    void valuesXY(AscSourceSeries sSeries, EWindows windows);
+    void valuesXY(ISourceSeries sSeries, EWindows windows);
 
     /**
      *
      * @param selectedSeries
      * @param eCharts
-     * @param windowData
+     * @param windowValue
      * @return
      */
-    DigitalSeries getDigitalSeries(AscSourceSeries selectedSeries, ECharts eCharts, ChoiceBox windowData);
+    DigitalSeries getDigitalSeries(ISourceSeries selectedSeries, ECharts eCharts, Object windowValue);
 
 }

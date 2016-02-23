@@ -34,7 +34,6 @@ public class AscFileService extends AbstractDataFile {
     @Override
     protected void readList() {
         if(dataList.size() == 0) {
-            VUtil.printWarning("File is empty");
             VUtil.alertWarning("File is empty");
             return;
         }

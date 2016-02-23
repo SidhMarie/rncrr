@@ -1,5 +1,6 @@
 package rncrr.llt.model.bean.api;
 
+import javafx.scene.control.ChoiceBox;
 import rncrr.llt.model.bean.Points;
 
 import java.util.List;
@@ -16,5 +17,9 @@ public interface ISourceSeries {
     List<Double> getXPoints();
 
     List<Double> getYPoints();
+
+    void setWindow(ChoiceBox windowData);
+
+    ChoiceBox getWindow();
 
 }

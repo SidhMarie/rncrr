@@ -17,8 +17,7 @@ public class VDataSave implements IDataSave {
         if(fileService.dataList.size() != 0) {
 
         } else {
-            VUtil.printWarning("An error occurred in the method View.saveFileData -> No data for saving");
-            VUtil.alertWarning("No data for saving");
+            VUtil.alertWarning("An error occurred in the method View.saveFileData -> No data for saving","No data for saving");
         }
     }
 

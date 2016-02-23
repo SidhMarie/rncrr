@@ -7,6 +7,8 @@ import rncrr.llt.model.bean.AscSourceSeries;
 import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.utils.eobject.ECharts;
 
+import java.util.List;
+
 /**
  * Created by Sidh on 01.08.2015.
  */
@@ -26,21 +28,27 @@ public interface ICharts {
 
     /**
      *
-     * @param seriesTableView
+     * @param tableView
      * @param xychart
-     * @param flag
+     * @param isNew
      */
-    void buildingProfileChart(TableView<ISourceSeries> seriesTableView, XYChart<Number, Number> xychart, ChoiceBox windowData, String flag) throws Exception;
+    void buildingProfileChart(TableView<ISourceSeries> tableView, XYChart<Number, Number> xychart, boolean isNew) throws Exception;
 
     /**
      *
-     * @param seriesTableView
+     * @param tableView
      * @param xychart
-     * @param eCharts
      * @param windowData
-     * @param flag
      * @throws Exception
      */
-    XYChart<Number, Number> buildingSpectrumChart(TableView<ISourceSeries> seriesTableView, XYChart<Number, Number> xychart, ECharts eCharts, ChoiceBox windowData, String flag) throws  Exception;
+    XYChart<Number, Number> buildingSpectrumChart(TableView<ISourceSeries> tableView, XYChart<Number, Number> xychart, ChoiceBox windowData) throws  Exception;
+
+    /**
+     *
+     * @param tableView
+     * @param xychart
+     * @throws Exception
+     */
+    XYChart<Number, Number> buildingSpectrumChart(TableView<ISourceSeries> tableView, XYChart<Number, Number> xychart) throws  Exception;
 
 }

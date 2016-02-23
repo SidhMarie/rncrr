@@ -27,7 +27,6 @@ public class DatFileService extends AbstractDataFile {
     @Override
     protected void readList() {
         if(dataList.size() == 0) {
-            VUtil.printWarning("File is empty");
             VUtil.alertWarning("File is empty");
             return;
         }
@@ -48,13 +47,17 @@ public class DatFileService extends AbstractDataFile {
             seriesList.add(series);
         }
 
+        setPropertySeries();
+    }
+
+    private void setPropertySeries(){
         int countSeries = 1;
         for(ISourceSeries s : seriesList) {
             DatSourceSeries ds = (DatSourceSeries)s;
-            if(ds.getDataType() == null){
+            if(ds.getDataType() == null) {
                 ds.setDataType(EDatFileValue.COUNTS_Y.getName());
             }
-            if(ds.getSeriesName() == null){
+            if(ds.getSeriesName() == null) {
                 ds.setSeriesName(String.format("Series %d", countSeries));
                 countSeries++;
             }
@@ -71,10 +74,10 @@ public class DatFileService extends AbstractDataFile {
             switch (dtype) {
                 case 1:
                     if (!line.contains(EDatFileKey.SEPARATOR.getName())) {
-                        series.addPoints(new Points(Double.parseDouble(line.trim()), count));
+                        series.addPoints(new Points(count, Double.parseDouble(line.trim())));
                     } else {
                         line = line.substring(0, line.indexOf(EDatFileKey.SEPARATOR.getName()));
-                        series.addPoints(new Points(Double.parseDouble(line.trim()), count));
+                        series.addPoints(new Points(count, Double.parseDouble(line.trim())));
                     }
                     count++;
                     break;

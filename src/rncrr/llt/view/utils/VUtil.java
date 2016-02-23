@@ -2,6 +2,7 @@ package rncrr.llt.view.utils;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
@@ -12,6 +13,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by Sidh on 31.03.2015.
@@ -25,7 +29,7 @@ public class VUtil {
      */
     public static void alertMessage(String information, String message) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy G 'at' HH:mm:ss z");
-        String messageText = new StringBuilder().append(dateFormat.format( new Date() )).append("INFORMATION: ").append(message).toString();
+        String messageText = dateFormat.format(new Date()) + "INFORMATION: " + message;
         System.out.println(messageText);
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle(EMessage.INFORMATION.toString());
@@ -49,7 +53,7 @@ public class VUtil {
      */
     public static void alertWarning(String information, String message) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy G 'at' HH:mm:ss z");
-        String warningText = new StringBuilder().append(dateFormat.format( new Date() )).append("WARNING: ").append(message).toString();
+        String warningText = dateFormat.format(new Date()) + "WARNING: " + message;
         System.out.println(warningText);
         Alert alert = new Alert(AlertType.WARNING);
         alert.setTitle(EMessage.WARNING.toString());
@@ -73,7 +77,7 @@ public class VUtil {
      */
     public static void alertError(String information, String message) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy G 'at' HH:mm:ss z");
-        String exceptionText = new StringBuilder().append(dateFormat.format( new Date() )).append("ERROR: ").append(message).toString();
+        String exceptionText = dateFormat.format(new Date()) + "ERROR: " + message;
         System.err.println(exceptionText);
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle(EMessage.ERROR.toString());
@@ -108,7 +112,7 @@ public class VUtil {
         String exceptionText = sw.toString();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy G 'at' HH:mm:ss z");
-        String exceptionLog = new StringBuilder().append(dateFormat.format( new Date() )).append("ERROR: ").append(message).append(" ===>>> \n").append(sw.toString()).toString();
+        String exceptionLog = dateFormat.format(new Date()) + "ERROR: " + message + " ===>>> \n" + sw.toString();
         System.err.println(exceptionLog);
 
         Label label = new Label("The exception stacktrace was:");
@@ -141,19 +145,19 @@ public class VUtil {
         e.printStackTrace(pw);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy G 'at' HH:mm:ss z");
-        String exceptionLog = new StringBuilder().append(dateFormat.format( new Date() )).append("ERROR: ").append(message).append(" ===>>> \n").append(sw.toString()).toString();
+        String exceptionLog = dateFormat.format(new Date()) + "ERROR: " + message + " ===>>> \n" + sw.toString();
         System.err.println(exceptionLog);
     }
 
     public static void printError(String message){
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy G 'at' HH:mm:ss z");
-        String exceptionLog = new StringBuilder().append(dateFormat.format(new Date())).append("ERROR: ").append(message).toString();
+        String exceptionLog = dateFormat.format(new Date()) + "ERROR: " + message;
         System.err.println(exceptionLog);
     }
 
     public static void printWarning(String message) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy G 'at' HH:mm:ss z");
-        String exceptionText = new StringBuilder().append(dateFormat.format( new Date() )).append("WARNING: ").append(message).toString();
+        String exceptionText = dateFormat.format(new Date()) + "WARNING: " + message;
         System.out.println(exceptionText);
     }
 }

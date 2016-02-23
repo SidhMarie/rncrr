@@ -16,6 +16,10 @@ import rncrr.llt.view.api.ICharts;
 import rncrr.llt.view.utils.ChartUtil;
 import rncrr.llt.view.utils.VUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 
 /**
  * Created by Sidh on 24.02.2015.
@@ -26,12 +30,11 @@ public class VCharts implements ICharts {
     private ITransformService transformService;
     private XYChart.Series<Number, Number> seriesChart;
     private ObservableList<XYChart.Series<Number, Number>> profileSeries;
-    private ObservableList<XYChart.Series<Number, Number>> spectrumSeries;
+    private List<Object> windowsList;
 
     public VCharts() {
         this.transformService = new TransformService();
         this.profileSeries = FXCollections.observableArrayList();
-        this.spectrumSeries = FXCollections.observableArrayList();
     }
 
 
@@ -39,13 +42,12 @@ public class VCharts implements ICharts {
     public void initChart(XYChart<Number, Number> viewChart) throws Exception {
         ObservableList<XYChart.Series<Number, Number>> chartList = FXCollections.observableArrayList();
         seriesChart = new XYChart.Series<>();
-
         seriesChart.getData().add(new XYChart.Data<>(0, 0));
-
         chartList.add(seriesChart);
-
         viewChart.setLegendVisible(false);
         viewChart.setData(chartList);
+
+        windowsList = new ArrayList<>();
     }
 
     @Override
@@ -54,11 +56,11 @@ public class VCharts implements ICharts {
     }
 
     @Override
-    public void buildingProfileChart(TableView<ISourceSeries> seriesTableView, XYChart<Number, Number> xychart, ChoiceBox windowData, String flag) throws Exception {
+    public void buildingProfileChart(TableView<ISourceSeries> seriesTableView, XYChart<Number, Number> xychart, boolean isNew) throws Exception {
         xychart.setLegendVisible(true);
-        AscSourceSeries selectedSeries = (AscSourceSeries) seriesTableView.getSelectionModel().getSelectedItem();
+        ISourceSeries selectedSeries = seriesTableView.getSelectionModel().getSelectedItem();
         if(selectedSeries != null) {
-            if(flag.equals("NEW")) {
+            if(isNew) {
                 profileSeries = FXCollections.observableArrayList();
                 seriesChart = new LineChart.Series<>();
                 for (Points point : selectedSeries.getPoints()) {
@@ -66,7 +68,7 @@ public class VCharts implements ICharts {
                 }
             } else {
                 seriesChart = new LineChart.Series<>();
-                digitalSeries = transformService.getDigitalSeries(selectedSeries, ECharts.RECONSTRUCTED, windowData);
+                digitalSeries = transformService.getDigitalSeries(selectedSeries, ECharts.RECONSTRUCTED, selectedSeries.getWindow());
                 for (Points point : digitalSeries.getPoints()) {
                     seriesChart.getData().add(new XYChart.Data<>(point.getX(), point.getY()));
                 }
@@ -81,17 +83,18 @@ public class VCharts implements ICharts {
     }
 
     @Override
-    public XYChart<Number, Number> buildingSpectrumChart(TableView<ISourceSeries> seriesTableView, XYChart<Number, Number> xychart, ECharts eCharts, ChoiceBox windowData, String flag) throws  Exception {
-        AscSourceSeries selectedSeries = (AscSourceSeries) seriesTableView.getSelectionModel().getSelectedItem();
+    public XYChart<Number, Number> buildingSpectrumChart(TableView<ISourceSeries> tableView, XYChart<Number, Number> xychart, ChoiceBox windowData) throws  Exception {
+        ISourceSeries selectedSeries = tableView.getSelectionModel().getSelectedItem();
         if(selectedSeries != null) {
-            digitalSeries = transformService.getDigitalSeries(selectedSeries, eCharts, windowData);
-            if(digitalSeries != null){
-                if(flag.equals("NEW")) {
-                    spectrumSeries = FXCollections.observableArrayList();
-                }
+            windowsList = doListWindows(windowData.getValue());
+            selectedSeries.setWindow(windowData);
+            digitalSeries = transformService.getDigitalSeries(selectedSeries, ECharts.SPECTRUM, windowData.getValue());
+            if(digitalSeries != null) {
+                ObservableList<XYChart.Series<Number, Number>> spectrumSeries = FXCollections.observableArrayList();
                 seriesChart = new LineChart.Series<>();
                 for (Points point : digitalSeries.getPoints()) {
                     seriesChart.getData().add(new XYChart.Data<>(point.getX(), point.getY()));
+//                    seriesChart.setName(windowData.getValue().toString());
                 }
                 spectrumSeries.add(seriesChart);
                 xychart.setLegendVisible(false);
@@ -105,8 +108,39 @@ public class VCharts implements ICharts {
         return xychart;
     }
 
+    @Override
+    public XYChart<Number, Number> buildingSpectrumChart(TableView<ISourceSeries> tableView, XYChart<Number, Number> xychart) throws  Exception {
+        ISourceSeries selectedSeries = tableView.getSelectionModel().getSelectedItem();
+        ObservableList<XYChart.Series<Number, Number>> spectrumSeries = FXCollections.observableArrayList();
+        if(selectedSeries != null) {
+            for(Object w : windowsList){
+                digitalSeries = transformService.getDigitalSeries(selectedSeries, ECharts.SPECTRUM, w);
+                if(digitalSeries != null) {
+                    seriesChart = new LineChart.Series<>();
+                    for (Points point : digitalSeries.getPoints()) {
+                        seriesChart.getData().add(new XYChart.Data<>(point.getX(), point.getY()));
+                        seriesChart.setName(w.toString());
+                    }
+                    spectrumSeries.add(seriesChart);
+                    xychart.setLegendVisible(true);
+                } else {
+                    VUtil.alertMessage("Should choose a source signal to inverse transform");
+                }
+            }
+            xychart.setData(spectrumSeries);
+        }
+        return xychart;
+    }
 
-
-
+    private List<Object> doListWindows(Object windowValue) {
+        List<Object> newList = new ArrayList<>();
+        for(Object old : windowsList){
+            if(!Objects.equals(old, windowValue)){
+                newList.add(old);
+            }
+        }
+        newList.add(windowValue);
+        return newList;
+    }
 
 }

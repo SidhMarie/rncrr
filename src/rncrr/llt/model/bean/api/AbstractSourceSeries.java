@@ -1,5 +1,6 @@
 package rncrr.llt.model.bean.api;
 
+import javafx.scene.control.ChoiceBox;
 import rncrr.llt.model.bean.Points;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractSourceSeries implements ISourceSeries {
 
     protected List<Points> points;
+    protected ChoiceBox windowData;
 
     @Override
     public List<Points> getPoints() {
@@ -31,5 +33,15 @@ public abstract class AbstractSourceSeries implements ISourceSeries {
     @Override
     public List<Double> getYPoints(){
         return points.stream().map(Points::getY).collect(Collectors.toList());
+    }
+
+    @Override
+    public void setWindow(ChoiceBox windowData) {
+        this.windowData = windowData;
+    }
+
+    @Override
+    public ChoiceBox getWindow() {
+        return windowData;
     }
 }

@@ -113,7 +113,7 @@
                            <content>
                                <VBox prefWidth="210.0" BorderPane.alignment="TOP_LEFT">
                                <children>
-                               <TableView fx:id="seriesDatTableView"  prefHeight="320.0" prefWidth="210.0" visible="true">
+                               <TableView fx:id="seriesDatTableView" onMouseClicked="#detailSelectedRow" prefHeight="600.0" prefWidth="210.0" visible="true">
                                    <columns>
                                        <TableColumn fx:id="columnLabelDat_1" prefWidth="100.0" text="Type" />
                                        <TableColumn fx:id="columnLabelDat_2" prefWidth="110.0" text="Series Name" />
@@ -142,6 +142,11 @@
                <ToolBar>
                    <items>
                        <Button onAction="#autoSizeChart" mnemonicParsing="false" text="Auto size" />
+                       <CheckBox onAction="#showAllWindows" fx:id="checkBoxAllWindows" text="All windows" disable="true">
+                           <tooltip>
+                               <Tooltip text="Show/ all windows" />
+                           </tooltip>
+                       </CheckBox>
                    </items>
                </ToolBar>
                <LineChart fx:id="spectrumChart" prefHeight="400.0">

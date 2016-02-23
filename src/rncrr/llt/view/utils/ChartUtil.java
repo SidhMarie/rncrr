@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
@@ -12,10 +13,8 @@ import javafx.util.Duration;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Sidh on 15.08.2015.
@@ -97,7 +96,6 @@ public class ChartUtil {
             }
         }
     }
-
 
 
 }
