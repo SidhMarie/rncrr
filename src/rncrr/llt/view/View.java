@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
 import rncrr.llt.model.bean.api.ISourceSeries;
-import rncrr.llt.model.utils.eobject.ECharts;
 import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.AscSourceSeries;
 import rncrr.llt.model.utils.Config;
@@ -27,8 +26,6 @@ import javafx.scene.control.*;
 import rncrr.llt.view.utils.VUtil;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 
@@ -174,6 +171,7 @@ public class View {
             }
             chart.clearChart(profileChart);
             chart.clearChart(spectrumChart);
+            checkBoxAllWindows.setDisable(true);
         } catch (Exception e){
             VUtil.alertException("An error occurred while deleting a row", e);
         }

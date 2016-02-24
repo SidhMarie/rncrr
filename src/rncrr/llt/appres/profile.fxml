@@ -28,15 +28,9 @@
                        </ChoiceBox>
                        <Button mnemonicParsing="false" onAction="#transformData" prefHeight="32.0" text="FFT" />
                        <Button mnemonicParsing="false" onAction="#inverseTransformData" prefHeight="32.0" text="IFFT" />
+                       <Button mnemonicParsing="false" onAction="#doFilterData" prefHeight="32.0" text="FW" />
                        <Separator />
-                       <ChoiceBox fx:id="filterData" prefWidth="110.0" prefHeight="32.0">
-                           <String fx:value="NO FILTER"/>
-                           <String fx:value="WIENNER"/>
-                           <value>
-                               <String fx:value="NO FILTER" />
-                           </value>
-                       </ChoiceBox>
-                       <Button mnemonicParsing="false" onAction="#doFilterData" prefHeight="32.0" style="-fx-graphic: url('file:resources/img/toolBarButFilter.png');" text="" />
+                       <Button mnemonicParsing="false" onAction="#doFilterData" maxHeight="24.0" maxWidth="24.0" style="-fx-graphic: url('file:resources/img/toolBarButXls.png');" text="" />
                    </items>
                </ToolBar>
            </children>
