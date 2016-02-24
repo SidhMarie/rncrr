@@ -263,6 +263,10 @@ public class View {
         }
     }
 
+    public void exportToExcel(ActionEvent actionEvent) {
+
+    }
+
     /**
      * The method sets the information fields of the table depending on the type of measurement.
      * @param series - object type SSeries
@@ -403,6 +407,7 @@ public class View {
     @FXML private Label rowValue_7;
     @FXML private Label rowValue_8;
     @FXML private Label rowValue_9;
+
 
 
 }

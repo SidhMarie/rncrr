@@ -30,7 +30,7 @@
                        <Button mnemonicParsing="false" onAction="#inverseTransformData" prefHeight="32.0" text="IFFT" />
                        <Button mnemonicParsing="false" onAction="#doFilterData" prefHeight="32.0" text="FW" />
                        <Separator />
-                       <Button mnemonicParsing="false" onAction="#doFilterData" maxHeight="24.0" maxWidth="24.0" style="-fx-graphic: url('file:resources/img/toolBarButXls.png');" text="" />
+                       <Button mnemonicParsing="false" onAction="#exportToExcel" maxHeight="24.0" maxWidth="24.0" style="-fx-graphic: url('file:resources/img/toolBarButXls.png');" text="" />
                    </items>
                </ToolBar>
            </children>
