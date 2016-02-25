@@ -21,14 +21,23 @@ public class ExcelBuilder {
         this.workbook = workbook;
     }
 
-    public void createSheet(String nameSheet, List<Map<String, Object>> dataList) {
+    public void createSheet(String nameSheet, List<Map<Double, Double>> dataList) {
         Sheet sheet = workbook.createSheet(nameSheet);
         setSheetValue(sheet, dataList);
     }
 
-    private void setSheetValue(Sheet sheet, List<Map<String, Object>> dataList) {
+    private void setSheetValue(Sheet sheet, List<Map<Double, Double>> dataList) {
         Row row = sheet.createRow(0);
+        row.createCell(0).setCellValue("Count");
+        row.createCell(1).setCellValue("X value");
+        row.createCell(2).setCellValue("Y value");
+        row.createCell(3).setCellValue("X/100");
 
+        for(int i=0; i<dataList.size(); i++){
+            row = sheet.createRow(i+1);
+            row.createCell(i).setCellValue(i+1);
+//            row.createCell(i).setCellValue(dataList.get(i));
+        }
     }
 
 
