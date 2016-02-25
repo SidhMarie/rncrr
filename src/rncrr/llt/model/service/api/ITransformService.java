@@ -7,18 +7,13 @@ import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.utils.eobject.ECharts;
 import rncrr.llt.model.utils.eobject.EWindows;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by Sidh on 06.04.2015.
  */
 public interface ITransformService {
-
-    /**
-     *
-     * @param sSeries
-     * @param windows
-     * @return
-     */
-    void valuesXY(ISourceSeries sSeries, EWindows windows);
 
     /**
      *

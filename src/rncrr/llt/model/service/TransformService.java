@@ -14,7 +14,9 @@ import rncrr.llt.model.utils.eobject.ECharts;
 import rncrr.llt.model.utils.eobject.EWindows;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Sidh on 06.04.2015.
@@ -24,21 +26,12 @@ public class TransformService implements ITransformService {
     private Complex[] signal;
     private Complex[] spectrum;
     private Complex[] filter;
+    private static Map<Object,List> windowsData;
 
     private DigitalSeries dSeries;
 
-    public TransformService() {}
-
-    @Override
-    public void valuesXY(ISourceSeries sSeries, EWindows windows) {
-        List<Double> wList = setWindowsData(windows, sSeries.getXPoints());
-        List<Double> xList = Transform.inputList(wList);
-        int n = xList.size();
-        signal = new Complex[n];
-        for (int i = 0; i < n; i++) {
-            signal[i] = new Complex(xList.get(i), 0d);
-        }
-        spectrum = Transform.directTransform(signal);
+    public TransformService() {
+        this.windowsData = new HashMap<>();
     }
 
     @Override
@@ -62,6 +55,10 @@ public class TransformService implements ITransformService {
         return null;
     }
 
+    public static Map<Object, List> getWindowsData() {
+        return windowsData;
+    }
+
     private EWindows windows(Object windowValue){
         return EWindows.getNameByValue(windowValue.toString());
     }
@@ -74,17 +71,39 @@ public class TransformService implements ITransformService {
         return dSeries;
     }
 
+    private void doFFTValues(ISourceSeries sSeries, EWindows windows) {
+        List<Double> wList = setWindowsData(windows, sSeries.getXPoints());
+        List<Double> xList = Transform.inputList(wList);
+        int n = xList.size();
+        signal = new Complex[n];
+        for (int i = 0; i < n; i++) {
+            signal[i] = new Complex(xList.get(i), 0d);
+        }
+        spectrum = Transform.directTransform(signal);
+    }
+
     private DigitalSeries getAmplitudeSpectrum(ISourceSeries sSeries, EWindows windows) {
-        valuesXY(sSeries, windows);
+        doFFTValues(sSeries, windows);
         int n = signal.length/2;
         double[] nSpectrum = new double[n];
         dSeries = new DigitalSeries();
-//        System.out.println("spectrum***********************************************");
+        System.out.println("spectrum abs ***********************************************");
+        Map<Double, Double> hash;
+        List<Map<Double, Double>> fftData = new ArrayList<>();
         for(int i = 0; i < n; i++) {
             nSpectrum[i] = spectrum[i].abs() / n;
-//            System.out.println(nSpectrum[i]);
             dSeries.addPoints(new Points(i, nSpectrum[i]));
+            System.out.println(nSpectrum[i]);
+            hash = new HashMap<>();
+            hash.put(spectrum[i].re(), nSpectrum[i]);
+            fftData.add(hash);
+            windowsData.put(windows, fftData);
         }
+//        System.out.println("spectrum X ***********************************************");
+//        for(int i = 0; i < n; i++) {
+//            System.out.println(spectrum[i].re());
+//        }
+
 //        getWiennerFilter();
         return dSeries;
     }
@@ -112,7 +131,7 @@ public class TransformService implements ITransformService {
         }
     }
 
-    private DigitalSeries getReconstructed2(AscSourceSeries sSeries, EWindows windows) {
+    private DigitalSeries getReconstructed(ISourceSeries sSeries) {
         Complex[] source = Transform.inverseTransform(spectrum);
         dSeries = new DigitalSeries();
         List<Double> yPoint = sSeries.getYPoints();
@@ -131,8 +150,7 @@ public class TransformService implements ITransformService {
     }
 
     private DigitalSeries getReconstructed(ISourceSeries sSeries, EWindows windows) {
-        Complex[] source;
-        source = Transform.inverseTransform(spectrum);
+        Complex[] source = Transform.inverseTransform(spectrum);
 //        source = Transform.inverseTransform(filter);
         dSeries = new DigitalSeries();
         List<Double> yPoint = sSeries.getYPoints();
