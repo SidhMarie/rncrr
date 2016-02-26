@@ -5,6 +5,7 @@ import javafx.scene.control.ChoiceBox;
 import rncrr.llt.model.bean.DigitalSeries;
 import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.bean.AscSourceSeries;
+import rncrr.llt.model.bean.ReportSeries;
 import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.process.dsp.Complex;
 import rncrr.llt.model.process.dsp.Transform;
@@ -26,12 +27,12 @@ public class TransformService implements ITransformService {
     private Complex[] signal;
     private Complex[] spectrum;
     private Complex[] filter;
-    private static Map<Object,List> windowsData;
-
     private DigitalSeries dSeries;
 
+    private ExportDataService reportSeries;
+
     public TransformService() {
-        this.windowsData = new HashMap<>();
+        reportSeries = new ExportDataService();
     }
 
     @Override
@@ -55,10 +56,6 @@ public class TransformService implements ITransformService {
         return null;
     }
 
-    public static Map<Object, List> getWindowsData() {
-        return windowsData;
-    }
-
     private EWindows windows(Object windowValue){
         return EWindows.getNameByValue(windowValue.toString());
     }
@@ -71,33 +68,16 @@ public class TransformService implements ITransformService {
         return dSeries;
     }
 
-    private void doFFTValues(ISourceSeries sSeries, EWindows windows) {
-        List<Double> wList = setWindowsData(windows, sSeries.getXPoints());
-        List<Double> xList = Transform.inputList(wList);
-        int n = xList.size();
-        signal = new Complex[n];
-        for (int i = 0; i < n; i++) {
-            signal[i] = new Complex(xList.get(i), 0d);
-        }
-        spectrum = Transform.directTransform(signal);
-    }
-
     private DigitalSeries getAmplitudeSpectrum(ISourceSeries sSeries, EWindows windows) {
         doFFTValues(sSeries, windows);
-        int n = signal.length/2;
+        int n = signal.length;
         double[] nSpectrum = new double[n];
         dSeries = new DigitalSeries();
         System.out.println("spectrum abs ***********************************************");
-        Map<Double, Double> hash;
-        List<Map<Double, Double>> fftData = new ArrayList<>();
         for(int i = 0; i < n; i++) {
             nSpectrum[i] = spectrum[i].abs() / n;
             dSeries.addPoints(new Points(i, nSpectrum[i]));
             System.out.println(nSpectrum[i]);
-            hash = new HashMap<>();
-            hash.put(spectrum[i].re(), nSpectrum[i]);
-            fftData.add(hash);
-            windowsData.put(windows, fftData);
         }
 //        System.out.println("spectrum X ***********************************************");
 //        for(int i = 0; i < n; i++) {
@@ -107,6 +87,19 @@ public class TransformService implements ITransformService {
 //        getWiennerFilter();
         return dSeries;
     }
+
+    private void doFFTValues(ISourceSeries sSeries, EWindows windows) {
+        List<Double> wList = setWindowsData(windows, sSeries.getXPoints());
+        List<Double> xList = Transform.inputList(wList);
+        int n = xList.size();
+        signal = new Complex[n];
+        for (int i = 0; i < n; i++) {
+            signal[i] = new Complex(xList.get(i), 0d);
+        }
+        spectrum = Transform.directTransform(signal);
+//        reportSeries.setSourceData();
+    }
+
 
     private void getWiennerFilter() {
 //        dSeries = new DigitalSeries();
