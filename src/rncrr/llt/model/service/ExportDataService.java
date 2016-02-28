@@ -2,9 +2,13 @@ package rncrr.llt.model.service;
 
 import rncrr.llt.model.bean.ReportSeries;
 import rncrr.llt.model.bean.api.ISourceSeries;
+import rncrr.llt.model.process.ExcelBuilder;
 import rncrr.llt.model.process.dsp.Complex;
+import rncrr.llt.model.utils.Config;
 import rncrr.llt.model.utils.eobject.EWindows;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,11 +27,23 @@ public class ExportDataService {
         reportData = new HashMap<>();
     }
 
-    public static Map<Object, List<ReportSeries>> getReportData() {
-        return reportData;
+    public List<ReportSeries> getReportList() {
+        return reportList;
     }
 
-    public void setSourceData(ISourceSeries series, List<Double> inputList, EWindows windows, Complex[] spectrum){
+    public static void printData() {
+        ExcelBuilder eb = new ExcelBuilder(new File(Config.getStringProperty("export.xls.file.name")));
+        for(Object key : reportData.keySet()) {
+            System.out.println("\n\n****************************************************"+key+"****************************************************");
+            List<ReportSeries> list = reportData.get(key);
+             eb.createSheet(key.toString(), list);
+            for(ReportSeries rs : list){
+                System.out.println(rs.getCount() +"  |  "+ rs.getSourceX() +"  |  "+ rs.getSourceY() +"  |  "+ rs.getWindowX() +"  |  "+ rs.getAmplitude() +"  |  "+ rs.getFrequency());
+            }
+        }
+    }
+
+    public void setSourceData(ISourceSeries series, List<Double> inputList, EWindows windows, Complex[] spectrum) {
         reportList = new ArrayList<>();
         ReportSeries reportSeries;
         for(int i = 0; i <inputList.size(); i++){
@@ -45,13 +61,14 @@ public class ExportDataService {
             reportSeries.setAmplitude(spectrum[i].abs());
             reportList.add(reportSeries);
         }
-        if(windows != null){
-            reportData.put(windows.name(), reportList);
-        } else {
-            reportData.put("RECTANGULAR", reportList);
-        }
+        reportData.put(windows.name(), reportList);
     }
 
-
-
+    public void setRebuildData(Complex[] source){
+        ReportSeries reportSeries;
+        for(int i = 0; i< reportList.size(); i++){
+            reportSeries = reportList.get(i);
+            reportSeries.setRebuild(source[i].re());
+        }
+    }
 }

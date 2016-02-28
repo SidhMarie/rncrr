@@ -2,6 +2,9 @@ package rncrr.llt.model.utils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 
 public class Config extends Properties {
@@ -92,6 +95,15 @@ public class Config extends Properties {
         if ((propValue != null) && (propValue.equalsIgnoreCase("true")))
             boolVal = true;
         return boolVal;
+    }
+
+    public static List<Object> getExportColumn(){
+        List<Object> result = new ArrayList<>();
+        for(Object key : properties.keySet()) {
+            if(key.toString().contains("export.xls.column."))
+                result.add(key);
+        }
+        return result;
     }
 
 }

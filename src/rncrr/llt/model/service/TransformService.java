@@ -1,11 +1,8 @@
 package rncrr.llt.model.service;
 
 
-import javafx.scene.control.ChoiceBox;
 import rncrr.llt.model.bean.DigitalSeries;
 import rncrr.llt.model.bean.Points;
-import rncrr.llt.model.bean.AscSourceSeries;
-import rncrr.llt.model.bean.ReportSeries;
 import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.process.dsp.Complex;
 import rncrr.llt.model.process.dsp.Transform;
@@ -15,24 +12,21 @@ import rncrr.llt.model.utils.eobject.ECharts;
 import rncrr.llt.model.utils.eobject.EWindows;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Sidh on 06.04.2015.
  */
 public class TransformService implements ITransformService {
 
-    private Complex[] signal;
     private Complex[] spectrum;
     private Complex[] filter;
     private DigitalSeries dSeries;
 
-    private ExportDataService reportSeries;
+    private ExportDataService reportService;
 
     public TransformService() {
-        reportSeries = new ExportDataService();
+        reportService = new ExportDataService();
     }
 
     @Override
@@ -46,7 +40,8 @@ public class TransformService implements ITransformService {
                 case WINDOW :
                     return getDWindows(selectedSeries, windows(windowValue));
                 case RECONSTRUCTED:
-                    return getReconstructed(selectedSeries, windows(windowValue));
+//                    return getReconstructed(selectedSeries, windows(windowValue));
+                    return getReconstructed(selectedSeries);
                 default:
                     return null;
             }
@@ -69,13 +64,15 @@ public class TransformService implements ITransformService {
     }
 
     private DigitalSeries getAmplitudeSpectrum(ISourceSeries sSeries, EWindows windows) {
-        doFFTValues(sSeries, windows);
-        int n = signal.length;
+        List<Double> winList = setWindowsData(windows, sSeries.getXPoints());
+        List<Double> inpList = Transform.inputList(winList);
+        spectrum = doFFTValues(inpList);
+        int n = spectrum.length/2;
         double[] nSpectrum = new double[n];
         dSeries = new DigitalSeries();
         System.out.println("spectrum abs ***********************************************");
         for(int i = 0; i < n; i++) {
-            nSpectrum[i] = spectrum[i].abs() / n;
+            nSpectrum[i] = spectrum[i].abs();
             dSeries.addPoints(new Points(i, nSpectrum[i]));
             System.out.println(nSpectrum[i]);
         }
@@ -83,27 +80,24 @@ public class TransformService implements ITransformService {
 //        for(int i = 0; i < n; i++) {
 //            System.out.println(spectrum[i].re());
 //        }
-
 //        getWiennerFilter();
+        reportService.setSourceData(sSeries, inpList, windows, spectrum);
         return dSeries;
     }
 
-    private void doFFTValues(ISourceSeries sSeries, EWindows windows) {
-        List<Double> wList = setWindowsData(windows, sSeries.getXPoints());
-        List<Double> xList = Transform.inputList(wList);
-        int n = xList.size();
-        signal = new Complex[n];
+    private Complex[] doFFTValues(List<Double> inputList) {
+        int n = inputList.size();
+        Complex[] result = new Complex[n];
         for (int i = 0; i < n; i++) {
-            signal[i] = new Complex(xList.get(i), 0d);
+            result[i] = new Complex(inputList.get(i), 0d);
         }
-        spectrum = Transform.directTransform(signal);
-//        reportSeries.setSourceData();
+        return Transform.directTransform(result);
     }
 
 
     private void getWiennerFilter() {
 //        dSeries = new DigitalSeries();
-        int n = signal.length/2;
+        int n = spectrum.length/2;
         System.out.println("n =====>> "+n);
         int v = 5;
         System.out.println("  =====>> " + v );
@@ -139,6 +133,7 @@ public class TransformService implements ITransformService {
                 dSeries.addPoints(new Points(source[i].re(), yPoint.get(i)));
             }
         }
+        reportService.setRebuildData(source);
         return dSeries;
     }
 

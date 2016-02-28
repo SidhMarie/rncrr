@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
 import rncrr.llt.model.bean.api.ISourceSeries;
+import rncrr.llt.model.service.ExportDataService;
 import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.AscSourceSeries;
 import rncrr.llt.model.utils.Config;
@@ -264,7 +265,7 @@ public class View {
     }
 
     public void exportToExcel(ActionEvent actionEvent) {
-
+        ExportDataService.printData();
     }
 
     /**
