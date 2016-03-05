@@ -1,9 +1,8 @@
-package rncrr.llt.model.bean.api;
+package rncrr.llt.model.process.api;
 
 import javafx.scene.control.ChoiceBox;
 import rncrr.llt.model.bean.Points;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

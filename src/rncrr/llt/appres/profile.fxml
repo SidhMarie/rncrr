@@ -138,9 +138,15 @@
                        <Button onAction="#autoSizeChart" mnemonicParsing="false" text="Auto size" />
                        <CheckBox onAction="#showAllWindows" fx:id="checkBoxAllWindows" text="All windows" disable="true">
                            <tooltip>
-                               <Tooltip text="Show/ all windows" />
+                               <Tooltip text="Show/ all windows"/>
                            </tooltip>
                        </CheckBox>
+                       <Separator />
+                       <fx:define>
+                           <ToggleGroup fx:id="spectrumType" />
+                       </fx:define>
+                       <RadioButton text="Amplitude" fx:id="radioAmplitude" toggleGroup="$spectrumType" selected="true"/>
+                       <RadioButton text="Spectrum of power" fx:id="radioSpectrumPower" toggleGroup="$spectrumType" />
                    </items>
                </ToolBar>
                <LineChart fx:id="spectrumChart" prefHeight="400.0">

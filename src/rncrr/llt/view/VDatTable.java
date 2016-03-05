@@ -5,10 +5,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import rncrr.llt.model.bean.DatSourceSeries;
-import rncrr.llt.model.bean.api.ISourceSeries;
+import rncrr.llt.model.process.api.ISourceSeries;
 import rncrr.llt.model.service.DatFileService;
-import rncrr.llt.model.utils.eobject.EDatFileValue;
 import rncrr.llt.view.api.IDatTable;
 
 import java.io.File;

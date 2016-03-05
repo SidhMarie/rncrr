@@ -1,11 +1,8 @@
 package rncrr.llt.model.bean;
 
-import rncrr.llt.model.bean.api.AbstractSourceSeries;
-import rncrr.llt.model.bean.api.ISourceSeries;
+import rncrr.llt.model.process.api.AbstractSourceSeries;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class AscSourceSeries extends AbstractSourceSeries {
 

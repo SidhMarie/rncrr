@@ -1,10 +1,9 @@
 package rncrr.llt.view.api;
 
-import rncrr.llt.model.bean.AscSourceSeries;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import rncrr.llt.model.bean.api.ISourceSeries;
+import rncrr.llt.model.process.api.ISourceSeries;
 import rncrr.llt.model.service.AscFileService;
 
 import java.io.File;

@@ -6,7 +6,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
 import rncrr.llt.model.bean.DigitalSeries;
 import rncrr.llt.model.bean.Points;
-import rncrr.llt.model.bean.api.ISourceSeries;
+import rncrr.llt.model.process.api.ISourceSeries;
 import rncrr.llt.model.service.TransformService;
 import rncrr.llt.model.service.api.ITransformService;
 import rncrr.llt.model.utils.eobject.ECharts;

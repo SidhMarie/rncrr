@@ -2,8 +2,7 @@ package rncrr.llt.view;
 
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
-import rncrr.llt.model.bean.AscSourceSeries;
-import rncrr.llt.model.bean.api.ISourceSeries;
+import rncrr.llt.model.process.api.ISourceSeries;
 import rncrr.llt.model.service.AscFileService;
 import rncrr.llt.view.api.IAscTable;
 import javafx.collections.FXCollections;

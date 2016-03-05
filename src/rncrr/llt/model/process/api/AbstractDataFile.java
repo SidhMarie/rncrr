@@ -1,7 +1,6 @@
 package rncrr.llt.model.process.api;
 
 import javafx.collections.ObservableList;
-import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.view.utils.VUtil;
 
 import java.io.FileInputStream;

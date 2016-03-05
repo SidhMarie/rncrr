@@ -1,6 +1,5 @@
 package rncrr.llt.view;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -10,8 +9,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
-import rncrr.llt.model.bean.api.ISourceSeries;
-import rncrr.llt.model.service.ExportDataService;
+import rncrr.llt.model.process.api.ISourceSeries;
+import rncrr.llt.model.service.TransformService;
 import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.AscSourceSeries;
 import rncrr.llt.model.utils.Config;
@@ -141,6 +140,7 @@ public class View {
                 }
             }
             chart.initChart(spectrumChart);
+            checkBoxAllWindows.selectedProperty().setValue(false);
             checkBoxAllWindows.setDisable(true);
         } catch (Exception e) {
             VUtil.alertException("An error occurred while trying to view detail data and building chart",e);
@@ -265,8 +265,14 @@ public class View {
     }
 
     public void exportToExcel(ActionEvent actionEvent) {
-        ExportDataService.printData();
+        try{
+            TransformService.printData();
+            VUtil.alertMessage("Export data to xls file successfully completed");
+        } catch (Exception e){
+            VUtil.alertException("An error occurred while export to xls file", e);
+        }
     }
+
 
     /**
      * The method sets the information fields of the table depending on the type of measurement.
@@ -374,12 +380,16 @@ public class View {
     @FXML private LineChart<Number, Number> profileChart;
     @FXML private LineChart<Number, Number> spectrumChart;
     @FXML private ChoiceBox windowData;
-    @FXML private GridPane detailPaneAsc;
     @FXML private Label fileName;
     @FXML private CheckBox checkBoxAllWindows;
 
     @FXML private Tab ascFileTab;
     @FXML private Tab datFileTab;
+
+    @FXML private ToggleGroup spectrumType;
+    @FXML private RadioButton radioAmplitude;
+    @FXML private RadioButton radioSpectrumPower;
+
 
     @FXML private TableColumn<ISourceSeries, String> columnLabel_1;
     @FXML private TableColumn<ISourceSeries, String> columnLabel_2;

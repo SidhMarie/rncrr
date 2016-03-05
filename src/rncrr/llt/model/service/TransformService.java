@@ -3,16 +3,22 @@ package rncrr.llt.model.service;
 
 import rncrr.llt.model.bean.DigitalSeries;
 import rncrr.llt.model.bean.Points;
-import rncrr.llt.model.bean.api.ISourceSeries;
+import rncrr.llt.model.bean.TransformDataSeries;
+import rncrr.llt.model.process.ExcelBuilder;
+import rncrr.llt.model.process.api.ISourceSeries;
 import rncrr.llt.model.process.dsp.Complex;
 import rncrr.llt.model.process.dsp.Transform;
 import rncrr.llt.model.process.dsp.Window;
 import rncrr.llt.model.service.api.ITransformService;
+import rncrr.llt.model.utils.Config;
 import rncrr.llt.model.utils.eobject.ECharts;
 import rncrr.llt.model.utils.eobject.EWindows;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Sidh on 06.04.2015.
@@ -23,10 +29,16 @@ public class TransformService implements ITransformService {
     private Complex[] filter;
     private DigitalSeries dSeries;
 
-    private ExportDataService reportService;
+    private Double delta;
+    private Double nyquist;
+    private double[] frequency;
+
+    private static Map<Object,List<TransformDataSeries>> transformData;
+    private List<TransformDataSeries> transformList;
+
 
     public TransformService() {
-        reportService = new ExportDataService();
+        transformData = new HashMap<>();
     }
 
     @Override
@@ -46,9 +58,78 @@ public class TransformService implements ITransformService {
                     return null;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             dSeries = null;
         }
         return null;
+    }
+
+    public static void printData() {
+        ExcelBuilder eb = new ExcelBuilder(new File(Config.getStringProperty("export.xls.file.name")));
+        for(Object key : transformData.keySet()) {
+            List<TransformDataSeries> list = transformData.get(key);
+            eb.createSheet(key.toString(), list);
+        }
+    }
+
+    private void setSourceData(ISourceSeries series, List<Double> inputList, EWindows windows, double[] nSpectrum) {
+        transformList = new ArrayList<>();
+        TransformDataSeries reportSeries;
+        for(int i = 0; i <inputList.size(); i++){
+            reportSeries = new TransformDataSeries();
+            reportSeries.setCount(i + 1);
+            if(i < series.getPoints().size()) {
+                reportSeries.setSourceX(series.getXPoints().get(i));
+                reportSeries.setSourceY(series.getYPoints().get(i));
+            } else {
+                reportSeries.setSourceX(0D);
+                reportSeries.setSourceY(0D);
+            }
+            reportSeries.setWindowX(inputList.get(i));
+            if(i < frequency.length) {
+                reportSeries.setFrequency(frequency[i]);
+            } else {
+                reportSeries.setFrequency(0D);
+            }
+            if(i < nSpectrum.length){
+                reportSeries.setAmplitude(nSpectrum[i]);
+            } else {
+                reportSeries.setAmplitude(0D);
+            }
+            transformList.add(reportSeries);
+        }
+        transformData.put(windows.name(), transformList);
+    }
+
+    private void setRebuildData(Complex[] source){
+        TransformDataSeries reportSeries;
+        for(int i = 0; i< transformList.size(); i++){
+            reportSeries = transformList.get(i);
+            reportSeries.setRebuild(source[i].re());
+        }
+    }
+
+    private void doDelta(ISourceSeries sourceSeries) {
+        Double point1 = Math.abs(sourceSeries.getXPoints().get(0));
+        Double point2 = Math.abs(sourceSeries.getXPoints().get(1));
+        delta = Math.abs(point1 - point2);
+    }
+
+    private void doNyquist(){
+        nyquist = 1/(2*delta);
+    }
+
+    private void doFrequency(int N){
+        double f;
+        frequency = new double[N];
+        for(int i = 0; i < N; i++){
+            if(i == 0 ) {
+                frequency[i] = 0d;
+            } else {
+                f = (i/(N*delta));
+                frequency[i] =  f < nyquist ? f : 0.0;
+            }
+        }
     }
 
     private EWindows windows(Object windowValue){
@@ -66,6 +147,8 @@ public class TransformService implements ITransformService {
     private DigitalSeries getAmplitudeSpectrum(ISourceSeries sSeries, EWindows windows) {
         List<Double> winList = setWindowsData(windows, sSeries.getXPoints());
         List<Double> inpList = Transform.inputList(winList);
+        doDelta(sSeries);
+        doNyquist();
         spectrum = doFFTValues(inpList);
         int n = spectrum.length/2;
         double[] nSpectrum = new double[n];
@@ -74,14 +157,9 @@ public class TransformService implements ITransformService {
         for(int i = 0; i < n; i++) {
             nSpectrum[i] = spectrum[i].abs();
             dSeries.addPoints(new Points(i, nSpectrum[i]));
-            System.out.println(nSpectrum[i]);
         }
-//        System.out.println("spectrum X ***********************************************");
-//        for(int i = 0; i < n; i++) {
-//            System.out.println(spectrum[i].re());
-//        }
-//        getWiennerFilter();
-        reportService.setSourceData(sSeries, inpList, windows, spectrum);
+        doFrequency(sSeries.getXPoints().size()/2);
+        setSourceData(sSeries, inpList, windows, nSpectrum);
         return dSeries;
     }
 
@@ -133,7 +211,7 @@ public class TransformService implements ITransformService {
                 dSeries.addPoints(new Points(source[i].re(), yPoint.get(i)));
             }
         }
-        reportService.setRebuildData(source);
+        setRebuildData(source);
         return dSeries;
     }
 

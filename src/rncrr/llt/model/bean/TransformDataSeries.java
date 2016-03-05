@@ -1,13 +1,9 @@
 package rncrr.llt.model.bean;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Created by Sidh on 26.02.2016.
  */
-public class ReportSeries {
+public class TransformDataSeries {
 
     private int count;
     private Double sourceX;
