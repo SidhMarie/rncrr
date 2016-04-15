@@ -2,6 +2,7 @@ package rncrr.llt.view.api;
 
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TableView;
 import rncrr.llt.model.process.api.ISourceSeries;
 
@@ -9,6 +10,12 @@ import rncrr.llt.model.process.api.ISourceSeries;
  * Created by Sidh on 01.08.2015.
  */
 public interface ICharts {
+
+    /**
+     *
+     * @param slider
+     */
+    void setSlider(Slider slider);
 
     /**
      *

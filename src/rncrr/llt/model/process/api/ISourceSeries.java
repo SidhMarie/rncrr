@@ -20,6 +20,6 @@ public interface ISourceSeries {
 
     void setWindow(ChoiceBox windowData);
 
-    ChoiceBox getWindow();
+    Object getWindow();
 
 }

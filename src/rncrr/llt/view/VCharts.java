@@ -1,5 +1,7 @@
 package rncrr.llt.view;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.LineChart;
@@ -7,6 +9,7 @@ import javafx.scene.control.*;
 import rncrr.llt.model.bean.DigitalSeries;
 import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.process.api.ISourceSeries;
+import rncrr.llt.model.process.dsp.LeastSquares;
 import rncrr.llt.model.service.TransformService;
 import rncrr.llt.model.service.api.ITransformService;
 import rncrr.llt.model.utils.eobject.ECharts;
@@ -30,12 +33,17 @@ public class VCharts implements ICharts {
     private XYChart.Series<Number, Number> seriesChart;
     private ObservableList<XYChart.Series<Number, Number>> profileSeries;
     private List<Object> windowsList;
+    private Slider slider;
 
     public VCharts() {
         this.transformService = new TransformService();
         this.profileSeries = FXCollections.observableArrayList();
     }
 
+    @Override
+    public void setSlider(Slider slider) {
+        this.slider = slider;
+    }
 
     @Override
     public void initChart(XYChart<Number, Number> viewChart) throws Exception {
@@ -93,11 +101,46 @@ public class VCharts implements ICharts {
                 seriesChart = new LineChart.Series<>();
                 for (Points point : digitalSeries.getPoints()) {
                     seriesChart.getData().add(new XYChart.Data<>(point.getX(), point.getY()));
-//                    seriesChart.setName(windowData.getValue().toString());
                 }
+//                System.out.println(seriesChart.getData().size());
                 spectrumSeries.add(seriesChart);
                 xychart.setLegendVisible(false);
                 xychart.setData(spectrumSeries);
+                final int[] dataSize = {seriesChart.getData().size()};
+                int ds = seriesChart.getData().size();
+                slider.setMax(dataSize[0]);
+                slider.setValue(dataSize[0] - 1);
+
+                XYChart.Series<Number, Number> squares = new LineChart.Series<>();
+                double[] allSet = new double[ds];
+                for(int i = 0; i < ds; i++) {
+                    allSet[i] = i;
+                }
+                System.out.println("===> "+ds);
+                for(int i = 0; i<ds; i++){
+                    System.out.println("i => "+i +"    value =>"+seriesChart.getData().get(i).getYValue());
+                }
+                slider.valueProperty().addListener(new ChangeListener<Number>() {
+                    public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+//                        System.out.println("new_val = " + new_val.intValue());
+                        System.out.println("=========== xValue");
+                        int xValueSize = dataSize[0] - new_val.intValue();
+                        double[] xValue = new double[xValueSize];
+                        double[] yValue = new double[xValueSize];
+                        System.out.println("xValueSize => " + xValueSize);
+                        for(int i = 0; i < xValueSize; i++) {
+                            int count = dataSize[0] - i;
+                            System.out.println();
+                            xValue[i] = count;
+//                            yValue[i] = seriesChart.getData().get(count).getYValue().doubleValue();
+
+//                            System.out.println(" count => "+count+"  i => "+ i + "  x => " + xValue[i] +"  y => "+seriesChart.getData().get(count).);
+                        }
+
+//                        LeastSquares leastSquares = new LeastSquares(allSet, sliderValue,);
+                    }
+                });
+
             } else {
                 VUtil.alertMessage("Should choose a source signal to inverse transform");
             }

@@ -40,7 +40,7 @@ public abstract class AbstractSourceSeries implements ISourceSeries {
     }
 
     @Override
-    public ChoiceBox getWindow() {
-        return windowData;
+    public Object getWindow() {
+        return windowData.getValue();
     }
 }

@@ -1,9 +1,10 @@
 package rncrr.llt.view;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +32,8 @@ import java.util.Objects;
 
 public class View {
 
+
+
     private IDataSave dataSave;
     private IAscTable ascTable;
     private IDatTable datTable;
@@ -57,18 +60,18 @@ public class View {
     @FXML
     protected void initialize(){
         ChartPanManager panner = new ChartPanManager( spectrumChart );
-        panner.setMouseFilter( new EventHandler<MouseEvent>() {
+        panner.setMouseFilter(new EventHandler<MouseEvent>() {
             @Override
-            public void handle( MouseEvent mouseEvent ) {
-                if ( mouseEvent.getButton() == MouseButton.SECONDARY ||
-                        ( mouseEvent.getButton() == MouseButton.PRIMARY &&
-                                mouseEvent.isShortcutDown() ) ) {
+            public void handle(MouseEvent mouseEvent) {
+                if (mouseEvent.getButton() == MouseButton.SECONDARY ||
+                        (mouseEvent.getButton() == MouseButton.PRIMARY &&
+                                mouseEvent.isShortcutDown())) {
                     //let it through
                 } else {
                     mouseEvent.consume();
                 }
             }
-        } );
+        });
         panner.start();
 
         JFXChartUtil.setupZooming(spectrumChart, new EventHandler<MouseEvent>() {
@@ -78,6 +81,9 @@ public class View {
                     mouseEvent.consume();
             }
         });
+
+        setSliderProperty(frequencySlider);
+        chart.setSlider(frequencySlider);
     }
 
     /**
@@ -228,6 +234,11 @@ public class View {
     }
 
     public void doFilterData(ActionEvent actionEvent) {
+
+    }
+
+    public void doFilterData(Number number){
+        VUtil.alertMessage(number.toString());
     }
 
     //TOOLBAR for charts
@@ -274,6 +285,16 @@ public class View {
     }
 
 
+    private void setSliderProperty(Slider slider){
+        slider.setMin(0D);
+        slider.setMax(100D);
+        slider.setValue(80D);
+        slider.setShowTickLabels(true);
+        slider.setShowTickMarks(true);
+        slider.setMajorTickUnit(10);
+        slider.setMinorTickCount(5);
+        slider.setBlockIncrement(10);
+    }
     /**
      * The method sets the information fields of the table depending on the type of measurement.
      * @param series - object type SSeries
@@ -373,23 +394,22 @@ public class View {
     }
 
 
+    @FXML private Slider frequencySlider;
     @FXML private TabPane tabPane;
     @FXML private TableView<ISourceSeries> seriesTableView;
     @FXML private TableView<ISourceSeries> seriesDatTableView;
 
     @FXML private LineChart<Number, Number> profileChart;
     @FXML private LineChart<Number, Number> spectrumChart;
+
     @FXML private ChoiceBox windowData;
+    @FXML private ChoiceBox wienerFilter;
+
     @FXML private Label fileName;
     @FXML private CheckBox checkBoxAllWindows;
 
     @FXML private Tab ascFileTab;
     @FXML private Tab datFileTab;
-
-    @FXML private ToggleGroup spectrumType;
-    @FXML private RadioButton radioAmplitude;
-    @FXML private RadioButton radioSpectrumPower;
-
 
     @FXML private TableColumn<ISourceSeries, String> columnLabel_1;
     @FXML private TableColumn<ISourceSeries, String> columnLabel_2;

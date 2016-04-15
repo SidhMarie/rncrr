@@ -5,6 +5,6 @@ package rncrr.llt.model.utils.eobject;
  */
 public enum ECharts {
 
-    SOURCE, SPECTRUM, WINDOW, RECONSTRUCTED
+    SOURCE, SPECTRUM, WIENNER, RECONSTRUCTED
 
 }
