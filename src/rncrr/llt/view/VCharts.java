@@ -102,45 +102,42 @@ public class VCharts implements ICharts {
                 for (Points point : digitalSeries.getPoints()) {
                     seriesChart.getData().add(new XYChart.Data<>(point.getX(), point.getY()));
                 }
-//                System.out.println(seriesChart.getData().size());
+
+                int dataSize = seriesChart.getData().size();
+                slider.setMax(dataSize);
+                slider.setValue(dataSize - 1);
+
+                double[] allSet = new double[dataSize];
+                double[] yRealValue = new double[dataSize];
+                for(int i = 0; i < dataSize; i++) {
+                    allSet[i] = i;
+                    yRealValue[i] = seriesChart.getData().get(i).getYValue().doubleValue();
+                }
+
+                slider.valueProperty().addListener(new ChangeListener<Number>() {
+                    public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+                        int xValueSize = dataSize - new_val.intValue();
+                        double[] xValue = new double[xValueSize];
+                        double[] yValue = new double[xValueSize];
+                        for (int i = 0; i < xValueSize; i++) {
+                            int count = dataSize - i - 1;
+                            xValue[i] = count;
+                            yValue[i] = yRealValue[count];
+                        }
+                        LeastSquares leastSquares = new LeastSquares(allSet, xValue, yValue);
+                        double[] lineNoise = leastSquares.doLeastSquaresExtrapolation();
+                        XYChart.Series<Number, Number> squares = new LineChart.Series<>();
+                        for (int i = 0; i < lineNoise.length; i++) {
+                            squares.getData().add(new XYChart.Data<>(allSet[i], lineNoise[i]));
+                        }
+                        if(spectrumSeries.size() == 2)
+                            spectrumSeries.remove(1);
+                        spectrumSeries.add(squares);
+                    }
+                });
                 spectrumSeries.add(seriesChart);
                 xychart.setLegendVisible(false);
                 xychart.setData(spectrumSeries);
-                final int[] dataSize = {seriesChart.getData().size()};
-                int ds = seriesChart.getData().size();
-                slider.setMax(dataSize[0]);
-                slider.setValue(dataSize[0] - 1);
-
-                XYChart.Series<Number, Number> squares = new LineChart.Series<>();
-                double[] allSet = new double[ds];
-                for(int i = 0; i < ds; i++) {
-                    allSet[i] = i;
-                }
-                System.out.println("===> "+ds);
-                for(int i = 0; i<ds; i++){
-                    System.out.println("i => "+i +"    value =>"+seriesChart.getData().get(i).getYValue());
-                }
-                slider.valueProperty().addListener(new ChangeListener<Number>() {
-                    public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-//                        System.out.println("new_val = " + new_val.intValue());
-                        System.out.println("=========== xValue");
-                        int xValueSize = dataSize[0] - new_val.intValue();
-                        double[] xValue = new double[xValueSize];
-                        double[] yValue = new double[xValueSize];
-                        System.out.println("xValueSize => " + xValueSize);
-                        for(int i = 0; i < xValueSize; i++) {
-                            int count = dataSize[0] - i;
-                            System.out.println();
-                            xValue[i] = count;
-//                            yValue[i] = seriesChart.getData().get(count).getYValue().doubleValue();
-
-//                            System.out.println(" count => "+count+"  i => "+ i + "  x => " + xValue[i] +"  y => "+seriesChart.getData().get(count).);
-                        }
-
-//                        LeastSquares leastSquares = new LeastSquares(allSet, sliderValue,);
-                    }
-                });
-
             } else {
                 VUtil.alertMessage("Should choose a source signal to inverse transform");
             }
