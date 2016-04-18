@@ -1,6 +1,12 @@
 .chart-line-symbol {
     -fx-background-insets: 0,1;
     -fx-background-radius: 2px;
+    -fx-padding: 1px;
+}
+
+.my-style-symbol {
+    -fx-background-insets: 0,1;
+    -fx-background-radius: 2px;
     -fx-padding: 2px;
 }
 
@@ -9,9 +15,9 @@
     -fx-effect: null;
 }
 .default-color0.chart-series-line { -fx-stroke: blue; }
-.default-color1.chart-series-line { -fx-stroke: green; }
+.default-color1.chart-series-line { -fx-stroke: red; }
 .chart-line-symbol.series0 { -fx-background-color: blue, white; }
-.chart-line-symbol.series1 { -fx-background-color: green, white; }
+.chart-line-symbol.series1 { -fx-background-color: red, white; }
 
 /*.slider {*/
     /*-fx-skin: "com.sun.javafx.scene.control.skin.SliderSkin";*/

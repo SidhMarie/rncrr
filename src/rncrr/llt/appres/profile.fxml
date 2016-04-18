@@ -29,7 +29,14 @@
                        <Button mnemonicParsing="false" onAction="#transformData" prefHeight="32.0" text="FFT" />
                        <Button mnemonicParsing="false" onAction="#inverseTransformData" prefHeight="32.0" text="IFFT" />
                        <Separator />
-                        <Button mnemonicParsing="false" onAction="#doFilterData" prefHeight="32.0" text="FW" />
+                       <ChoiceBox fx:id="wienerFilter"  prefWidth="110.0" prefHeight="32.0">
+                           <String fx:value="WF: MEAN VALUE"/>
+                           <String fx:value="WF: LEAST SQUARES"/>
+                           <value>
+                               <String fx:value="WF: MEAN VALUE" />
+                           </value>
+                       </ChoiceBox>
+                        <!--<Button mnemonicParsing="false" onAction="#doFilterData" prefHeight="32.0" text="FW" />-->
                        <Separator />
                        <Button mnemonicParsing="false" onAction="#exportToExcel" maxHeight="24.0" maxWidth="24.0" style="-fx-graphic: url('file:resources/img/toolBarButXls.png');" text="" />
                    </items>
@@ -140,7 +147,12 @@
                        <Button onAction="#autoSizeChart" mnemonicParsing="false" text="Auto size" />
                        <CheckBox onAction="#showAllWindows" fx:id="checkBoxAllWindows" text="All windows" disable="true">
                            <tooltip>
-                               <Tooltip text="Show/ all windows"/>
+                               <Tooltip text="Show all windows"/>
+                           </tooltip>
+                       </CheckBox>
+                       <CheckBox onAction="#useWienerFilter" fx:id="checkBoxUseFW" text="Wiener Filter" disable="true">
+                           <tooltip>
+                               <Tooltip text="Use Wiener Filter"/>
                            </tooltip>
                        </CheckBox>
                    </items>
@@ -153,12 +165,11 @@
                        <NumberAxis side="LEFT" />
                    </yAxis>
                </LineChart>
-                    <Slider fx:id="frequencySlider" />
+                    <Slider fx:id="frequencySlider" disable="true" />
            </children>
            <padding>
                <Insets bottom="10.0" right="10.0" left="7.0" />
            </padding>
        </VBox>
-       <!--<VBox fx:id="vboxSpace" maxHeight="20.0" prefWidth="210.0" BorderPane.alignment="CENTER"/>-->
    </center>
 </BorderPane>

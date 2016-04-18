@@ -4,18 +4,20 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import rncrr.llt.model.bean.DigitalSeries;
 import rncrr.llt.model.bean.Points;
-import rncrr.llt.model.process.api.ISourceSeries;
-import rncrr.llt.model.process.dsp.LeastSquares;
+import rncrr.llt.model.bean.api.ISourceSeries;
+import rncrr.llt.model.dsp.LeastSquares;
 import rncrr.llt.model.service.TransformService;
 import rncrr.llt.model.service.api.ITransformService;
 import rncrr.llt.model.utils.eobject.ECharts;
 import javafx.scene.chart.XYChart;
 import rncrr.llt.view.api.ICharts;
-import rncrr.llt.view.utils.ChartUtil;
 import rncrr.llt.view.utils.VUtil;
 
 import java.util.ArrayList;
@@ -43,6 +45,14 @@ public class VCharts implements ICharts {
     @Override
     public void setSlider(Slider slider) {
         this.slider = slider;
+        slider.setMin(0D);
+        slider.setMax(100D);
+        slider.setValue(80D);
+        slider.setShowTickLabels(true);
+        slider.setShowTickMarks(true);
+        slider.setMajorTickUnit(10);
+        slider.setMinorTickCount(5);
+        slider.setBlockIncrement(10);
     }
 
     @Override
@@ -65,6 +75,7 @@ public class VCharts implements ICharts {
     @Override
     public void buildingProfileChart(TableView<ISourceSeries> seriesTableView, XYChart<Number, Number> xychart, boolean isNew) throws Exception {
         xychart.setLegendVisible(true);
+        xychart.getStyleClass().add("my-style-symbol");
         ISourceSeries selectedSeries = seriesTableView.getSelectionModel().getSelectedItem();
         if(selectedSeries != null) {
             if(isNew) {
@@ -80,10 +91,11 @@ public class VCharts implements ICharts {
                     seriesChart.getData().add(new XYChart.Data<>(point.getX(), point.getY()));
                 }
             }
+
             profileSeries.add(seriesChart);
             xychart.setLegendVisible(false);
             xychart.setData(profileSeries);
-            ChartUtil.toolTipOnClick(xychart);
+            toolTipOnClick(xychart);
         } else {
             VUtil.alertMessage("Should choose a source signal to transform");
         }
@@ -105,7 +117,7 @@ public class VCharts implements ICharts {
 
                 int dataSize = seriesChart.getData().size();
                 slider.setMax(dataSize);
-                slider.setValue(dataSize - 1);
+                slider.setValue(dataSize - (int)(dataSize*0.1));
 
                 double[] allSet = new double[dataSize];
                 double[] yRealValue = new double[dataSize];
@@ -152,7 +164,7 @@ public class VCharts implements ICharts {
         ISourceSeries selectedSeries = tableView.getSelectionModel().getSelectedItem();
         ObservableList<XYChart.Series<Number, Number>> spectrumSeries = FXCollections.observableArrayList();
         if(selectedSeries != null) {
-            for(Object w : windowsList){
+            for(Object w : windowsList) {
                 digitalSeries = transformService.getDigitalSeries(selectedSeries, ECharts.SPECTRUM, w);
                 if(digitalSeries != null) {
                     seriesChart = new LineChart.Series<>();
@@ -180,6 +192,29 @@ public class VCharts implements ICharts {
         }
         newList.add(windowValue);
         return newList;
+    }
+
+    private void toolTipOnClick(XYChart<Number, Number> xychart) {
+        final Node[] oldNode = new Node[1];
+        for(XYChart.Series<Number, Number> s : xychart.getData()) {
+            for (XYChart.Data<Number, Number> data : s.getData()) {
+                Tooltip tooltip = new Tooltip("x: "+data.getXValue() + " \ny: " + data.getYValue());
+                tooltip.setAutoHide(true);
+                data.getNode().setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        if(oldNode[0] != data.getNode() && oldNode[0] != null){
+                            oldNode[0].setStyle("-fx-background-color: #FF0000, white;");
+                        }
+                        Node node = (Node) event.getSource();
+                        oldNode[0] = node;
+                        node.setStyle("-fx-background-color: #0000FF, white; -fx-background-insets: 0,3;");
+
+                        tooltip.show(node, event.getScreenX() + 1, event.getScreenY() + 3);
+                    }
+                });
+            }
+        }
     }
 
 }

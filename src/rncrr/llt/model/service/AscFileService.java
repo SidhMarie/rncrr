@@ -4,7 +4,7 @@ import rncrr.llt.model.utils.eobject.EAscFile;
 import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.bean.AscSourceSeries;
-import rncrr.llt.model.process.api.AbstractDataFile;
+import rncrr.llt.model.bean.api.AbstractDataFile;
 import rncrr.llt.view.utils.VUtil;
 
 import java.util.ArrayList;

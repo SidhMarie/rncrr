@@ -1,4 +1,4 @@
-package rncrr.llt.model.process.dsp;
+package rncrr.llt.model.dsp;
 
 public class Complex {
 

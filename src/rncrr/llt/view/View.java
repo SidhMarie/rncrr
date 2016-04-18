@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
-import rncrr.llt.model.process.api.ISourceSeries;
+import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.service.TransformService;
 import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.AscSourceSeries;
@@ -31,8 +31,6 @@ import java.util.Objects;
 
 
 public class View {
-
-
 
     private IDataSave dataSave;
     private IAscTable ascTable;
@@ -82,7 +80,19 @@ public class View {
             }
         });
 
-        setSliderProperty(frequencySlider);
+        windowData.getSelectionModel().selectedIndexProperty().addListener(
+                new ChangeListener<Number>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                        try {
+                            chart.clearChart(spectrumChart);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        );
+
         chart.setSlider(frequencySlider);
     }
 
@@ -148,6 +158,8 @@ public class View {
             chart.initChart(spectrumChart);
             checkBoxAllWindows.selectedProperty().setValue(false);
             checkBoxAllWindows.setDisable(true);
+            checkBoxUseFW.setDisable(true);
+            frequencySlider.setDisable(true);
         } catch (Exception e) {
             VUtil.alertException("An error occurred while trying to view detail data and building chart",e);
         }
@@ -179,6 +191,8 @@ public class View {
             chart.clearChart(profileChart);
             chart.clearChart(spectrumChart);
             checkBoxAllWindows.setDisable(true);
+            checkBoxUseFW.setDisable(true);
+            frequencySlider.setDisable(true);
         } catch (Exception e){
             VUtil.alertException("An error occurred while deleting a row", e);
         }
@@ -196,6 +210,13 @@ public class View {
     public void transformData(ActionEvent actionEvent) {
         log.trace("Entering into method -> View.transformData");
         try {
+            if( checkBoxAllWindows.isSelected() ) {
+                checkBoxAllWindows.selectedProperty().setValue(false);
+            }
+            if( checkBoxUseFW.isSelected() ) {
+                checkBoxUseFW.selectedProperty().setValue(false);
+                frequencySlider.setDisable(true);
+            }
             if(Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), TAB_DAT_FILE)) {
                 chart.buildingSpectrumChart(seriesDatTableView, spectrumChart, windowData);
                 chart.buildingProfileChart(seriesDatTableView, profileChart, true);
@@ -204,8 +225,9 @@ public class View {
                     chart.buildingSpectrumChart(seriesTableView, spectrumChart, windowData);
                     chart.buildingProfileChart(seriesTableView, profileChart, true);
                 }
-            inverseFlag = true;
-            checkBoxAllWindows.setDisable(false);
+            inverseFlag = true; // можно делать обратное преобразование
+            checkBoxAllWindows.setDisable(false); // открываем галочку - показать все окна
+            checkBoxUseFW.setDisable(false);
         } catch (Exception e) {
             VUtil.alertException("An error occurred while transformation data", e);
         }
@@ -226,7 +248,7 @@ public class View {
                     }
                 inverseFlag = false;
             } else {
-                VUtil.alertMessage("You must first build a spectrum chart or the reconstructed signal is already built");
+                VUtil.alertMessage("You must first build a spectrum chart or the reconstructed signal is already built. Check the element - show all windows.");
             }
         } catch (Exception e){
             VUtil.alertException("An error occurred while inverse transformation data", e);
@@ -260,6 +282,7 @@ public class View {
                     if(Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), TAB_ASC_FILE)) {
                         chart.buildingSpectrumChart(seriesTableView, spectrumChart);
                     }
+                inverseFlag = false;
             } else {
                 if(Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), TAB_DAT_FILE)) {
                     chart.buildingSpectrumChart(seriesDatTableView, spectrumChart, windowData);
@@ -275,8 +298,16 @@ public class View {
         }
     }
 
+    public void useWienerFilter(ActionEvent actionEvent) {
+        if(checkBoxUseFW.isSelected()){
+            frequencySlider.setDisable(false);
+        } else {
+            frequencySlider.setDisable(true);
+        }
+    }
+
     public void exportToExcel(ActionEvent actionEvent) {
-        try{
+        try {
             TransformService.printData();
             VUtil.alertMessage("Export data to xls file successfully completed");
         } catch (Exception e){
@@ -284,17 +315,6 @@ public class View {
         }
     }
 
-
-    private void setSliderProperty(Slider slider){
-        slider.setMin(0D);
-        slider.setMax(100D);
-        slider.setValue(80D);
-        slider.setShowTickLabels(true);
-        slider.setShowTickMarks(true);
-        slider.setMajorTickUnit(10);
-        slider.setMinorTickCount(5);
-        slider.setBlockIncrement(10);
-    }
     /**
      * The method sets the information fields of the table depending on the type of measurement.
      * @param series - object type SSeries
@@ -407,6 +427,7 @@ public class View {
 
     @FXML private Label fileName;
     @FXML private CheckBox checkBoxAllWindows;
+    @FXML private CheckBox checkBoxUseFW;
 
     @FXML private Tab ascFileTab;
     @FXML private Tab datFileTab;
@@ -438,7 +459,6 @@ public class View {
     @FXML private Label rowValue_7;
     @FXML private Label rowValue_8;
     @FXML private Label rowValue_9;
-
 
 
 }

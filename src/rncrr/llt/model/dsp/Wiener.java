@@ -1,6 +1,4 @@
-package rncrr.llt.model.process.dsp;
-
-import rncrr.llt.model.bean.DigitalSeries;
+package rncrr.llt.model.dsp;
 
 /**
  * Created by Sidh on 22.03.2016.

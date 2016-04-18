@@ -1,4 +1,4 @@
-package rncrr.llt.model.process.api;
+package rncrr.llt.model.bean.api;
 
 import javafx.collections.ObservableList;
 import rncrr.llt.view.utils.VUtil;

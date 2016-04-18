@@ -2,8 +2,8 @@ package rncrr.llt.model.service;
 
 import rncrr.llt.model.bean.DatSourceSeries;
 import rncrr.llt.model.bean.Points;
-import rncrr.llt.model.process.api.ISourceSeries;
-import rncrr.llt.model.process.api.AbstractDataFile;
+import rncrr.llt.model.bean.api.ISourceSeries;
+import rncrr.llt.model.bean.api.AbstractDataFile;
 import rncrr.llt.model.utils.eobject.EDatFileKey;
 import rncrr.llt.model.utils.eobject.EDatFileValue;
 import rncrr.llt.view.utils.VUtil;

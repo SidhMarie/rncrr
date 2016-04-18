@@ -4,12 +4,11 @@ package rncrr.llt.model.service;
 import rncrr.llt.model.bean.DigitalSeries;
 import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.bean.TransformDataSeries;
-import rncrr.llt.model.process.ExcelBuilder;
-import rncrr.llt.model.process.api.ISourceSeries;
-import rncrr.llt.model.process.dsp.Complex;
-import rncrr.llt.model.process.dsp.Transform;
-import rncrr.llt.model.process.dsp.Wiener;
-import rncrr.llt.model.process.dsp.Window;
+import rncrr.llt.model.bean.api.ISourceSeries;
+import rncrr.llt.model.dsp.Complex;
+import rncrr.llt.model.dsp.Transform;
+import rncrr.llt.model.dsp.Wiener;
+import rncrr.llt.model.dsp.Window;
 import rncrr.llt.model.service.api.ITransformService;
 import rncrr.llt.model.utils.Config;
 import rncrr.llt.model.utils.eobject.ECharts;
@@ -211,7 +210,7 @@ public class TransformService implements ITransformService {
         double x;
         switch (windows) {
             case RECTANGULAR:
-                System.out.println(" frameSize => "+frameSize);
+//                System.out.println(" frameSize => "+frameSize);
                 for(int i = 0; i < frameSize; i++) {
                     dSeries.addPoints(new Points(source[i].re(), yPoint.get(i)));
                 }
@@ -233,12 +232,12 @@ public class TransformService implements ITransformService {
                 }
                 break;
             case HANN:
-                System.out.println(" frameSize => "+frameSize);
+//                System.out.println(" frameSize => "+frameSize);
                 for(int i = 0; i < frameSize; i++) {
                     x = source[i].re() == 0D ? 0D : source[i].re() / Window.hann(i, frameSize);
                     if(x != 0D){
                         if(x != Double.POSITIVE_INFINITY && x != Double.NEGATIVE_INFINITY) {
-                            System.out.println(x);
+//                            System.out.println(x);
                             dSeries.addPoints(new Points(x, yPoint.get(i)));
                         }
                     }
@@ -247,7 +246,7 @@ public class TransformService implements ITransformService {
                     x = source[i].re() == 0D ? 0D : source[i].re() / Window.hann(i, frameSize);
                     if(x != 0D){
                         if(x != Double.POSITIVE_INFINITY && x != Double.NEGATIVE_INFINITY) {
-                            System.out.println(yPoint.get(i));
+//                            System.out.println(yPoint.get(i));
                             dSeries.addPoints(new Points(x, yPoint.get(i)));
                         }
                     }

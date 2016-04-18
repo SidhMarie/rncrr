@@ -1,7 +1,7 @@
 package rncrr.llt.model.service.api;
 
 import rncrr.llt.model.bean.DigitalSeries;
-import rncrr.llt.model.process.api.ISourceSeries;
+import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.utils.eobject.ECharts;
 
 /**

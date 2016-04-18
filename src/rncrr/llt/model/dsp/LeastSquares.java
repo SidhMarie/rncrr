@@ -1,7 +1,4 @@
-package rncrr.llt.model.process.dsp;
-
-import java.util.HashMap;
-import java.util.Map;
+package rncrr.llt.model.dsp;
 
 /**
  * Created by Sidh on 07.04.2016.
@@ -16,12 +13,14 @@ public class LeastSquares {
     private double[] xValue;
     private double[] allXValue;
     private double[] approximate;
+    private double meanValue;
 
     public LeastSquares(double[] allXValue, double[] xValue, double[] yValue) {
         this.allXValue = allXValue;
         this.xValue = xValue;
-        setMatrix(xValue, yValue);
-        setDelta(matrix);
+        this.matrix = getMatrix(xValue, yValue);
+        this.delta = getDelta();
+//        this.meanValue =
     }
 
     public double[] doLeastSquaresApproximation(){
@@ -64,16 +63,21 @@ public class LeastSquares {
         return sum;
     }
 
-    private void setMatrix(double[] xValue, double[] yValue) {
+    private double getMeanValue() {
+
+        return 0.0;
+    }
+
+    private double[] getMatrix(double[] xValue, double[] yValue) {
         double x2 = getSumX2(xValue);
         double x = getSumValue(xValue);
         double y = getSumValue(yValue);
         double xy = getSumXY(xValue, yValue);
-        matrix = new double[]{x,x2,y,xy,xValue.length};
+        return new double[]{x,x2,y,xy,xValue.length};
     }
 
-    private void setDelta(double[] matrix){
-        delta = (matrix[1]*matrix[4]) - (matrix[0]*matrix[0]);
+    private double getDelta(){
+        return (matrix[1]*matrix[4]) - (matrix[0]*matrix[0]);
     }
 
     private double getDeltaK(){

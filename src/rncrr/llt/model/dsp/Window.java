@@ -1,4 +1,4 @@
-package rncrr.llt.model.process.dsp;
+package rncrr.llt.model.dsp;
 
 /**
  * Created by Sidh on 24.03.2015.
