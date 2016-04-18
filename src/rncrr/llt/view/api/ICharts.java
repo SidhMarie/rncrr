@@ -19,6 +19,12 @@ public interface ICharts {
 
     /**
      *
+     * @param filterType
+     */
+    void setFilterType(Object filterType);
+
+    /**
+     *
      * @param chart
      */
     void initChart(XYChart<Number, Number> chart) throws Exception;

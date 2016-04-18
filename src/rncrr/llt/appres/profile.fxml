@@ -36,7 +36,6 @@
                                <String fx:value="WF: MEAN VALUE" />
                            </value>
                        </ChoiceBox>
-                        <!--<Button mnemonicParsing="false" onAction="#doFilterData" prefHeight="32.0" text="FW" />-->
                        <Separator />
                        <Button mnemonicParsing="false" onAction="#exportToExcel" maxHeight="24.0" maxWidth="24.0" style="-fx-graphic: url('file:resources/img/toolBarButXls.png');" text="" />
                    </items>
@@ -155,6 +154,9 @@
                                <Tooltip text="Use Wiener Filter"/>
                            </tooltip>
                        </CheckBox>
+                       <Separator/>
+                       <Label text="Mean"/><Label text="" prefWidth="70.0" style="-fx-border-color: darkgray" fx:id="meanValueFilter"/>
+                       <Label text="SD" /><Label text="" prefWidth="70.0" style="-fx-border-color: darkgray" fx:id="sdValueFilter"/>
                    </items>
                </ToolBar>
                <LineChart fx:id="spectrumChart" prefHeight="400.0">

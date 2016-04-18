@@ -36,6 +36,7 @@ public class VCharts implements ICharts {
     private ObservableList<XYChart.Series<Number, Number>> profileSeries;
     private List<Object> windowsList;
     private Slider slider;
+    private Object filterType;
 
     public VCharts() {
         this.transformService = new TransformService();
@@ -53,6 +54,11 @@ public class VCharts implements ICharts {
         slider.setMajorTickUnit(10);
         slider.setMinorTickCount(5);
         slider.setBlockIncrement(10);
+    }
+
+    @Override
+    public void setFilterType(Object filterType) {
+        this.filterType = filterType;
     }
 
     @Override
@@ -117,7 +123,7 @@ public class VCharts implements ICharts {
 
                 int dataSize = seriesChart.getData().size();
                 slider.setMax(dataSize);
-                slider.setValue(dataSize - (int)(dataSize*0.1));
+                slider.setValue(dataSize);
 
                 double[] allSet = new double[dataSize];
                 double[] yRealValue = new double[dataSize];
@@ -129,22 +135,24 @@ public class VCharts implements ICharts {
                 slider.valueProperty().addListener(new ChangeListener<Number>() {
                     public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
                         int xValueSize = dataSize - new_val.intValue();
-                        double[] xValue = new double[xValueSize];
-                        double[] yValue = new double[xValueSize];
-                        for (int i = 0; i < xValueSize; i++) {
-                            int count = dataSize - i - 1;
-                            xValue[i] = count;
-                            yValue[i] = yRealValue[count];
+                        if(xValueSize > 1){
+                            double[] xValue = new double[xValueSize];
+                            double[] yValue = new double[xValueSize];
+                            for (int i = 0; i < xValueSize; i++) {
+                                int count = dataSize - i - 1;
+                                xValue[i] = count;
+                                yValue[i] = yRealValue[count];
+                            }
+                            LeastSquares leastSquares = new LeastSquares(allSet, xValue, yValue);
+                            double[] lineNoise = leastSquares.doLeastSquaresExtrapolation();
+                            XYChart.Series<Number, Number> squares = new LineChart.Series<>();
+                            for (int i = 0; i < lineNoise.length; i++) {
+                                squares.getData().add(new XYChart.Data<>(allSet[i], lineNoise[i]));
+                            }
+                            if(spectrumSeries.size() == 2)
+                                spectrumSeries.remove(1);
+                            spectrumSeries.add(squares);
                         }
-                        LeastSquares leastSquares = new LeastSquares(allSet, xValue, yValue);
-                        double[] lineNoise = leastSquares.doLeastSquaresExtrapolation();
-                        XYChart.Series<Number, Number> squares = new LineChart.Series<>();
-                        for (int i = 0; i < lineNoise.length; i++) {
-                            squares.getData().add(new XYChart.Data<>(allSet[i], lineNoise[i]));
-                        }
-                        if(spectrumSeries.size() == 2)
-                            spectrumSeries.remove(1);
-                        spectrumSeries.add(squares);
                     }
                 });
                 spectrumSeries.add(seriesChart);

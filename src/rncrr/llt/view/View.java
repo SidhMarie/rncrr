@@ -12,6 +12,7 @@ import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
 import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.service.TransformService;
+import rncrr.llt.model.utils.eobject.EFilter;
 import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.AscSourceSeries;
 import rncrr.llt.model.utils.Config;
@@ -88,6 +89,18 @@ public class View {
                             chart.clearChart(spectrumChart);
                         } catch (Exception e) {
                             e.printStackTrace();
+                        }
+                    }
+                }
+        );
+
+        wienerFilter.getSelectionModel().selectedIndexProperty().addListener(
+                new ChangeListener<Number>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                        if(checkBoxUseFW.isSelected()) {
+                            System.out.println("newValue = > " + newValue);
+                            chart.setFilterType(EFilter.getNameByIndex(newValue));
                         }
                     }
                 }
@@ -293,16 +306,20 @@ public class View {
                 inverseFlag = true;
             }
         } catch(Exception e){
-            //TODO
             VUtil.alertException("An error occurred while inverse transformation data", e);
         }
     }
 
     public void useWienerFilter(ActionEvent actionEvent) {
-        if(checkBoxUseFW.isSelected()){
-            frequencySlider.setDisable(false);
-        } else {
-            frequencySlider.setDisable(true);
+        try{
+            if(checkBoxUseFW.isSelected()){
+                frequencySlider.setDisable(false);
+                chart.setFilterType(wienerFilter.getValue());
+            } else {
+                frequencySlider.setDisable(true);
+            }
+        } catch (Exception e) {
+            VUtil.alertException("An error occurred while use wiener filter", e);
         }
     }
 

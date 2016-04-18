@@ -1,5 +1,7 @@
 package rncrr.llt.model.dsp;
 
+import rncrr.llt.view.utils.VUtil;
+
 /**
  * Created by Sidh on 07.04.2016.
  * y = f(x) = kx+b
@@ -31,10 +33,14 @@ public class LeastSquares {
         return approximate;
     }
 
-    public double[] doLeastSquaresExtrapolation(){
+    public double[] doLeastSquaresExtrapolation() {
         approximate = new double[allXValue.length];
-        for (int i = 0; i<allXValue.length; i++) {
-            approximate[i] = getDeltaK()*allXValue[i] + getDeltaB();;
+        if(delta != 0) {
+            for (int i = 0; i < allXValue.length; i++) {
+                approximate[i] = getDeltaK() * allXValue[i] + getDeltaB();
+            }
+        } else {
+            VUtil.printError("Delta value is out of range. Delta = 0");
         }
         return approximate;
     }
