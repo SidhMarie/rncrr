@@ -1,6 +1,7 @@
 package rncrr.llt.model.bean;
 
 import rncrr.llt.model.bean.api.AbstractSourceSeries;
+
 import java.util.ArrayList;
 
 

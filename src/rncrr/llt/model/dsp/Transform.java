@@ -1,8 +1,7 @@
 package rncrr.llt.model.dsp;
 
 
-import rncrr.llt.model.service.TransformService;
-import rncrr.llt.model.utils.eobject.EWindows;
+import rncrr.llt.model.bean.eobject.EWindows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -209,7 +208,7 @@ public class Transform {
         list.add(1D);
         list.add(1D);
         list.add(1D);
-        List<Double> wList = TransformService.setWindowsData(EWindows.HAMMING, list);
+        List<Double> wList = Window.getWindowsData(EWindows.HAMMING, list);
         List<Double> xList = Transform.inputList(wList);
         int n = xList.size();
 //        int n = 16;

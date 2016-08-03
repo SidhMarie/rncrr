@@ -1,11 +1,11 @@
 package rncrr.llt.model.service;
 
-import rncrr.llt.model.utils.eobject.EAscFile;
-import rncrr.llt.model.utils.eobject.EMeasureType;
-import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.bean.AscSourceSeries;
-import rncrr.llt.model.bean.api.AbstractDataFile;
-import rncrr.llt.view.utils.VUtil;
+import rncrr.llt.model.bean.Points;
+import rncrr.llt.model.bean.eobject.EAscFile;
+import rncrr.llt.model.bean.eobject.EMeasureType;
+import rncrr.llt.model.service.api.AbstractDataFile;
+import rncrr.llt.model.service.utils.AlertService;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -34,7 +34,7 @@ public class AscFileService extends AbstractDataFile {
     @Override
     protected void readList() {
         if(dataList.size() == 0) {
-            VUtil.alertWarning("File is empty");
+            AlertService.alertWarning("File is empty");
             return;
         }
         for(String line : dataList) {

@@ -1,6 +1,6 @@
 package rncrr.llt.model.dsp;
 
-import rncrr.llt.view.utils.VUtil;
+import rncrr.llt.model.service.utils.AlertService;
 
 /**
  * Created by Sidh on 07.04.2016.
@@ -13,72 +13,69 @@ public class LeastSquares {
     private double delta;
     private double[] matrix;
     private double[] xValue;
+    private double[] yValue;
     private double[] allXValue;
-    private double[] approximate;
+    private double[] resultData;
     private double meanValue;
 
-    public LeastSquares(double[] allXValue, double[] xValue, double[] yValue) {
+    public LeastSquares() {
+    }
+
+    public void setInputData(double[] allXValue, double[] xValue, double[] yValue) {
         this.allXValue = allXValue;
         this.xValue = xValue;
+        this.yValue = yValue;
         this.matrix = getMatrix(xValue, yValue);
         this.delta = getDelta();
-//        this.meanValue =
+    }
+
+    public void setInputData(double[] allXValue, double[] xValue, double[] yValue, double mValue) {
+        setInputData(allXValue, xValue, yValue);
+        this.meanValue = mValue;
     }
 
     public double[] doLeastSquaresApproximation(){
-        approximate = new double[xValue.length];
-        for (int i = 0; i<xValue.length; i++) {
-            approximate[i] = getDeltaK()*xValue[i] + getDeltaB();;
+        resultData = new double[xValue.length];
+        if(delta != 0){
+            for (int i = 0; i<xValue.length; i++) {
+                resultData[i] = getDeltaK()*xValue[i] + getDeltaB();
+            }
+        } else {
+            AlertService.printError("Delta value is out of range. Delta is 0");
         }
-        return approximate;
+        return resultData;
     }
 
     public double[] doLeastSquaresExtrapolation() {
-        approximate = new double[allXValue.length];
+        resultData = new double[allXValue.length];
+        double v;
         if(delta != 0) {
             for (int i = 0; i < allXValue.length; i++) {
-                approximate[i] = getDeltaK() * allXValue[i] + getDeltaB();
+                v =  getDeltaK() * allXValue[i] + getDeltaB();
+                resultData[i] = v < meanValue ? meanValue : v;
             }
         } else {
-            VUtil.printError("Delta value is out of range. Delta = 0");
+            AlertService.printError("Delta value is out of range. Delta is 0");
         }
-        return approximate;
+        return resultData;
     }
 
-    private double getSumValue(double[] value) {
-        double sum = 0D;
-        for (double dv : value) {
-            sum += dv;
-        }
-        return sum;
+    public double[] doMiddleLine() {
+        double mean = MathHelper.mean(yValue);
+        double std = MathHelper.std(yValue);
+        return new double[]{mean,std};
     }
 
-    private double getSumX2(double[] xValue){
-        double sum = 0D;
-        for (double dv : xValue) {
-            sum += dv*dv;
-        }
-        return sum;
+    public void setMeanValue(double meanValue){
+        this.meanValue = meanValue;
     }
 
-    private double getSumXY(double[] xValue, double[] yValue) {
-        double sum = 0D;
-        for (int i = 0; i < xValue.length; i++) {
-            sum += xValue[i]*yValue[i];
-        }
-        return sum;
-    }
-
-    private double getMeanValue() {
-
-        return 0.0;
-    }
 
     private double[] getMatrix(double[] xValue, double[] yValue) {
-        double x2 = getSumX2(xValue);
-        double x = getSumValue(xValue);
-        double y = getSumValue(yValue);
-        double xy = getSumXY(xValue, yValue);
+        double x2 = MathHelper.sumX2(xValue);
+        double x = MathHelper.sum(xValue);
+        double y = MathHelper.sum(yValue);
+        double xy = MathHelper.sumXY(xValue, yValue);
         return new double[]{x,x2,y,xy,xValue.length};
     }
 
@@ -109,7 +106,8 @@ public class LeastSquares {
         double[] all = new double[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
 //        double[] x = new double[]{1,2,3,4,5};
 //        double[] y = new double[]{5.3, 6.3, 4.8, 3.8, 3.3};
-        LeastSquares ls = new LeastSquares(all, x, y);
+        LeastSquares ls = new LeastSquares();
+        ls.setInputData(all,x,y, 2);
         double[] appr = ls.doLeastSquaresApproximation();
         for (double val : appr) {
             System.out.println(val);

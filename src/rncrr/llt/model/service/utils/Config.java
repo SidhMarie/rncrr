@@ -1,9 +1,8 @@
-package rncrr.llt.model.utils;
+package rncrr.llt.model.service.utils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Properties;
 
 public class Config extends Properties {
 
@@ -64,35 +63,6 @@ public class Config extends Properties {
         if (propValue != null)
             intVal = Integer.parseInt(propValue);
         return intVal;
-    }
-
-    /**
-     * Возвращает double значение по ключу, если значение null возвращается
-     * @param key - ключ
-     * @param defaultValue - значение по умолчанию
-     * @return doubleVal - значение типа double
-     */
-    public static double getDoubleProperty(String key, double defaultValue) {
-        double doubleVal = defaultValue;
-        String propValue = getStringProperty(key);
-        if (propValue != null)
-            doubleVal = Double.parseDouble(propValue);
-        return doubleVal;
-    }
-
-    /**
-     * Возвращает значение true or false по ключу, если значение null
-     * возвращается значение поумолчанию - true
-     * @param key - ключ
-     * @param defaultValue - значение по умолчанию
-     * @return true or false
-     */
-    public static boolean getBooleanProperty(String key, boolean defaultValue) {
-        boolean boolVal = defaultValue;
-        String propValue = getStringProperty(key);
-        if ((propValue != null) && (propValue.equalsIgnoreCase("true")))
-            boolVal = true;
-        return boolVal;
     }
 
     public static boolean isProperties(String key) {

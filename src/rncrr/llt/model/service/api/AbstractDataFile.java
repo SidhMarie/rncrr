@@ -1,7 +1,8 @@
-package rncrr.llt.model.bean.api;
+package rncrr.llt.model.service.api;
 
 import javafx.collections.ObservableList;
-import rncrr.llt.view.utils.VUtil;
+import rncrr.llt.model.bean.api.ISourceSeries;
+import rncrr.llt.model.service.utils.AlertService;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -34,7 +35,7 @@ public abstract class AbstractDataFile {
             try(InputStream stream = new FileInputStream(path)) {
                 parse(stream);
             }catch (Exception e){
-                VUtil.printError("An error occurred while trying to open input stream or parse it -> method AbstractDataFile.read");
+                AlertService.printError("An error occurred while trying to open input stream or parse it -> method AbstractDataFile.read");
                 throw new Exception(e);
             }
         }

@@ -1,4 +1,4 @@
-package rncrr.llt.model.utils.eobject;
+package rncrr.llt.model.bean.eobject;
 
 /**
  * Created by Sidh on 03.03.2015.

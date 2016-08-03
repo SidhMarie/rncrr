@@ -1,26 +1,22 @@
-package rncrr.llt.view.utils;
+package rncrr.llt.model.service.utils;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import rncrr.llt.model.utils.eobject.EMessage;
+import rncrr.llt.model.bean.eobject.EMessage;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Created by Sidh on 31.03.2015.
  */
-public class VUtil {
+public class AlertService {
 
     /**
      * Метод создает всплывающее окно с информационным сообщением

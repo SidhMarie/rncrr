@@ -2,10 +2,10 @@ package rncrr.llt.model.service;
 
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
-import rncrr.llt.model.bean.TransformDataSeries;
-import rncrr.llt.model.utils.Config;
+import rncrr.llt.model.bean.ExportData;
+import rncrr.llt.model.service.api.IExcelService;
+import rncrr.llt.model.service.utils.Config;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,7 +16,7 @@ import java.util.Objects;
 /**
  * Created by Sidh on 24.02.2016.
  */
-public class ExcelBuilder {
+public class ExcelService implements IExcelService {
 
     private File excelFile;
     private Workbook workbook;
@@ -30,12 +30,12 @@ public class ExcelBuilder {
     public static final String FREQUENCY_COL = "export.xls.column.frequency";
     public static final String REBUILD_COL = "export.xls.column.rebuild";
 
-    public ExcelBuilder(File excelFile) {
+    public ExcelService(File excelFile) {
         this.excelFile = excelFile;
         this.workbook = new HSSFWorkbook();
     }
 
-    public void createSheet(String nameSheet, List<TransformDataSeries> dataList) {
+    public void createSheet(String nameSheet, List<ExportData> dataList) {
         try {
             Sheet sheet = workbook.createSheet(nameSheet);
             setSheetValue(sheet, dataList);
@@ -48,7 +48,7 @@ public class ExcelBuilder {
 
     }
 
-    private void setSheetValue(Sheet sheet, List<TransformDataSeries> dataList) {
+    private void setSheetValue(Sheet sheet, List<ExportData> dataList) {
         Cell cell;
         CellStyle style;
         String key;
@@ -61,10 +61,9 @@ public class ExcelBuilder {
             cell.setCellValue(Config.getStringProperty(key));
             cell.setCellStyle(style);
         }
-
         for(int i=0; i<dataList.size(); i++) {
             row = sheet.createRow(i+1);
-            TransformDataSeries rs = dataList.get(i);
+            ExportData rs = dataList.get(i);
             if(rs != null)
             for(int k = 0; k < eList.size(); k++){
                 key = eList.get(k);

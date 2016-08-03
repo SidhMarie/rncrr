@@ -1,8 +1,13 @@
-package rncrr.llt.view;
+package rncrr.llt;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.scene.chart.LineChart;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
@@ -10,22 +15,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
-import rncrr.llt.model.bean.api.ISourceSeries;
-import rncrr.llt.model.service.TransformService;
-import rncrr.llt.model.utils.eobject.EFilter;
-import rncrr.llt.model.utils.eobject.EMeasureType;
 import rncrr.llt.model.bean.AscSourceSeries;
-import rncrr.llt.model.utils.Config;
-import rncrr.llt.view.api.ICharts;
-import rncrr.llt.view.api.IDatTable;
-import rncrr.llt.view.api.IDataSave;
-import rncrr.llt.view.api.IAscTable;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.fxml.FXML;
-import javafx.scene.chart.LineChart;
-import javafx.scene.control.*;
-import rncrr.llt.view.utils.VUtil;
+import rncrr.llt.model.bean.api.ISourceSeries;
+import rncrr.llt.model.bean.eobject.EFilter;
+import rncrr.llt.model.bean.eobject.EMeasureType;
+import rncrr.llt.model.service.ChartsService;
+import rncrr.llt.model.service.DataSaveService;
+import rncrr.llt.model.service.TableService;
+import rncrr.llt.model.service.ToolBarService;
+import rncrr.llt.model.service.api.IChartsService;
+import rncrr.llt.model.service.utils.Config;
+import rncrr.llt.model.service.api.IDataSaveService;
+import rncrr.llt.model.service.api.ITableService;
+import rncrr.llt.model.service.utils.AlertService;
 
 import java.io.File;
 import java.util.Objects;
@@ -33,10 +35,10 @@ import java.util.Objects;
 
 public class View {
 
-    private IDataSave dataSave;
-    private IAscTable ascTable;
-    private IDatTable datTable;
-    private ICharts chart;
+    private IDataSaveService dataSave;
+    private IChartsService chart;
+    private ITableService dataTable;
+    private ToolBarService toolBar;
 
     private boolean inverseFlag = false;
 
@@ -50,10 +52,10 @@ public class View {
      */
     public View() {
         log.trace("Entering into class -> View");
-        dataSave = new VDataSave();
-        ascTable = new VAscTable();
-        datTable = new VDatTable();
-        chart = new VCharts();
+        dataSave = new DataSaveService();
+        dataTable = new TableService();
+        chart = new ChartsService();
+        toolBar = new ToolBarService();
     }
 
     @FXML
@@ -81,32 +83,44 @@ public class View {
             }
         });
 
-        windowData.getSelectionModel().selectedIndexProperty().addListener(
+        windowLimit.getSelectionModel().selectedIndexProperty().addListener(
                 new ChangeListener<Number>() {
                     @Override
                     public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                         try {
                             chart.clearChart(spectrumChart);
+                            if(profileChart.getData().size() == 2)
+                                profileChart.getData().remove(1);
+                            toolBar.changeWindowsLimit();
+
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            e.printStackTrace(); //todo
                         }
                     }
                 }
         );
 
-        wienerFilter.getSelectionModel().selectedIndexProperty().addListener(
-                new ChangeListener<Number>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                        if(checkBoxUseFW.isSelected()) {
-                            System.out.println("newValue = > " + newValue);
+        optimalFilter.getSelectionModel().selectedIndexProperty().addListener(
+            new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    try {
+                        if (checkBoxUseOF.isSelected()) {
                             chart.setFilterType(EFilter.getNameByIndex(newValue));
+                            buildSpectrumChart(windowLimit);
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace(); //todo
                     }
                 }
+            }
         );
 
-        chart.setSlider(frequencySlider);
+        chart.setChartProperty(frequencySlider, meanValueFilter, stdValueFilter);
+
+        toolBar.initToolBarElements(saveFileData, deleteRows, transformData, inverseData, exportToExcel,
+                checkBoxAllWindows, checkBoxUseOF, windowLimit, optimalFilter,
+                meanValueFilter, stdValueFilter, frequencySlider);
     }
 
     /**
@@ -121,33 +135,25 @@ public class View {
             if(file != null){
                 fileName.setText(fileName.getText() + file.getName());
                 if(file.getName().contains(".asc")){
-                    ascFileTab.setDisable(false);
-                    datFileTab.setDisable(true);
-                    tabPane.getSelectionModel().select(ascFileTab);
-                    ascTable.viewDataTable(file, seriesTableView, columnLabel_1, columnLabel_2, columnLabel_3);
-                    chart.initChart(profileChart);
-                    chart.initChart(spectrumChart);
+                    setPropForOpenFile(false, true, ascFileTab, profileChart);
+                    dataTable.viewDataTable(file, seriesAscTableView, columnLabel_1, columnLabel_2, columnLabel_3);
                 } else if(file.getName().contains(".dat")){
-                    ascFileTab.setDisable(true);
-                    datFileTab.setDisable(false);
-                    tabPane.getSelectionModel().select(datFileTab);
-                    datTable.viewDataTable(file,seriesDatTableView, columnLabelDat_1,columnLabelDat_2);
-                    chart.initChart(profileChart);
-                    chart.initChart(spectrumChart);
+                    setPropForOpenFile(true, false, datFileTab, profileChart);
+                    dataTable.viewDataTable(file, seriesDatTableView, columnLabelDat_1, columnLabelDat_2);
                 }
             }
         } catch (Exception e) {
-            VUtil.printError("An error occurred in the method View.openFileData", e);
-            VUtil.alertException("An error occurred while trying to open and read the file", e);
+            log.error("An error occurred in the method View.openFileData", e);
+            AlertService.alertException("An error occurred while trying to open and read the file", e);
         }
     }
 
     public void saveFileData(ActionEvent actionEvent) {
         try{
-            dataSave.dataSave(ascTable);
+            dataSave.dataSave(dataTable);
         } catch (Exception e){
-            VUtil.printError("An error occurred in the method View.saveFileData", e);
-            VUtil.alertException("An error occurred while trying to save data",e);
+            log.error("An error occurred in the method View.saveFileData", e);
+            AlertService.alertException("An error occurred while trying to save data", e);
         }
     }
 
@@ -156,25 +162,24 @@ public class View {
      */
     public void detailSelectedRow(Event event) {
         log.trace("Entering into method -> View.detailSelectedRow");
+        saveFileData.setDisable(false);
         try{
-            if(Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), TAB_DAT_FILE)) {
-                if (seriesDatTableView.getSelectionModel().getSelectedItem() != null) {
-                    chart.buildingProfileChart(seriesDatTableView, profileChart, true);
+            if(isSelectedTab(TAB_DAT_FILE) && isSelectedRow(seriesDatTableView)) {
+                chart.buildingProfileChart(seriesDatTableView, profileChart, true);
+            } else
+                if(isSelectedTab(TAB_ASC_FILE) && isSelectedRow(seriesAscTableView)) {
+                    setAscDataGridValue((AscSourceSeries) seriesAscTableView.getSelectionModel().getSelectedItem());
+                    chart.buildingProfileChart(seriesAscTableView, profileChart, true);
+                } else {
+                    AlertService.alertMessage("You must select row for view.");
                 }
-            } else if(Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), TAB_ASC_FILE)) {
-                if (seriesTableView.getSelectionModel().getSelectedItem() != null) {
-                    AscSourceSeries series = (AscSourceSeries) seriesTableView.getSelectionModel().getSelectedItem();
-                    setAscDataGridValue(series);
-                    chart.buildingProfileChart(seriesTableView, profileChart, true);
-                }
-            }
             chart.initChart(spectrumChart);
-            checkBoxAllWindows.selectedProperty().setValue(false);
-            checkBoxAllWindows.setDisable(true);
-            checkBoxUseFW.setDisable(true);
-            frequencySlider.setDisable(true);
+
+            toolBar.stateCheckRow();
+
         } catch (Exception e) {
-            VUtil.alertException("An error occurred while trying to view detail data and building chart",e);
+            log.error("An error occurred in the method View.detailSelectedRow. ", e);
+            AlertService.alertException("An error occurred while trying to view detail data and building chart", e);
         }
     }
 
@@ -185,37 +190,26 @@ public class View {
     public void deleteRows(ActionEvent actionEvent) {
         log.trace("Entering into method -> View.deleteRows");
         try{
-            if(Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), TAB_DAT_FILE)) {
-                if (seriesDatTableView.getSelectionModel().getSelectedItem() != null) {
-                    datTable.deleteRows(seriesDatTableView.getSelectionModel().getSelectedItems());
-                } else {
-                    VUtil.alertMessage("You must select a row to remove");
-                    return;
-                }
-            } else if(Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), TAB_ASC_FILE)) {
-                if (seriesTableView.getSelectionModel().getSelectedItem() != null) {
-                    ascTable.deleteRows(seriesTableView.getSelectionModel().getSelectedItems());
+            if (isSelectedTab(TAB_DAT_FILE) && isSelectedRow(seriesDatTableView)) {
+                dataTable.deleteRows(seriesDatTableView);
+            } else
+                if (isSelectedTab(TAB_ASC_FILE) && isSelectedRow(seriesAscTableView)) {
+                    dataTable.deleteRows(seriesAscTableView);
                     clearDataGridValue();
                 } else {
-                    VUtil.alertMessage("You must select a row to remove");
+                    AlertService.alertMessage("You must select a row to remove");
                     return;
                 }
-            }
             chart.clearChart(profileChart);
             chart.clearChart(spectrumChart);
-            checkBoxAllWindows.setDisable(true);
-            checkBoxUseFW.setDisable(true);
-            frequencySlider.setDisable(true);
+
+            toolBar.stateDeleteRow();
         } catch (Exception e){
-            VUtil.alertException("An error occurred while deleting a row", e);
+            log.error("An error occurred in the method View.deleteRows ", e);
+            AlertService.alertException("An error occurred while deleting a row", e);
         }
 
     }
-
-    /**
-     * Method completes the execution of the application
-     */
-    public void closeApplication(ActionEvent actionEvent) { System.exit(0); }
 
     /**
      *
@@ -226,23 +220,17 @@ public class View {
             if( checkBoxAllWindows.isSelected() ) {
                 checkBoxAllWindows.selectedProperty().setValue(false);
             }
-            if( checkBoxUseFW.isSelected() ) {
-                checkBoxUseFW.selectedProperty().setValue(false);
-                frequencySlider.setDisable(true);
+            if( checkBoxUseOF.isSelected() ) {
+                checkBoxUseOF.selectedProperty().setValue(false);
+                checkedFilter(false);
             }
-            if(Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), TAB_DAT_FILE)) {
-                chart.buildingSpectrumChart(seriesDatTableView, spectrumChart, windowData);
-                chart.buildingProfileChart(seriesDatTableView, profileChart, true);
-            } else
-                if(Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), TAB_ASC_FILE)){
-                    chart.buildingSpectrumChart(seriesTableView, spectrumChart, windowData);
-                    chart.buildingProfileChart(seriesTableView, profileChart, true);
-                }
+            buildSpectrumChart(windowLimit);
+            buildProfileChart(true);
             inverseFlag = true; // можно делать обратное преобразование
-            checkBoxAllWindows.setDisable(false); // открываем галочку - показать все окна
-            checkBoxUseFW.setDisable(false);
+            toolBar.stateTransform();
         } catch (Exception e) {
-            VUtil.alertException("An error occurred while transformation data", e);
+            log.error("An error occurred in the method View.transformData", e);
+            AlertService.alertException("An error occurred while transformation data", e);
         }
     }
 
@@ -252,29 +240,18 @@ public class View {
     public void inverseTransformData(ActionEvent actionEvent) {
         log.trace("Entering into method -> View.inverseTransformData");
         try{
-            if(inverseFlag) {
-                if(Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), TAB_DAT_FILE)) {
-                    chart.buildingProfileChart(seriesDatTableView, profileChart, false);
-                } else
-                    if(Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), TAB_ASC_FILE)) {
-                        chart.buildingProfileChart(seriesTableView, profileChart, false);
-                    }
-                inverseFlag = false;
+            if(inverseFlag) { // todo
+                buildProfileChart(false);
+//                inverseFlag = false;
             } else {
-                VUtil.alertMessage("You must first build a spectrum chart or the reconstructed signal is already built. Check the element - show all windows.");
+                AlertService.alertMessage("You must first build a spectrum chart or the reconstructed signal is already built. Check the element - show all windows.");
             }
         } catch (Exception e){
-            VUtil.alertException("An error occurred while inverse transformation data", e);
+            log.error("An error occurred in the method View.inverseTransformData", e);
+            AlertService.alertException("An error occurred while inverse transformation data", e);
         }
     }
 
-    public void doFilterData(ActionEvent actionEvent) {
-
-    }
-
-    public void doFilterData(Number number){
-        VUtil.alertMessage(number.toString());
-    }
 
     //TOOLBAR for charts
     /**
@@ -286,64 +263,150 @@ public class View {
         spectrumChart.getYAxis().setAutoRanging(true);
     }
 
+    /**
+     *
+     * @param actionEvent
+     */
     public void showAllWindows(ActionEvent actionEvent) {
         try{
             if(checkBoxAllWindows.isSelected()){
-                if(Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), TAB_DAT_FILE)) {
-                    chart.buildingSpectrumChart(seriesDatTableView, spectrumChart);
-                } else
-                    if(Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), TAB_ASC_FILE)) {
-                        chart.buildingSpectrumChart(seriesTableView, spectrumChart);
-                    }
+                buildSpectrumChart(null);
+                toolBar.clearFilter();
+                toolBar.setInverseDataDisable(true);
                 inverseFlag = false;
             } else {
-                if(Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), TAB_DAT_FILE)) {
-                    chart.buildingSpectrumChart(seriesDatTableView, spectrumChart, windowData);
-                } else
-                if(Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), TAB_ASC_FILE)){
-                    chart.buildingSpectrumChart(seriesTableView, spectrumChart, windowData);
-                }
+                buildSpectrumChart(windowLimit);
+                toolBar.setCheckBoxUseOFDisable(false);
+                toolBar.setInverseDataDisable(false);
                 inverseFlag = true;
             }
         } catch(Exception e){
-            VUtil.alertException("An error occurred while inverse transformation data", e);
+            AlertService.alertException("An error occurred while inverse transformation data", e);
         }
     }
 
+    /**
+     *
+     * @param actionEvent
+     */
     public void useWienerFilter(ActionEvent actionEvent) {
         try{
-            if(checkBoxUseFW.isSelected()){
-                frequencySlider.setDisable(false);
-                chart.setFilterType(wienerFilter.getValue());
+            if(checkBoxUseOF.isSelected()){
+                checkedFilter(true);
             } else {
-                frequencySlider.setDisable(true);
+                checkedFilter(false);
+                buildSpectrumChart(windowLimit);
             }
         } catch (Exception e) {
-            VUtil.alertException("An error occurred while use wiener filter", e);
+            AlertService.alertException("An error occurred while use wiener filter", e);
         }
     }
 
+    /**
+     * The method of exporting data to Excel file
+     */
     public void exportToExcel(ActionEvent actionEvent) {
         try {
-            TransformService.printData();
-            VUtil.alertMessage("Export data to xls file successfully completed");
+//            if(){
+//                SourceDataService.printData();
+//                AlertService.alertMessage("Export data to xls file successfully completed");
+//            } else {
+//                AlertService.alertMessage("No data to export");
+//            }
         } catch (Exception e){
-            VUtil.alertException("An error occurred while export to xls file", e);
+            AlertService.alertException("An error occurred while export to xls file", e);
         }
     }
+
+    /**
+     * The method set properties for file type
+     * @param ascTabFlag
+     * @param datTabFlag
+     * @param tab
+     * @param lChart
+     * @throws Exception
+     */
+    private void setPropForOpenFile(boolean ascTabFlag, boolean datTabFlag, Tab tab, LineChart<Number, Number> lChart) throws Exception {
+        ascFileTab.setDisable(ascTabFlag);
+        datFileTab.setDisable(datTabFlag);
+        tabPane.getSelectionModel().select(tab);
+        chart.initChart(lChart);
+    }
+
+    /**
+     *
+     * @param windowData
+     */
+    private void buildSpectrumChart(ChoiceBox windowData) throws Exception {
+        if(isSelectedTab(TAB_DAT_FILE)) {
+            chart.buildingSpectrumChart(seriesDatTableView, spectrumChart, windowData);
+        } else
+            if(isSelectedTab(TAB_ASC_FILE)){
+                chart.buildingSpectrumChart(seriesAscTableView, spectrumChart, windowData);
+            } else {
+                AlertService.alertMessage("Failed to build spectrum chart.");
+            }
+    }
+
+    /**
+     *
+     * @param flag
+     */
+    private void buildProfileChart(boolean flag) throws Exception {
+        if(isSelectedTab(TAB_DAT_FILE)) {
+            chart.buildingProfileChart(seriesDatTableView, profileChart,flag);
+        } else
+            if(isSelectedTab(TAB_ASC_FILE)) {
+                chart.buildingProfileChart(seriesAscTableView, profileChart, flag);
+            } else {
+                AlertService.alertMessage("Failed to build profile chart.");
+            }
+    }
+
+    /**
+     *
+     * @param flag
+     */
+    private void checkedFilter(boolean flag) {
+        toolBar.checkedFilter(flag);
+        if(flag) {
+            chart.setFilterType(EFilter.getNameByIndex(optimalFilter.getSelectionModel().selectedIndexProperty().get()));
+        }
+    }
+
+    /**
+     *
+     * @param tabId
+     * @return true or false
+     */
+    private boolean isSelectedTab(String tabId){
+        return Objects.equals(tabPane.getSelectionModel().getSelectedItem().getId(), tabId);
+    }
+
+    /**
+     *
+     * @param tableView
+     * @return true or false
+     */
+    private boolean isSelectedRow(TableView<ISourceSeries> tableView) {
+        return tableView.getSelectionModel().getSelectedItem() != null;
+    }
+
 
     /**
      * The method sets the information fields of the table depending on the type of measurement.
      * @param series - object type SSeries
      */
     private void setAscDataGridValue(AscSourceSeries series) {
-        if (Objects.equals(series.getType(), EMeasureType.OPP.name())
-                || Objects.equals(series.getType(), EMeasureType.OPD.name())) {
-            setValues4OPPDataGrid(series);
-        } else if (Objects.equals(series.getType(), EMeasureType.DDOE.name())
-                || Objects.equals(series.getType(), EMeasureType.DDAE.name())
-                || Objects.equals(series.getType(), EMeasureType.POE.name())) {
-            setValues4DDOEDataGrid(series);
+        if(series != null){
+            if (Objects.equals(series.getType(), EMeasureType.OPP.name())
+                    || Objects.equals(series.getType(), EMeasureType.OPD.name())) {
+                setValues4OPPDataGrid(series);
+            } else if (Objects.equals(series.getType(), EMeasureType.DDOE.name())
+                    || Objects.equals(series.getType(), EMeasureType.DDAE.name())
+                    || Objects.equals(series.getType(), EMeasureType.POE.name())) {
+                setValues4DDOEDataGrid(series);
+            }
         }
     }
 
@@ -430,25 +493,40 @@ public class View {
         rowValue_9.setText("");
     }
 
+    //Button for top toolbar
+    @FXML private Button saveFileData;
+    @FXML private Button openFileData;
+    @FXML private Button deleteRows;
+    @FXML private Button transformData;
+    @FXML private Button inverseData;
+    @FXML private Button exportToExcel;
 
-    @FXML private Slider frequencySlider;
+    @FXML private ChoiceBox windowLimit;
+    @FXML private ChoiceBox optimalFilter;
+
+    // tab table data
     @FXML private TabPane tabPane;
-    @FXML private TableView<ISourceSeries> seriesTableView;
-    @FXML private TableView<ISourceSeries> seriesDatTableView;
-
-    @FXML private LineChart<Number, Number> profileChart;
-    @FXML private LineChart<Number, Number> spectrumChart;
-
-    @FXML private ChoiceBox windowData;
-    @FXML private ChoiceBox wienerFilter;
-
-    @FXML private Label fileName;
-    @FXML private CheckBox checkBoxAllWindows;
-    @FXML private CheckBox checkBoxUseFW;
-
     @FXML private Tab ascFileTab;
     @FXML private Tab datFileTab;
+    @FXML private Label fileName;
+    @FXML private TableView<ISourceSeries> seriesAscTableView;
+    @FXML private TableView<ISourceSeries> seriesDatTableView;
 
+    // profile chart
+    @FXML private LineChart<Number, Number> profileChart;
+
+    // spectrum chart
+    @FXML private LineChart<Number, Number> spectrumChart;
+
+    @FXML private Label meanValueFilter;
+    @FXML private Label stdValueFilter;
+
+    @FXML private CheckBox checkBoxAllWindows;
+    @FXML private CheckBox checkBoxUseOF;
+
+    @FXML private Slider frequencySlider;
+
+    // asc table data
     @FXML private TableColumn<ISourceSeries, String> columnLabel_1;
     @FXML private TableColumn<ISourceSeries, String> columnLabel_2;
     @FXML private TableColumn<ISourceSeries, String> columnLabel_3;

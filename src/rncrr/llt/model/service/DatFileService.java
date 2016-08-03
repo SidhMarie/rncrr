@@ -3,10 +3,10 @@ package rncrr.llt.model.service;
 import rncrr.llt.model.bean.DatSourceSeries;
 import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.bean.api.ISourceSeries;
-import rncrr.llt.model.bean.api.AbstractDataFile;
-import rncrr.llt.model.utils.eobject.EDatFileKey;
-import rncrr.llt.model.utils.eobject.EDatFileValue;
-import rncrr.llt.view.utils.VUtil;
+import rncrr.llt.model.bean.eobject.EDatFileKey;
+import rncrr.llt.model.bean.eobject.EDatFileValue;
+import rncrr.llt.model.service.api.AbstractDataFile;
+import rncrr.llt.model.service.utils.AlertService;
 
 import java.util.ArrayList;
 
@@ -27,7 +27,7 @@ public class DatFileService extends AbstractDataFile {
     @Override
     protected void readList() {
         if(dataList.size() == 0) {
-            VUtil.alertWarning("File is empty");
+            AlertService.alertWarning("File is empty");
             return;
         }
         for(String line : dataList){
