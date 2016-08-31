@@ -1,6 +1,6 @@
 package rncrr.llt.model.service.api;
 
-import rncrr.llt.model.bean.ExportData;
+import rncrr.llt.model.bean.BeamData;
 
 import java.util.List;
 
@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface IExcelService {
 
-    void createSheet(String nameSheet, List<ExportData> dataList);
+    void createSheet(String nameSheet, List<BeamData> dataList);
 }

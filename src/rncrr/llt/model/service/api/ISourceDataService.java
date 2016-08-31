@@ -1,6 +1,6 @@
 package rncrr.llt.model.service.api;
 
-import rncrr.llt.model.bean.ExportData;
+import rncrr.llt.model.bean.BeamData;
 import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.bean.eobject.EWindows;
 
@@ -13,5 +13,5 @@ public interface ISourceDataService {
 
     void setSourceData(ISourceSeries series, List<Double> inputList, EWindows windows, double[] nSpectrum, Double[] frequency);
 
-    List<ExportData> getTransformList();
+    List<BeamData> getTransformDataList();
 }

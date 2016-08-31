@@ -1,8 +1,8 @@
 package rncrr.llt.model.service;
 
 
+import rncrr.llt.model.bean.BeamData;
 import rncrr.llt.model.bean.DigitalSeries;
-import rncrr.llt.model.bean.ExportData;
 import rncrr.llt.model.bean.Points;
 import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.bean.eobject.ECharts;
@@ -74,9 +74,9 @@ public class TransformService implements ITransformService {
     }
 
     private void setRebuildData(Complex[] source){
-        ExportData reportSeries;
-        for(int i = 0; i< sourceDataService.getTransformList().size(); i++){
-            reportSeries = sourceDataService.getTransformList().get(i);
+        BeamData reportSeries;
+        for(int i = 0; i< sourceDataService.getTransformDataList().size(); i++){
+            reportSeries = sourceDataService.getTransformDataList().get(i);
             reportSeries.setRebuild(source[i].re());
         }
     }

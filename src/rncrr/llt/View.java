@@ -19,10 +19,7 @@ import rncrr.llt.model.bean.AscSourceSeries;
 import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.bean.eobject.EFilter;
 import rncrr.llt.model.bean.eobject.EMeasureType;
-import rncrr.llt.model.service.ChartsService;
-import rncrr.llt.model.service.DataSaveService;
-import rncrr.llt.model.service.TableService;
-import rncrr.llt.model.service.ToolBarService;
+import rncrr.llt.model.service.*;
 import rncrr.llt.model.service.api.IChartsService;
 import rncrr.llt.model.service.utils.Config;
 import rncrr.llt.model.service.api.IDataSaveService;
@@ -41,6 +38,7 @@ public class View {
     private ToolBarService toolBar;
 
     private boolean inverseFlag = false;
+    private String sourceFileType;
 
     private static final String TAB_DAT_FILE = "datFileTab";
     private static final String TAB_ASC_FILE = "ascFileTab";
@@ -141,6 +139,7 @@ public class View {
                     setPropForOpenFile(true, false, datFileTab, profileChart);
                     dataTable.viewDataTable(file, seriesDatTableView, columnLabelDat_1, columnLabelDat_2);
                 }
+                setSourceFileType(file);
             }
         } catch (Exception e) {
             log.error("An error occurred in the method View.openFileData", e);
@@ -158,7 +157,7 @@ public class View {
     }
 
     /**
-     * Method fills in the table details the series and plotted according to series
+     * The method fills in the table details the series and plotted according to series
      */
     public void detailSelectedRow(Event event) {
         log.trace("Entering into method -> View.detailSelectedRow");
@@ -252,6 +251,21 @@ public class View {
         }
     }
 
+    /**
+     * The method of exporting data to Excel file
+     */
+    public void exportToExcel(ActionEvent actionEvent) {
+        try {
+            if(SourceDataService.isPrintData(sourceFileType)){
+                AlertService.alertMessage("Export data to xls file successfully completed");
+            } else {
+                AlertService.alertMessage("No data to export");
+            }
+        } catch (Exception e){
+            AlertService.alertException("An error occurred while export to xls file", e);
+        }
+    }
+
 
     //TOOLBAR for charts
     /**
@@ -303,22 +317,6 @@ public class View {
     }
 
     /**
-     * The method of exporting data to Excel file
-     */
-    public void exportToExcel(ActionEvent actionEvent) {
-        try {
-//            if(){
-//                SourceDataService.printData();
-//                AlertService.alertMessage("Export data to xls file successfully completed");
-//            } else {
-//                AlertService.alertMessage("No data to export");
-//            }
-        } catch (Exception e){
-            AlertService.alertException("An error occurred while export to xls file", e);
-        }
-    }
-
-    /**
      * The method set properties for file type
      * @param ascTabFlag
      * @param datTabFlag
@@ -354,7 +352,7 @@ public class View {
      */
     private void buildProfileChart(boolean flag) throws Exception {
         if(isSelectedTab(TAB_DAT_FILE)) {
-            chart.buildingProfileChart(seriesDatTableView, profileChart,flag);
+            chart.buildingProfileChart(seriesDatTableView, profileChart, flag);
         } else
             if(isSelectedTab(TAB_ASC_FILE)) {
                 chart.buildingProfileChart(seriesAscTableView, profileChart, flag);
@@ -390,6 +388,16 @@ public class View {
      */
     private boolean isSelectedRow(TableView<ISourceSeries> tableView) {
         return tableView.getSelectionModel().getSelectedItem() != null;
+    }
+
+    private void setSourceFileType(File file) {
+        String fileName = file.getName();
+        if(fileName.lastIndexOf(".") > 0 ){
+            this.sourceFileType = fileName.substring(fileName.lastIndexOf(".")+1);
+        } else {
+            this.sourceFileType = "";
+        }
+
     }
 
 

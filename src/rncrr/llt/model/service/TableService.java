@@ -5,12 +5,16 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import rncrr.llt.model.bean.AscSourceSeries;
 import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.service.api.AbstractDataFile;
 import rncrr.llt.model.service.api.ITableService;
 import rncrr.llt.model.service.utils.AlertService;
+import rncrr.llt.model.service.utils.Config;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -70,6 +74,21 @@ public class TableService implements ITableService {
         } else {
             AlertService.alertMessage("You must select a row to remove");
         }
+    }
+
+    public static Map<String, String> getBeamData4OPP(AscSourceSeries series) {
+        Map<String, String> dataMap = new HashMap<>();
+        dataMap.put(Config.getStringProperty("tg.row.label.scanId", "Scan ID"), series.getScanId());
+        dataMap.put(Config.getStringProperty("tg.row.label.machine", "Machine name"), series.getMachineName());
+        dataMap.put(Config.getStringProperty("tg.row.label.beamType", "Beam type"), series.getBeamType() + " " + series.getBeamEnergy());
+        dataMap.put(Config.getStringProperty("tg.row.label.pnts", "PNTS"), Integer.toString(series.getPoints().size()));
+        dataMap.put(Config.getStringProperty("tg.row.label.ssd", "Ssd"), Integer.toString(series.getSsd()) + " mm");
+        dataMap.put(Config.getStringProperty("tg.row.label.fieldSize", "Field size"), series.getFieldSize());
+        dataMap.put(Config.getStringProperty("tg.row.label.axis", "Axis"), series.getAxis());
+        dataMap.put(Config.getStringProperty("tg.row.label.depth", "Depth"), Integer.toString(series.getDepth()) + " mm");
+        dataMap.put(Config.getStringProperty("tg.row.label.step", "Step"), Integer.toString(series.getStep()) + " mm");
+        dataMap.put(Config.getStringProperty("tg.row.label.date", "Date"), series.getDate());
+        return dataMap;
     }
 
     private ObservableList<ISourceSeries> readFile(AbstractDataFile fileService, File file) throws Exception {

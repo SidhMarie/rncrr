@@ -3,7 +3,7 @@ package rncrr.llt.model.bean;
 /**
  * Created by Sidh on 26.02.2016.
  */
-public class ExportData {
+public class BeamData {
 
     private int count;
     private Double sourceX;

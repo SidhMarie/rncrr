@@ -3,7 +3,7 @@ package rncrr.llt.model.service;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
-import rncrr.llt.model.bean.ExportData;
+import rncrr.llt.model.bean.BeamData;
 import rncrr.llt.model.service.api.IExcelService;
 import rncrr.llt.model.service.utils.Config;
 
@@ -20,6 +20,7 @@ public class ExcelService implements IExcelService {
 
     private File excelFile;
     private Workbook workbook;
+    private String sourceFileType;
 
     public static final String COUNT_COL = "export.xls.column.count";
     public static final String SOURCEX_COL = "export.xls.column.sourcex";
@@ -30,15 +31,18 @@ public class ExcelService implements IExcelService {
     public static final String FREQUENCY_COL = "export.xls.column.frequency";
     public static final String REBUILD_COL = "export.xls.column.rebuild";
 
-    public ExcelService(File excelFile) {
+    public ExcelService(File excelFile, String sourceFileType) {
         this.excelFile = excelFile;
         this.workbook = new HSSFWorkbook();
+        this.sourceFileType = sourceFileType;
     }
 
-    public void createSheet(String nameSheet, List<ExportData> dataList) {
+    public void createSheet(String nameSheet, List<BeamData> dataList) {
         try {
             Sheet sheet = workbook.createSheet(nameSheet);
-            setSheetValue(sheet, dataList);
+            if(sourceFileType.equals("asc")) {
+                createDataTable(sheet, dataList);
+            }
             FileOutputStream out = new FileOutputStream(excelFile);
             workbook.write(out);
             out.close();
@@ -48,34 +52,29 @@ public class ExcelService implements IExcelService {
 
     }
 
-    private void setSheetValue(Sheet sheet, List<ExportData> dataList) {
+    private void createDataTable(Sheet sheet, List<BeamData> dataList) {
         Cell cell;
         CellStyle style;
         String key;
-        style = workbook.createCellStyle();
         Row row = sheet.createRow(0);
         List<String> eList = getColumn();
-        for(int i = 0; i < eList.size(); i++){
-            key = eList.get(i);
-            cell = row.createCell(i);
-            cell.setCellValue(Config.getStringProperty(key));
-            cell.setCellStyle(style);
-        }
+        createHeadDataTable(row, eList);
         for(int i=0; i<dataList.size(); i++) {
             row = sheet.createRow(i+1);
-            ExportData rs = dataList.get(i);
+            BeamData rs = dataList.get(i);
             if(rs != null)
-            for(int k = 0; k < eList.size(); k++){
+            for(int k = 0; k < eList.size(); k++) {
                 key = eList.get(k);
                 cell = row.createCell(k);
-                if(!Objects.equals(key,COUNT_COL)){
+                style = workbook.createCellStyle();
+                if(!Objects.equals(key,COUNT_COL)) {
                     style.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00"));
-                    cell.setCellStyle(style);
+                } else {
+                    style.setDataFormat(HSSFDataFormat.getBuiltinFormat("0"));
                 }
+                cell.setCellStyle(style);
                 switch (key) {
                     case COUNT_COL:
-                        style.setDataFormat(HSSFDataFormat.getBuiltinFormat("0"));
-                        cell.setCellStyle(style);
                         cell.setCellValue(rs.getCount());
                         break;
                     case SOURCEX_COL:
@@ -102,6 +101,18 @@ public class ExcelService implements IExcelService {
                         break;
                 }
             }
+        }
+    }
+
+    private void createHead() {
+
+    }
+
+    private void createHeadDataTable(Row row, List<String> eList){
+        Cell cell;
+        for(int i = 0; i < eList.size(); i++){
+            cell = row.createCell(i);
+            cell.setCellValue(Config.getStringProperty(eList.get(i)));
         }
     }
 

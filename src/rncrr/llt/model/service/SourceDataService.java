@@ -1,6 +1,6 @@
 package rncrr.llt.model.service;
 
-import rncrr.llt.model.bean.ExportData;
+import rncrr.llt.model.bean.BeamData;
 import rncrr.llt.model.bean.api.ISourceSeries;
 import rncrr.llt.model.bean.eobject.EWindows;
 import rncrr.llt.model.service.api.IExcelService;
@@ -18,8 +18,8 @@ import java.util.Map;
  */
 public class SourceDataService implements ISourceDataService {
 
-    private List<ExportData> transformList;
-    private static Map<Object,List<ExportData>> transformData;
+    private List<BeamData> transformDataList;
+    private static Map<Object,List<BeamData>> transformData;
 
     public SourceDataService() {
         transformData = new HashMap<>();
@@ -27,10 +27,10 @@ public class SourceDataService implements ISourceDataService {
 
     @Override
     public void setSourceData(ISourceSeries series, List<Double> inputList, EWindows windows, double[] nSpectrum, Double[] frequency) {
-        transformList = new ArrayList<>();
-        ExportData reportSeries;
+        transformDataList = new ArrayList<>();
+        BeamData reportSeries;
         for(int i = 0; i <inputList.size(); i++) {
-            reportSeries = new ExportData();
+            reportSeries = new BeamData();
             reportSeries.setCount(i + 1);
             if(i < series.getPoints().size()) {
                 reportSeries.setSourceX(series.getXPoints().get(i));
@@ -50,21 +50,23 @@ public class SourceDataService implements ISourceDataService {
             } else {
                 reportSeries.setAmplitude(0D);
             }
-            transformList.add(reportSeries);
+            transformDataList.add(reportSeries);
         }
-        transformData.put(windows.name(), transformList);
+        transformData.put(windows.name(), transformDataList);
     }
 
     @Override
-    public List<ExportData> getTransformList() {
-        return transformList;
+    public List<BeamData> getTransformDataList() {
+        return transformDataList;
     }
 
-    public static void printData() {
-        IExcelService eb = new ExcelService(new File(Config.getStringProperty("export.xls.file.name")));
+    public static boolean isPrintData(String sourceFileType) {
+        IExcelService eb = new ExcelService(new File(Config.getStringProperty("export.xls.file.name")), sourceFileType);
+        List<BeamData> list = new ArrayList<>();
         for(Object key : transformData.keySet()) {
-            List<ExportData> list = transformData.get(key);
+            list = transformData.get(key);
             eb.createSheet(key.toString(), list);
         }
+        return !list.isEmpty();
     }
 }
